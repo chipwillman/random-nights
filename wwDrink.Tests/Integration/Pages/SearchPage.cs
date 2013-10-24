@@ -20,7 +20,7 @@
 
         private SearchResults GetSearchResults()
         {
-            var resultsDivs = Driver.FindElements(By.ClassName("foundEstablishment"));
+            var resultsDivs = Driver.FindElements(By.ClassName("establishment"));
             var placesFound = new List<string>();
             foreach (var div in resultsDivs)
             {

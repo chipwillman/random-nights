@@ -49,7 +49,7 @@
                         <div class ="belt">
                             <div>
                                 <div data-bind="foreach: Establishments">
-                                    <div class="panel" data-bind="click: $parent.SelectEstablishment, id: PK">
+                                    <div class="panel" data-bind="click: $parent.SelectEstablishmentClick, id: PK">
                                         <div class="establishment-open"  data-bind="visible: open()"><span>Open</span></div>
                                         <div class="establishment-closed" data-bind="visible: !open()"><span>Currently Closed</span></div>
                                         <div class="establishment">

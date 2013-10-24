@@ -245,6 +245,8 @@
     <Content Include="Images\select_list_arrow.png" />
     <Content Include="Scripts\Client\Establishment.js" />
     <Content Include="Scripts\Client\home.js" />
+    <Content Include="Scripts\Client\manage.js" />
+    <Content Include="Scripts\Client\manageuser.js" />
     <Content Include="Scripts\Client\Search.js" />
     <Content Include="Scripts\guid.js" />
     <Content Include="Scripts\jquery-1.7.1.js" />

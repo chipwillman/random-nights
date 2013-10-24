@@ -116,6 +116,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />
+    <Content Include="Jasmine\ManageUser.html" />
+    <Content Include="Jasmine\Search.html" />
+    <Content Include="Jasmine\spec\ManageUserSpec.js" />
+    <Content Include="Jasmine\spec\SearchSpec.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Integration\Feature\SearchForEstablishment.feature">
@@ -131,7 +135,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Jasmine\" />
+    <Folder Include="Jasmine\lib\jasmine-1.2.0.rc3\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

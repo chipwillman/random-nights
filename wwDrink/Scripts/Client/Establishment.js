@@ -1,6 +1,7 @@
 ﻿function Establishment() {
     var self = this;
     self.PK = ko.observable();
+    self.detailsRequested = ko.observable(false);
     self.name = ko.observable();
     self.latitude = ko.observable();
     self.longitude = ko.observable();

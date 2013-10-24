@@ -1,8 +1,4 @@
-﻿$(function () {
-    $("#results_tabs").tabs();
-});
-
-function EstablishmentSearch() {
+﻿function EstablishmentSearch() {
     var self = this;
 
     self.carouselConfig = {
@@ -178,16 +174,22 @@ function EstablishmentSearch() {
         self.Interests.remove(establishment);
     };
 
-    self.SelectEstablishment = function() {
-        var establishment = this;
+    self.SelectEstablishment = function(establishment) {
         establishment.index(self.Interests().length + 2);
         establishment.tab_href("#results_tabs-" + establishment.index().toString());
         establishment.tab_name("results_tabs-" + (self.Interests().length + 2).toString());
+        self.Interests.push(establishment);
 
-        var request = {
-            reference: establishment.google_reference()
-        };
-        if (establishment.open_hours().length == 0 && establishment.features().length == 0) {
+        return (establishment.open_hours().length == 0 && establishment.features().length == 0 && !establishment.detailsRequested());
+    };
+
+    self.SelectEstablishmentClick = function() {
+        var establishment = this;
+        if (SelectEstablishment(establishment)) {
+            establishment.detailsRequested(true);
+            var request = {
+                reference: establishment.google_reference()
+            };
             self.service().getDetails(request, function(place, status) {
                 if (status == google.maps.places.PlacesServiceStatus.OK) {
                     establishment.address(place.formatted_address);
@@ -198,20 +200,20 @@ function EstablishmentSearch() {
                     for (i = 0; i < place.reviews.length; i++) {
                         establishment.reviews.push({ review: place.reviews[i].text });
                     }
-
                     establishment.open_hours(self.ParseOpenHours(place.opening_hours));
                 }
             });
         }
 
-        self.Interests.push(establishment);
-        
+       
         $(function () {
             var options = {};
             $("#results_tabs").tabs('destroy');
             $("#results_tabs").tabs(options);
         });
     };
+
+
 
     self.Listeners = new ko.observableArray();
 

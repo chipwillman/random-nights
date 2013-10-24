@@ -6,6 +6,6 @@
 @mytag
 Scenario: Search by GPS
 	Given I navigate to wwDrink 
-	And I search for "pubs near kensington"
+	And I search for "kensington, victoria"
 	When I press the search button
 	Then the results should contain "Hardimans"

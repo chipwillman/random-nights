@@ -31,13 +31,16 @@ namespace wwDrink.Tests.Integration.Pages
 
         public void SetSearch(SearchFor searchFor)
         {
-            var searchTextBox = Driver.FindElement(By.Id("SearchTextBox"));
+            var searchTextBox = Driver.FindElement(By.Id("search_query"));
+            searchTextBox.Clear();
             searchTextBox.SendKeys(searchFor.SearchText);
         }
 
         public SearchPage Search()
         {
-            Driver.FindElement(By.Id("SearchButton")).Click();
+            var searchButton = Driver.FindElement(By.Id("search_button"));
+            searchButton.Click();
+            SearchPage.Driver = Driver;
             var result = new SearchPage();
             result.GetElements();
             return result;
