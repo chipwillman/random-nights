@@ -1,0 +1,119 @@
+﻿@model ICollection<wwDrink.Models.ClientAspect>
+
+@if (Model != null && Model.Count == 0)
+{
+    <div class="message-info">
+        <p>There are no aspects configured for a user.</p>
+    </div>
+}
+else
+{
+    <form>
+        <div class="FavoriteSection">
+            <span>Age Range</span>
+            <select id="age_range_select">
+                <option value="u18">under 18</option>
+                <option value="12-21">18 - 21</option>
+                <option value="22-28">22 - 28</option>
+                <option value="29-35">29 - 35</option>
+                <option value="36-42">36 - 42</option>
+                <option value="43-49">43 - 49</option>
+                <option value="o50">over 50</option>
+            </select>
+        </div>
+        <div class="FavoriteSection">
+            <span>Service</span>
+            <span>Bar Service</span>
+            <select id="bar_service_select">
+                <option value="">No Preference</option>
+                <option value="Ignore">Do not show</option>
+                <option value="Preferred">Preferred</option>
+                <option value="Required">Required</option>
+            </select>
+            <span>Table Service</span>
+        </div>
+        <div class="FavoriteSection">
+            <span>Establishment Types</span>
+            <span>Sports Bar</span>
+            <span>Irish Pub</span>
+            <span>German Bar</span>
+            <span>Public Bar</span>
+            <span>Night Club</span>
+            <span>Piano Bar</span>
+            <span>Jazz Club</span>
+            <span>Happy Hour</span>
+            <span>Casino</span>
+        </div>
+        <div class="FavoriteSection">
+            <span>Activites</span>
+            <span>Trivia</span>
+            <span>Quiz</span>
+            <span>Sports Tipping</span>
+            <span>Poker</span>
+            <span>pokies</span>
+        </div>
+        <div class="FavoriteSection">
+            <span>Games</span>
+            <span>Pool</span>
+            <span>Darts</span>
+            <span>Pinball</span>
+            <span>Arcade</span>
+            <span>Exclude Buck Hunter</span>
+        </div>
+        <div class="FavoriteSection">
+            <span>Music Genres</span>
+            <span>Hip Hop</span>
+            <span>Classic Rock</span>
+            <span>Country</span>
+            <span>Jazz</span>
+            <span>Classical</span>
+            <span>Folk</span>
+            <span>Blues</span>
+        </div>
+        <div class="FavoriteSection">
+            <span>Music Performance</span>            
+            <span>Live Music</span>
+            <span>DJ Music</span>
+            <span>Jukebox</span>
+        </div>
+        <div class="FavoriteSection">
+            <span>Sexual Orientation</span>
+            <span>Straight</span>
+            <span>Gay</span>
+            <span>Lesbian</span>
+        </div>
+        <div class="FavoriteSection">
+            <span>Favorite Beer</span>
+            <span>Add Favorite Beer</span>
+        </div>
+        <div class="FavoriteSection">
+            <span>Favorite Wine</span>
+            <span>Add Favorite Wine</span>
+        </div>
+        <div class="FavoriteSection">
+            <span>Favorite Cider</span>
+            <span>Add Favorite Cider</span>
+        </div>
+        <div class="FavoriteSection">
+            <span>Favorite Mixed Drink</span>
+            <span>Add Favorite Mixed Drink</span>
+        </div>
+        <div class="FavoriteSection">
+            <span>Local</span>
+            <span>Add Favorite Establishment</span>
+        </div>
+        <div class="FavoriteSection">
+            <span>Desired Aspects</span>
+            <span>Beer Garden</span>
+            <span>Function Room</span>
+            <span>Dress Code</span>
+            <span>Smoking Area</span>
+        </div>
+        <div class="FavoriteSection">
+            <span>Food</span>
+            <span>Pub Meals</span>
+            <span>Toasted Sandwich</span>
+            <span>Bar food</span>
+        </div>
+    </form>
+}

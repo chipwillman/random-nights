@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model wwDrink.Models.SearchModel
+@{
+    ViewBag.Title = "wwDrink";
+}
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@ViewBag.Title.</h1>
+                <h2>@ViewBag.Message</h2>
+            </hgroup>
+            <p>
+                  @using (Html.BeginForm("Search", "Home", FormMethod.Post, new { enctype = "multipart/form-data" })) {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary()
+
+                    <fieldset>
+                        <legend>Search</legend>
+                        @Html.LabelFor(m => m.SearchText)
+                        @Html.TextBoxFor(m => m.SearchText)
+                        <input type="submit" value="Search" />
+                    </fieldset>
+                }
+            </p>
+        </div>
+    </section>
+}
+
+<h3>We suggest the following:</h3>
+<ol class="round">
+    <li class="one">
+        <h5>Hardimans</h5>
+        the latest web standards.
+        <a href="http://go.microsoft.com/fwlink/?LinkId=245151">Learn more…</a>
+    </li>
+</ol>

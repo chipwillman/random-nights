@@ -1,0 +1,151 @@
+﻿@model wwDrink.Models.SearchModel
+@{
+    ViewBag.Title = "wwDrink";
+}
+@section featured {
+    <section class="featured">
+        <form>
+            <div class="content-wrapper">
+                <div class="left-picture">
+                    <img id="drink_image" src="/Images/Pint.jpg" width="220" height="632" />
+                </div>
+                <div>
+                    <div class="title-box">
+                        <hgroup class="title">
+                            <h3>Bars, Pubs & Clubs</h3>
+                            <h1>@ViewBag.Title</h1>
+                            <h2>@ViewBag.Message</h2>
+                        </hgroup>
+                    </div>
+                    <div class="main-search">
+                        @*                      @using (Html.BeginForm("Search", "Home", FormMethod.Post, new { enctype = "multipart/form-data" })) {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary()
+                        <fieldset>
+                            <legend>Search</legend>
+                            <div>
+                                @Html.LabelFor(m => m.SearchLocation)
+                                @Html.TextBoxFor(m => m.SearchLocation)
+                                <input type="submit" value="Search" />
+                            </div>
+                        </fieldset>
+                    }*@
+                        <select id="search_type">
+                            <option value="location">Location</option>
+                            <option value="drink">Drink</option>
+                        </select>
+                        <input id="search_query" type="text" data-bind="value: searchText"/>
+                        <input id="search_button" type="submit" value="Search" data-bind="click: Search"/>
+                    </div>
+                </div>
+            </div>
+            <div class="search-wrapper">
+                <div id="search_results">
+                    <div>
+                        Latitude: <label id="latitude_label" data-bind="text: latitude">not set</label>
+                        Longitude: <label id="longitude_label" data-bind="text: longitude"></label>
+                    </div>
+                    <div id="establishments" class="stepcarousel">
+                        <div class ="belt">
+                            <div>
+                                <div data-bind="foreach: Establishments">
+                                    <div class="panel" data-bind="click: $parent.SelectEstablishment, id: PK">
+                                        <div class="establishment-open"  data-bind="visible: open()"><span>Open</span></div>
+                                        <div class="establishment-closed" data-bind="visible: !open()"><span>Currently Closed</span></div>
+                                        <div class="establishment">
+                                            <h4 data-bind="text: name"></h4>
+                                            <img data-bind="attr:{src: imageUrl}" alt="loading image" width="174" height="102" />
+                                            <span data-bind="text: suburb"> </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nav-buttons">
+                        <div class="nav-buttons-back">
+                            <input id="StepFirstButton" type="button" data-bind="click: StepFirst" value ="&nbsp;First<<&nbsp;" /> <input id="StepBackButton" type="button" data-bind="click: StepBack" value="&nbsp;Back&nbsp;" />
+                        </div>
+                        <div class="nav-buttons-forward">
+                            <input id="StepForwardButton" type="button" data-bind="click: StepForward" value="&nbsp;Next&nbsp;"/><input id="StepLastButton" type="button" data-bind="click: StepLast" value="&nbsp;Last&nbsp;" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/jquery-ui-1.8.20.js")
+    @Scripts.Render("~/Scripts/stepcarousel.js")
+    @Scripts.Render("~/Scripts/knockout-2.1.0.js")
+    @Scripts.Render("~/Scripts/guid.js")
+    @Scripts.Render("http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false")
+    @Scripts.Render("~/Scripts/Client/Establishment.js")
+    @Scripts.Render("~/Scripts/Client/Search.js")
+    @Scripts.Render("~/Scripts/Client/home.js")
+}
+
+<link rel="stylesheet" href="~/Content/themes/base/jquery.ui.all.css">
+
+<div id="results_tabs" float="left">
+    <ul class="tab-header">
+        <li class="tab-item" style="background-image: none;">
+            <a href="#results_tabs-1">Map</a>          
+        </li>
+        <!-- ko foreach: Interests -->
+        <li class="tab-item" style="background-image: none; display: inline">
+            <img src="Images/close_button.png" class="close-button" alt="close" data-bind="click: $parent.CloseTab, attr: { visible: $parent.IsMacUser }" />
+            <span>
+                <a data-bind="attr: { href: tab_href }"><span data-bind="text: name"></span></a>
+            </span>
+@*            <img src="Images/close_button.png" class="win-close-button" alt="close" style="float:right" data-bind="click: $parent.CloseTab, attr: { visible: $parent.IsWindowsUser }"/>*@
+        </li>
+        <!-- /ko -->
+    </ul>
+    <div id="result_pages">
+        <div id="results_tabs-1">
+            <div id="map" style="width: 100%; min-height: 400px; margin-top:20px">
+            </div>
+            <div id="infowindow"></div>
+        </div>
+        <!-- ko foreach: Interests -->
+        <div data-bind="attr: {id: tab_name }">
+            <div class="establishment-listing">
+                <ul>
+                    <li>
+                        <div class="establishment-details-header-image">
+                            <img data-bind="attr:{src: imageUrl}" width="240px" height="180px" alt="Details Page Image" src="/Images/missing_establishment_image.png"/>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="establishment-details-header">
+                            <h4><span data-bind="text: name"></span></h4>
+                            <span class="establishment-address" data-bind="text: address"></span>
+                            <hr/>
+                            <span class="open-hours-title">Open:</span><br/>
+                            <!-- ko foreach: open_hours -->
+                            <span class="open-hours" data-bind="text: open_hours"></span><br/>
+                            <!-- /ko -->
+                        </div>
+                    </li>
+                    <li>
+                        <div class="establishment-ticks">
+                            <!-- ko foreach: features -->
+                            <div class="feature-tick"><span data-bind="text: name"></span></div>
+                            <!-- /ko -->
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="establishment-reviews" data-bind="foreach: reviews">
+                <p>
+                    <span data-bind="text: review"></span><br/>
+                </p>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
+</div>
+
