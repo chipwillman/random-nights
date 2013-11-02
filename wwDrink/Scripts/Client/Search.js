@@ -185,7 +185,7 @@
 
     self.SelectEstablishmentClick = function() {
         var establishment = this;
-        if (SelectEstablishment(establishment)) {
+        if (self.SelectEstablishment(establishment)) {
             establishment.detailsRequested(true);
             var request = {
                 reference: establishment.google_reference()
@@ -197,8 +197,16 @@
                     for (i = 0; i < place.types.length; i++) {
                         establishment.features.push({ name: place.types[i] });
                     }
-                    for (i = 0; i < place.reviews.length; i++) {
-                        establishment.reviews.push({ review: place.reviews[i].text });
+                    if (place.reviews) {
+                        for (i = 0; i < place.reviews.length; i++) {
+                            establishment.reviews.push({ review: place.reviews[i].text });
+                        }
+                    }
+                    if (place.photos) {
+                        for (i = 0; i < place.photos.length; i++) {
+                            var url = place.photos[i].getUrl({ 'maxWidth': 240, 'maxHeight': 180 });
+                            establishment.photos.push({ imageUrl: url });
+                        }
                     }
                     establishment.open_hours(self.ParseOpenHours(place.opening_hours));
                 }

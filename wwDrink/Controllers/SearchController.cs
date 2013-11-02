@@ -1,6 +1,7 @@
 ﻿namespace wwDrink.Controllers
 {
     using System;
+    using System.Data.Spatial;
     using System.Web;
     using System.Web.Http;
 
@@ -28,11 +29,10 @@
                                     Address =
                                         new Address
                                             {
-                                                AddressPK = Guid.NewGuid(),
+                                                AddressPk = Guid.NewGuid(),
                                                 AddressType = "EST",
                                                 Country = "Australia",
-                                                GpsLatitude = -37.794402m,
-                                                GpsLongitude = 144.928437m,
+                                                Location = DbGeography.FromText(string.Format("POINT({0} {1})", longitude, latitude)),
                                                 Number = "521",
                                                 Postcode = "3031",
                                                 State = "VIC",
@@ -42,7 +42,7 @@
                                             },
                                     Name = "Hardimans",
                                     Description = "",
-                                    ImageUrl = ""
+                                    MainImageUrl = ""
 
                                 };
             result.Establishments = new[] { hardimans };

@@ -17,10 +17,18 @@
 
     self.features = ko.observableArray();
     self.open_hours = ko.observableArray();
+    self.photos = ko.observableArray();
     self.reviews = ko.observableArray();
 
     self.tab_href = ko.observable();
     self.tab_name = ko.observable();
+    
+    self.UpdateImage = function () {
+        var link = this;
+        self.imageUrl(link.imageUrl);
+    };
+
+
 }
 
 function OpenHours() {

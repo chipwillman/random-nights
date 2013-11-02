@@ -89,7 +89,7 @@
 
 <link rel="stylesheet" href="~/Content/themes/base/jquery.ui.all.css">
 
-<div id="results_tabs" float="left">
+<div id="results_tabs">
     <ul class="tab-header">
         <li class="tab-item" style="background-image: none;">
             <a href="#results_tabs-1">Map</a>          
@@ -116,7 +116,14 @@
                 <ul>
                     <li>
                         <div class="establishment-details-header-image">
-                            <img data-bind="attr:{src: imageUrl}" width="240px" height="180px" alt="Details Page Image" src="/Images/missing_establishment_image.png"/>
+                            <img class="establishment-details-current-image" data-bind="attr:{src: imageUrl}" width="240px" height="180px" alt="Details Page Image" src="/Images/missing_establishment_image.png"/>
+                            <div class="establishment-image-thumbnails" data-bind="foreach: photos">
+                                <div class="establishment-image-thumbnail">
+                                    <a data-bind="click: $parent.UpdateImage">
+                                        <img data-bind="attr:{src: imageUrl}" width="48px" height="36px" alt="Details Page Image" src="/Images/missing_establishment_image.png"/>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </li>
                     <li>

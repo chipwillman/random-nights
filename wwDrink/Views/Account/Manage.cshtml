@@ -1,7 +1,62 @@
 ﻿@model wwDrink.Models.LocalPasswordModel
 @{
-    ViewBag.Title = "Manage Account";
+    ViewBag.Title = "Manage wwDrink Account";
 }
+
+<script type="text/html" id="readonly-display-template">
+    <div class="favorite-display">
+        <div>
+            <input class="favorite-name" readonly="true" data-bind="value: Name" />
+        </div>
+        <div>
+            <input type="checkbox" disabled="true" data-bind="checked: Enabled, attr: { id: EnableCheckboxReadonlyId }"/>Enabled
+        </div>
+        <div>
+            <input type="checkbox" disabled="false" data-bind="checked: Excluded, attr: { id: ExcludedCheckboxReadonlyId }"/>Excluded
+        </div>
+        <div>
+            <div class="favorite-slider" data-bind="slider_disabled: Factor, sliderOptions: { min: 0, max: 100, range: 'min', step: 1 } "></div>
+        </div>
+        <div>
+            <input style="width: 30px" readonly="true" data-bind="value: Factor, valueUpdate: 'afterkeydown', attr: { id: FactorReadonlyId }" />
+        </div>
+@*        <div>
+            <input type="range" readonly="true" min="1" max="100" step="1" data-bind="value: Factor, attr: { id: FactorReadonlyId }"/>
+        </div>*@
+        <div>
+            <input type="checkbox" disabled="false" data-bind="checked: Required, attr: { id: RequiredCheckboxReadonlyId }"/>Required
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="editing-template">
+    <div class="favorite-display">
+        <div>
+            <input class="favorite-name" readonly="true" data-bind="value: Name" />
+        </div>
+        <div>
+            <input type="checkbox" name="enabled_checkbox" data-bind="checked: Enabled, attr: { id: EnableCheckboxId }"/>Enabled
+        </div>
+        <div>
+            <input type="checkbox" name="excluded_checkbox" data-bind="checked: Excluded, attr: { id: ExcludeCheckboxId }"/>Excluded
+        </div>
+        <div>
+            <div class="favorite-slider" data-bind="slider: Factor, sliderOptions: {min: 0, max: 100, range: 'min', step: 1}"></div>
+        </div>
+        <div>
+            <input style="width: 30px" data-bind="value: Factor, valueUpdate: 'afterkeydown', attr: { id: FactorId }" />
+        </div>
+@*        <div>
+            <input type="range" min="1" max="100" step="1" data-bind="value: Factor, attr: { id: FactorId }"/>
+        </div>*@
+        <div>
+            <input type="checkbox" name="require_checkbox" data-bind="checked: Required, attr: { id: RequireCheckboxId }"/>Required
+        </div>
+    </div>
+</script>
+
+<link rel="stylesheet" href="/Content/themes/base/jquery-ui.css" />
+<link rel="stylesheet" href="/Content/themes/base/jquery.ui.accordion.css" />
 
 <hgroup class="title">
     <h1>@ViewBag.Title.</h1>
@@ -11,24 +66,153 @@
 
 <p>You're logged in as <strong>@User.Identity.Name</strong>.</p>
 
-@Html.Partial("_ManagePreferences")
+<div id="accordion">
+    <h3>Personal Details</h3>
+    <div>
+        <form>
+            <div id="personal_details_div_readonly" data-bind="visible: !editPersonalDetails()">
+                <span">Screen Name:</span><span id="screen_name_readonly" data-bind="text: screenName"></span>
+                <span>Age Range:</span><span id="age_range_readonly" data-bind="text: ageRange"></span><br/>
+                <div class="MusicPreferences">
+                    <h5>Musical Preferences</h5>
+                    <div data-bind="template: { name: 'readonly-display-template', foreach: musicalSettings }" ></div>
+                    
+                    <h5>Sexual Orientation</h5>
+                    <div data-bind="template: { name: 'readonly-display-template', foreach: sexualOrientation }" ></div>
 
-@if (ViewBag.HasLocalPassword)
-{
-    @Html.Partial("_ChangePasswordPartial")
-}
-else
-{ 
-    @Html.Partial("_SetPasswordPartial")
-}
+                </div>
+            </div>
+            <div id="personal_details_div_edit" data-bind="visible: editPersonalDetails()">
+                <span>Screen Name:</span>
+                <input id="screen_name" data-bind="value: screenName"/>
+                <span>Age Range:</span>
+                <select id="age_range_select" data-bind="value: ageRange">
+                    <option value="">Not Set</option>
+                    <option value="u18">under 18</option>
+                    <option value="12-21">18 - 21</option>
+                    <option value="22-28">22 - 28</option>
+                    <option value="29-35">29 - 35</option>
+                    <option value="36-42">36 - 42</option>
+                    <option value="43-49">43 - 49</option>
+                    <option value="o50">over 50</option>
+                </select><br/>
+                <h5>Musical Preferences</h5>
+                <div data-bind="template: { name: 'editing-template', foreach: musicalSettings }" ></div>
+               
+                <h5>Sexual Orientation</h5>
+                <div data-bind="template: { name: 'editing-template', foreach: sexualOrientation }" ></div>
 
-<section id="externalLogins">
-    @Html.Action("RemoveExternalLogins")
+            </div>
+            <div class="FavoriteSection">
+                <h5>Local</h5>
+                <span>Add Favorite Establishment</span>
+            </div>
+            <br/>
+            <input type="button" id="edit_details" value="Edit Details" data-bind="click: EditPersonalDetailsClick"/>
+            <input type="button" id="save_details" value="Save Details" data-bind="click: SavePersonalDetailsClick"/>
+        </form>
+    </div>
+    <h3>Establishment Preferences</h3>
+    <div>
+        <form>
+            <div id="establishment_details_div_readonly" data-bind="visible: !editEstablishmentDetails()">
+                <h5>Service and Staff</h5>
+                <div data-bind="template: { name: 'readonly-display-template', foreach: serviceAndStaff }" ></div>
+                
+                <h5>Venue Type</h5>
+                <div data-bind="template: { name: 'readonly-display-template', foreach: venueType }" ></div>
 
-    <h3>Add an external login</h3>
-    @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
-</section>
+                <h5>Activities</h5>
+                <div data-bind="template: { name: 'readonly-display-template', foreach: activities }" ></div>
+
+                <h5>Games</h5>
+                <div data-bind="template: { name: 'readonly-display-template', foreach: games }" ></div>
+
+                <h5>Food</h5>
+                <div data-bind="template: { name: 'readonly-display-template', foreach: food }" ></div>
+                
+                <h5>Music Performance</h5>
+                <div data-bind="template: { name: 'readonly-display-template', foreach: musicPerformance }" ></div>
+
+                <h5>Atmosphere</h5>
+                <div data-bind="template: { name: 'readonly-display-template', foreach: atmosphere }" ></div>
+            </div>
+            <div id="establishment_details_div" data-bind="visible: editEstablishmentDetails()">
+                <h5>Service and Staff</h5>
+                <div data-bind="template: { name: 'editing-template', foreach: serviceAndStaff }" ></div>
+                
+                <h5>Venue Type</h5>
+                <div data-bind="template: { name: 'editing-template', foreach: venueType }" ></div>
+
+                <h5>Activities</h5>
+                <div data-bind="template: { name: 'editing-template', foreach: activities }" ></div>
+
+                <h5>Games</h5>
+                <div data-bind="template: { name: 'editing-template', foreach: games }" ></div>
+
+                <h5>Food</h5>
+                <div data-bind="template: { name: 'editing-template', foreach: food }" ></div>
+                
+                <h5>Music Performance</h5>
+                <div data-bind="template: { name: 'editing-template', foreach: musicPerformance }" ></div>
+
+                <h5>Atmosphere</h5>
+                <div data-bind="template: { name: 'editing-template', foreach: atmosphere }" ></div>
+            </div>
+            <br/>
+            <input type="button" id="edit_establishment_details" value="Edit Details" data-bind="click: EditEstablishmentDetailsClick"/>
+            <input type="button" id="save_establishment_details" value="Save Details" data-bind="click: SaveEstablishmentDetailsClick"/>
+        </form>
+    </div>
+    <h3>Beverage Preferences</h3>
+    <div>
+        <form>
+            <div class="FavoriteSection">
+                <span>Favorite Beer</span>
+                <span>Add Favorite Beer</span>
+            </div>
+            <div class="FavoriteSection">
+                <span>Favorite Wine</span>
+                <span>Add Favorite Wine</span>
+            </div>
+            <div class="FavoriteSection">
+                <span>Favorite Cider</span>
+                <span>Add Favorite Cider</span>
+            </div>
+            <div class="FavoriteSection">
+                <span>Favorite Mixed Drink</span>
+                <span>Add Favorite Mixed Drink</span>
+            </div>
+        </form>
+    </div>
+    <h3>Access Preferences</h3>
+    <div>
+        @if (ViewBag.HasLocalPassword)
+        {
+            @Html.Partial("_ChangePasswordPartial")
+        }
+        else
+        { 
+            @Html.Partial("_SetPasswordPartial")
+        }
+
+        <section id="externalLogins">
+            @Html.Action("RemoveExternalLogins")
+
+            <h3>Add an external login</h3>
+            @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
+        </section>
+    </div>
+</div>
+
+ 
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/jquery-ui-1.8.20.js")
+    @Scripts.Render("~/Scripts/knockout-2.1.0.js")
+    @Scripts.Render("~/Scripts/guid.js")
+    @Scripts.Render("~/Scripts/Client/favoriteaspect.js")
+    @Scripts.Render("~/Scripts/Client/manageuser.js")
+    @Scripts.Render("~/Scripts/Client/manage.js")
 }

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace wwDrink.Tests.Integration.Pages
+﻿namespace wwDrink.Tests.Integration.Pages
 {
+    using System;
+    using System.Threading;
+
     using OpenQA.Selenium;
 
     using wwDrink.Tests.Integration.Entity;
@@ -16,17 +13,49 @@ namespace wwDrink.Tests.Integration.Pages
         public static HomePage NavigateTo(IWebDriver webDriver)
         {
             Driver = webDriver;
-            Driver.Navigate().GoToUrl("http://wwDrink.com/");
+            Driver.Navigate().GoToUrl("http://www.wwDrink.com/");
             var homePage = new HomePage();
             homePage.GetElements();
             return homePage;
         }
 
+        public bool UserLoggedOn { get; set; }
+
         public override void GetElements()
         {
             if (Driver != null)
             {
+                try
+                {
+                    if (Driver.PageSource.Contains("Log off"))
+                    {
+                        UserLoggedOn = true;
+                    }
+                }
+                catch (Exception)
+                {
+                    UserLoggedOn = false;
+                }
             }
+        }
+
+        public HomePage LogOff()
+        {
+            var logOffLink = Driver.FindElement(By.Id("logout_link"));
+            logOffLink.Click();
+            var homePage = new HomePage();
+            homePage.GetElements();
+            return homePage;
+        }
+
+        public LoginPage LogOn()
+        {
+            var logOnLink = Driver.FindElement(By.Id("loginLink"));
+            logOnLink.Click();
+            LoginPage.Driver = Driver;
+            var result = new LoginPage();
+            result.GetElements();
+            return result;
         }
 
         public void SetSearch(SearchFor searchFor)
@@ -42,6 +71,26 @@ namespace wwDrink.Tests.Integration.Pages
             searchButton.Click();
             SearchPage.Driver = Driver;
             var result = new SearchPage();
+            result.GetElements();
+            return result;
+        }
+
+        public RegisterPage ClickRegister()
+        {
+            var registerButton = Driver.FindElement(By.Id("registerLink"));
+            registerButton.Click();
+            Thread.Sleep(100);
+
+            RegisterPage.Driver = Driver;
+            var result = new RegisterPage();
+            result.GetElements();
+            return result;
+        }
+
+        public ManageUserPage ManageUser()
+        {
+            Driver.FindElement(By.Id("ManageUser")).Click();
+            var result = new ManageUserPage();
             result.GetElements();
             return result;
         }

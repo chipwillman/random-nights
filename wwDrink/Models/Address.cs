@@ -1,10 +1,15 @@
 ﻿namespace wwDrink.Models
 {
     using System;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Data.Spatial;
 
+    [Table("Address")]
     public class Address
     {
-        public Guid AddressPK { get; set; }
+        [Key]
+        public Guid AddressPk { get; set; }
         public string Description { get; set; }
         public string AddressType { get; set; }
         public string Suburb { get; set; }
@@ -15,7 +20,6 @@
         public string StreetType { get; set; }
         public string State { get; set; }
         public string Country { get; set; }
-        public decimal? GpsLatitude { get; set; }
-        public decimal? GpsLongitude { get; set; }
+        public DbGeography Location { get; set; }
     }
 }

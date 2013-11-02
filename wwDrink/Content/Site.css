@@ -319,7 +319,7 @@ ul#menu li {
     }
 
     .ui-state-active {
-        border-bottom: solid 1px #eee8aa !important;
+        border-bottom: solid 1px #EBE5A7 !important;
     }
 
     .tab-header {
@@ -340,7 +340,7 @@ ul#menu li {
     .tab-item {
         border-bottom: solid 1px #888;
         padding-bottom: 0 !important;
-        background-color: #eee8aa !important;
+        background-color: #EBE5A7 !important;
     }
 
     .tab-item a:hover {
@@ -349,7 +349,7 @@ ul#menu li {
 
     div#result_pages {
         margin-top: -4px;
-        background-color: #eee8aa;
+        background-color: #EBE5A7;
         background-image: none !important;
     }
 
@@ -387,12 +387,26 @@ ul#menu li {
     .establishment-details-header-image {
         float: left;
         width: 260px;
+        display: block;
     }
 
     div.establishment-details-header {
         float: left;
         width: 200px;
         text-align: center;  
+    }
+
+    div.establishment-image-thumbnails {
+        display: inline-block;
+        width: 260px;
+    }
+
+    div.establishment-image-thumbnail {
+        display: inline-block;
+    }
+
+    div.establishment-image-thumbnail a{
+        padding: 0;
     }
 
     div.establishment-details-header span.establishment-address {
@@ -422,11 +436,11 @@ ul#menu li {
 
     div.establishment-ticks div {
         display: inline-block;
-        background-color: #edcd3e;
+        background-color: #DCD60E;
         font-size: 9px;
         font-weight: bold;
         text-transform: capitalize;
-        border: solid 1px #333;
+        border: none; /*solid 1px #333;*/
         padding: 5px;
         margin: 3px;
         line-height: 20px;
@@ -545,6 +559,63 @@ ul#menu li {
         .featured p {
             font-size: 1.1em;
         }
+
+        /* Manage Account */
+
+        div.favorite-display {
+            padding: 0;
+            display: table-row;
+        }
+
+        div.favorite-display div {
+            display: table-cell;
+            vertical-align: middle;
+            padding: 2px;
+        }
+
+        div.favorite-display div div {
+            padding: 0;
+            display: block;
+        }
+
+        div.favorite-display input.favorite-name {
+            vertical-align: middle;
+            width: 120px;
+            margin-bottom: 0;
+            border: none;
+            font-size: 1.0em;
+            font-weight: bold;
+            padding: 0;
+        }
+
+        div.favorite-display input[type="checkbox"] {
+            margin-bottom: 0;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        div.favorite-display input[type="range"] {
+            -webkit-appearance: none;
+            width: 308px;
+            height: 20px;
+            -webkit-border-radius: 7px;
+            border-radius: 10px;
+            background-repeat: no-repeat;
+            background-position: 50%;
+        }
+
+        div.favorite-display input[type="range"]::-webkit-slider-thumb {  
+            -webkit-appearance: none;  
+            background-color: #444;  
+            width: 15px;  
+            height: 20px;  
+        }
+
+        div.favorite-slider, div.favorite-slider-readonly{
+            display: block;
+            width: 200px;
+            margin: 10px;
+        }              
 
 /* page titles */
 hgroup.title {

@@ -33,13 +33,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\wwDrink\bin\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="SimpleSecurity">
+      <HintPath>..\lib\SimpleSecurity.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -98,19 +106,116 @@
     <Reference Include="WebDriver">
       <HintPath>..\packages\Selenium.WebDriver.2.35.0\lib\net40\WebDriver.dll</HintPath>
     </Reference>
+    <Reference Include="WebMatrix.WebData, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Integration\Entity\EstablishmentDetails.cs" />
+    <Compile Include="Integration\Entity\LoginDetails.cs" />
+    <Compile Include="Integration\Entity\LoginResults.cs" />
+    <Compile Include="Integration\Entity\RegisterDetails.cs" />
     <Compile Include="Integration\Entity\SearchFor.cs" />
     <Compile Include="Integration\Entity\SearchResults.cs" />
+    <Compile Include="Integration\Feature\AdditionalPictures.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AdditionalPictures.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Integration\Feature\AddReviews.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AddReviews.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Integration\Feature\BeverageAndEstablishmentLinks.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BeverageAndEstablishmentLinks.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Integration\Feature\BeverageDatabase.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BeverageDatabase.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Integration\Feature\DrinkSpecials.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DrinkSpecials.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Integration\Feature\EditPersonalPreferences.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EditPersonalPreferences.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Integration\Feature\EstablishmentManagement.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EstablishmentManagement.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Integration\Feature\FacebookPosting.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FacebookPosting.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Integration\Feature\GoogleAdSense.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GoogleAdSense.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Integration\Feature\GoogleMap.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GoogleMap.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Integration\Feature\LogOn.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LogOn.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Integration\Feature\ReviewStaff.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReviewStaff.feature</DependentUpon>
+    </Compile>
     <Compile Include="Integration\Feature\SearchForEstablishment.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SearchForEstablishment.feature</DependentUpon>
     </Compile>
+    <Compile Include="Integration\Feature\SearchUsingPreferences.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SearchUsingPreferences.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Integration\Feature\TripAdvisorIntegration.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TripAdvisorIntegration.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Integration\Feature\UserAddedContent.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UserAddedContent.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Integration\Feature\UserRatings.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UserRatings.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Integration\Feature\YelpIntegration.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>YelpIntegration.feature</DependentUpon>
+    </Compile>
     <Compile Include="Integration\Pages\BasePage.cs" />
     <Compile Include="Integration\Pages\HomePage.cs" />
+    <Compile Include="Integration\Pages\LoginPage.cs" />
+    <Compile Include="Integration\Pages\ManageUserPage.cs" />
+    <Compile Include="Integration\Pages\RegisterPage.cs" />
     <Compile Include="Integration\Pages\SearchPage.cs" />
+    <Compile Include="Integration\StepDefinitions\AdditionalPicturesSteps.cs" />
+    <Compile Include="Integration\StepDefinitions\DataSteps.cs" />
+    <Compile Include="Integration\StepDefinitions\EditPersonalPreferencesSteps.cs" />
     <Compile Include="Integration\StepDefinitions\SearchForEstablishment.cs" />
+    <Compile Include="Integration\Support\BrowserDriver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />
   </ItemGroup>
@@ -122,9 +227,77 @@
     <Content Include="Jasmine\spec\SearchSpec.js" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Integration\Feature\AdditionalPictures.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>AdditionalPictures.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\AddReviews.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>AddReviews.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\BeverageAndEstablishmentLinks.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>BeverageAndEstablishmentLinks.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\BeverageDatabase.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>BeverageDatabase.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\DrinkSpecials.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>DrinkSpecials.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\EditPersonalPreferences.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>EditPersonalPreferences.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\EstablishmentManagement.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>EstablishmentManagement.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\FacebookPosting.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>FacebookPosting.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\GoogleAdSense.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>GoogleAdSense.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\GoogleMap.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>GoogleMap.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\LogOn.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>LogOn.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\ReviewStaff.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ReviewStaff.feature.cs</LastGenOutput>
+    </None>
     <None Include="Integration\Feature\SearchForEstablishment.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>SearchForEstablishment.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\SearchUsingPreferences.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>SearchUsingPreferences.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\TripAdvisorIntegration.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>TripAdvisorIntegration.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\UserAddedContent.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>UserAddedContent.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\UserRatings.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>UserRatings.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\YelpIntegration.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>YelpIntegration.feature.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
