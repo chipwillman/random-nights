@@ -12,7 +12,8 @@
     using WebMatrix.WebData;
 
     using wwDrink.Extensions;
-    using wwDrink.Models;
+    using wwDrink.data;
+    using wwDrink.data.Models;
 
     public class UserController : ApiController
     {

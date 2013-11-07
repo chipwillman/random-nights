@@ -94,5 +94,14 @@
             result.GetElements();
             return result;
         }
+
+        public BeerPage ClickDrink(string type)
+        {
+            Driver.FindElement(By.Id(type + "Button")).Click();
+            BeerPage.Driver = Driver;
+            var result = new BeerPage();
+            result.GetElements();
+            return result;
+        }
     }
 }

@@ -13,7 +13,8 @@ namespace wwDrink.Controllers
     using WebMatrix.WebData;
 
     using wwDrink.Filters;
-    using wwDrink.Models;
+    using wwDrink.data;
+    using wwDrink.data.Models;
 
     [Authorize]
     [InitializeSimpleMembership]

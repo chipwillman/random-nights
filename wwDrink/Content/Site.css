@@ -824,6 +824,22 @@ aside {
     margin: 5px 0 0 10px;
 }
 
+/* Beer */
+.beverage-row {
+    display: table-row;
+}
+
+.beverage-cell {
+    display: table-cell;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.beverage-cell h5 {
+    -webkit-margin-before: 10px;
+    -webkit-margin-after: 10px;
+}
+
 /* forms */
 fieldset {
     border: none;

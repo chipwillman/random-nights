@@ -1,4 +1,4 @@
-﻿namespace wwDrink.Models
+﻿namespace wwDrink.data.Models
 {
     using System;
     using System.Collections.Generic;
@@ -28,7 +28,6 @@
     {
         [Key]
         public Guid EstablishmentPk { get; set; }
-        [Display(Name = "Establishment Name")]
         public string Name { get; set; }
         public string Description { get; set; }
         public Guid AddressFk { get; set; }

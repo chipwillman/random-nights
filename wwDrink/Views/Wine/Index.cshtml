@@ -1,0 +1,88 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "Wine";
+}
+
+<h2>Wine</h2>
+
+<div>
+    <form>
+        Search: <input id="search_query" data-bind="value: Query"/><input type="submit" id="search_button" data-bind="click: SearchDrink"/>
+    </form>
+</div>
+
+<div>
+    <input value="First" type="submit" id="FirstButton" data-bind="click: FirstClick, visible: FirstButtonVisible"/>
+    <input value="Prev" type="submit" id="PrevButton" data-bind="click: PrevClick, visible: PrevButtonVisible"/>
+    <input value="Next" type="submit" id="NextButton" data-bind="click: NextClick, visible: NextButtonVisible"/>
+    <input value="Last" type="submit" id="LastButton" data-bind="click: LastClick, visible: LastButtonVisible"/>
+</div>
+
+<div data-bind="foreach: DrinkResults">
+    <div class="beverage-row">
+        <div class="beverage-cell" >
+            <h5><a href="#" data-bind="click: ShowDetailsClick, text: Name"></a></h5>
+        </div>
+        <div class="beverage-cell">
+            <div class="beverage-row">
+                <div class="beverage-cell">
+                    Brewery: 
+                </div>
+                <div class="beverage-cell">
+                    <span data-bind="text: Brewery" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="beverage-row" data-bind="visible: ShowDetails">
+        <div class="beverage-cell">
+            Beverage <br />Image
+        </div>
+        <div class="beverage-cell">
+            <div class="beverage-row">
+                <div class="beverage-cell">
+                    Url: 
+                </div>
+                <div class="beverage-cell">
+                    <a target="0" data-bind="attr: { href: Url, target: Brewery }, text: Url"></a>
+                </div>
+            </div>
+            <div class="beverage-row">
+                <div class="beverage-cell">
+                    Email: 
+                </div>
+                <div class="beverage-cell">
+                    <span data-bind="text: Email" />
+                </div>
+            </div>
+            <div class="beverage-row">
+                <div class="beverage-cell">
+                    Phone: 
+                </div>
+                <div class="beverage-cell">
+                    <span data-bind="text: Phone" />
+                </div>
+            </div>
+            <div class="beverage-row">
+                <div class="beverage-cell">
+                    Address: 
+                </div>
+                <div class="beverage-cell">
+                    <span data-bind="text: Address" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/jquery-ui-1.8.20.js")
+    @Scripts.Render("~/Scripts/stepcarousel.js")
+    @Scripts.Render("~/Scripts/knockout-2.1.0.js")
+    @Scripts.Render("~/Scripts/guid.js")
+    @Scripts.Render("http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false")
+    @Scripts.Render("~/Scripts/Client/Drink.js")
+    @Scripts.Render("~/Scripts/Client/drinklisting.js")
+    @Scripts.Render("~/Scripts/Client/Wine.js")
+}

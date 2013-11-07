@@ -39,7 +39,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\SimpleSecurity\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -165,26 +165,25 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AspectController.cs" />
+    <Compile Include="Controllers\BeerController.cs" />
+    <Compile Include="Controllers\DrinksController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LiqourController.cs" />
     <Compile Include="Controllers\PreferencesController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
+    <Compile Include="Controllers\WineController.cs" />
     <Compile Include="Extensions\JsonExtension.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountModels.cs" />
-    <Compile Include="Models\Address.cs" />
     <Compile Include="Models\ClientAspect.cs" />
-    <Compile Include="Models\Establishment.cs" />
+    <Compile Include="Models\DrinkSearchModel.cs" />
     <Compile Include="Models\Favorite.cs" />
     <Compile Include="Models\Pagination.cs" />
-    <Compile Include="Models\Preference.cs" />
-    <Compile Include="Models\Profile.cs" />
-    <Compile Include="Models\RandomNightsContextInitializer.cs" />
-    <Compile Include="Models\RandomNightsContext.cs" />
     <Compile Include="Models\SearchModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -254,12 +253,17 @@
     <Content Include="Images\missing_establishment_image.png" />
     <Content Include="Images\Pint.jpg" />
     <Content Include="Images\select_list_arrow.png" />
+    <Content Include="Scripts\Client\Beer.js" />
+    <Content Include="Scripts\Client\Drink.js" />
+    <Content Include="Scripts\Client\drinklisting.js" />
     <Content Include="Scripts\Client\Establishment.js" />
     <Content Include="Scripts\Client\favoriteaspect.js" />
     <Content Include="Scripts\Client\home.js" />
+    <Content Include="Scripts\Client\Liqour.js" />
     <Content Include="Scripts\Client\manage.js" />
     <Content Include="Scripts\Client\manageuser.js" />
     <Content Include="Scripts\Client\Search.js" />
+    <Content Include="Scripts\Client\Wine.js" />
     <Content Include="Scripts\guid.js" />
     <Content Include="Scripts\jquery-1.7.1.js" />
     <Content Include="Scripts\jquery-1.7.1.min.js" />
@@ -321,12 +325,23 @@
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Home\Search.cshtml" />
     <Content Include="Views\Account\_ManagePreferences.cshtml" />
+    <Content Include="Views\Beer\Index.cshtml" />
+    <Content Include="Views\Wine\Index.cshtml" />
+    <Content Include="Views\Liqour\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\wwDrink.data\wwDrink.data.csproj">
+      <Project>{0384d164-a874-46c7-93f2-b11337d3ea87}</Project>
+      <Name>wwDrink.data</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

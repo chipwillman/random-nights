@@ -1,6 +1,8 @@
-﻿namespace wwDrink.Models
+﻿namespace wwDrink.data
 {
     using System.Data.Entity;
+
+    using wwDrink.data.Models;
 
     public class RandomNightsContext : DbContext
     {
@@ -18,5 +20,9 @@
         public DbSet<Profile> Profiles { get; set; }
 
         public DbSet<UserPreference> Preferences { get; set; }
+
+        public DbSet<Crafter> Crafters { get; set; }
+
+        public DbSet<Drink> Drinks { get; set; }
     }
 }

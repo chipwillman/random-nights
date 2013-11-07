@@ -1,4 +1,4 @@
-﻿namespace wwDrink.Models
+﻿namespace wwDrink.data.Models
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;

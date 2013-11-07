@@ -109,6 +109,7 @@
     <Reference Include="WebMatrix.WebData, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Integration\Entity\DrinkResults.cs" />
     <Compile Include="Integration\Entity\EstablishmentDetails.cs" />
     <Compile Include="Integration\Entity\LoginDetails.cs" />
     <Compile Include="Integration\Entity\LoginResults.cs" />
@@ -124,6 +125,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>AddReviews.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Integration\Feature\BeerAdvocate.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BeerAdvocate.feature</DependentUpon>
     </Compile>
     <Compile Include="Integration\Feature\BeverageAndEstablishmentLinks.feature.cs">
       <AutoGen>True</AutoGen>
@@ -206,12 +212,14 @@
       <DependentUpon>YelpIntegration.feature</DependentUpon>
     </Compile>
     <Compile Include="Integration\Pages\BasePage.cs" />
+    <Compile Include="Integration\Pages\BeerPage.cs" />
     <Compile Include="Integration\Pages\HomePage.cs" />
     <Compile Include="Integration\Pages\LoginPage.cs" />
     <Compile Include="Integration\Pages\ManageUserPage.cs" />
     <Compile Include="Integration\Pages\RegisterPage.cs" />
     <Compile Include="Integration\Pages\SearchPage.cs" />
     <Compile Include="Integration\StepDefinitions\AdditionalPicturesSteps.cs" />
+    <Compile Include="Integration\StepDefinitions\BeverageDatabaseSteps.cs" />
     <Compile Include="Integration\StepDefinitions\DataSteps.cs" />
     <Compile Include="Integration\StepDefinitions\EditPersonalPreferencesSteps.cs" />
     <Compile Include="Integration\StepDefinitions\SearchForEstablishment.cs" />
@@ -234,6 +242,10 @@
     <None Include="Integration\Feature\AddReviews.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>AddReviews.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Integration\Feature\BeerAdvocate.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>BeerAdvocate.feature.cs</LastGenOutput>
     </None>
     <None Include="Integration\Feature\BeverageAndEstablishmentLinks.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

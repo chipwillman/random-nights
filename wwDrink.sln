@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wwDrink.Tests", "wwDrink.Te
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "wwDrink.Database", "wwDrink.Database\wwDrink.Database.sqlproj", "{42D36A0C-0064-4A68-9681-6951482E7D0A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wwDrink.Scrapers", "wwDrink.Scrapers\wwDrink.Scrapers.csproj", "{692E795C-BD1F-4466-A209-54525C1403A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wwDrink.data", "wwDrink.data\wwDrink.data.csproj", "{0384D164-A874-46C7-93F2-B11337D3EA87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{42D36A0C-0064-4A68-9681-6951482E7D0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42D36A0C-0064-4A68-9681-6951482E7D0A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{42D36A0C-0064-4A68-9681-6951482E7D0A}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{692E795C-BD1F-4466-A209-54525C1403A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{692E795C-BD1F-4466-A209-54525C1403A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{692E795C-BD1F-4466-A209-54525C1403A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{692E795C-BD1F-4466-A209-54525C1403A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0384D164-A874-46C7-93F2-B11337D3EA87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0384D164-A874-46C7-93F2-B11337D3EA87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0384D164-A874-46C7-93F2-B11337D3EA87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0384D164-A874-46C7-93F2-B11337D3EA87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

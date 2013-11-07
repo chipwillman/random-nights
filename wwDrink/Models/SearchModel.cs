@@ -2,6 +2,8 @@
 {
     using System.ComponentModel.DataAnnotations;
 
+    using wwDrink.data.Models;
+
     public class SearchModel
     {
         public Pagination Pagination { get; set; }

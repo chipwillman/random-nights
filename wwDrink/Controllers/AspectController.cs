@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web;
-using System.Web.Http;
-using wwDrink.Models;
-
-namespace wwDrink.Controllers
+﻿namespace wwDrink.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Data.Entity;
+    using System.Data.Entity.Infrastructure;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http;
+    using System.Web.Http;
+
+    using wwDrink.data;
+    using wwDrink.data.Models;
+
     public class AspectController : ApiController
     {
         private RandomNightsContext db = new RandomNightsContext();

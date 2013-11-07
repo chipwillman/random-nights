@@ -6,9 +6,11 @@
     using System.Web.Http;
 
     using wwDrink.Models;
+    using wwDrink.data.Models;
 
     public class SearchController : ApiController
     {
+
         [HttpGet]
         public SearchModel Index()
         {

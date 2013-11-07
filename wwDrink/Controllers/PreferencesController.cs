@@ -6,9 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web;
 using System.Web.Http;
-using wwDrink.Models;
 
 namespace wwDrink.Controllers
 {
@@ -17,6 +15,8 @@ namespace wwDrink.Controllers
     using WebMatrix.WebData;
 
     using wwDrink.Filters;
+    using wwDrink.data;
+    using wwDrink.data.Models;
 
     [Authorize]
     [InitializeSimpleMembership]
