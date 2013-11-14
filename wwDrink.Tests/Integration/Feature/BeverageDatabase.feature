@@ -23,13 +23,11 @@ Scenario: Search Wine Database
 	When I search for Chianti
 	Then I should be presented with search results Chianti 
 
-@wip
 Scenario: View Liqour Database
 	Given I have visited wwDrink
 	When I press the Liquor Menu
 	Then I should be presented with a search for Liqour page
 
-@wip
 Scenario: Search Liqour Database
 	Given I am at the Liqour Page
 	When I search for Jack Daniels

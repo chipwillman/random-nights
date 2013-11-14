@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
 
     using OpenQA.Selenium;
 
@@ -22,21 +23,13 @@
             var resultsDivs = Driver.FindElements(By.ClassName("establishment"));
             foreach (var div in resultsDivs)
             {
-                if (div.Text.StartsWith(establishment))
+                if (div.Text.Contains(establishment))
                 {
                     div.Click();
                     break;
                 }
             }
-            var tabPageLinks = Driver.FindElements(By.CssSelector(".tab-header a"));
-            foreach (var link in tabPageLinks)
-            {
-                if (link.Text == establishment)
-                {
-                    link.Click();
-                    break;
-                }
-            }
+            Thread.Sleep(100);
             return this.GetEstablishmentDetails();
         }
 
@@ -60,8 +53,15 @@
             {
                 imageUrls.Add(thumbnail.GetAttribute("src"));
             }
-
             result.Photos = imageUrls.ToArray();
+
+            var reviews = Driver.FindElements(By.CssSelector("div.establishment-reviews span"));
+            var reviewList = new List<string>();
+            foreach (var review in reviews)
+            {
+                reviewList.Add(review.Text);
+            }
+            result.Reviews = reviewList.ToArray();
             return result;
         }
 
@@ -71,6 +71,17 @@
         {
             var thumbnails = Driver.FindElements(By.CssSelector(".establishment-image-thumbnails img"));
             thumbnails[1].Click();
+            return this.GetEstablishmentDetails();
+        }
+
+        public EstablishmentDetails EnterReview(string reviewText)
+        {
+            Driver.FindElement(By.Id("ShowAddReviewButton")).Click();
+
+            Driver.FindElement(By.Id("ReviewText")).SendKeys(reviewText);
+
+            Driver.FindElement(By.Id("AddReviewButton")).Click();
+            Thread.Sleep(100);
             return this.GetEstablishmentDetails();
         }
     }

@@ -19,7 +19,7 @@ namespace wwDrink.Controllers
 
         public ActionResult Search(SearchModel model)
         {
-            model.SearchText = "Hardimans";
+            model.SearchText = model.SearchText;
 
             return this.View(new SearchModel());
         }

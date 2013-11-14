@@ -15,9 +15,14 @@
         [ForeignKey("CrafterFk")]
         public Crafter Crafter { get; set; }
 
+        [MaxLength(10)]
         public string Type { get; set; }
 
+        [MaxLength(256)]
         public string Name { get; set; }
+
+        [MaxLength(256)]
+        public string MainImageUrl { get; set; }
 
         public bool Vegan { get; set; }
     }

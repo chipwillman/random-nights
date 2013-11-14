@@ -3,3 +3,4 @@ wine_model.drinkType("wine");
 
 ko.applyBindings(wine_model);
 
+$("#loading_div").show();

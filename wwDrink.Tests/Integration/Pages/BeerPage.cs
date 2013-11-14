@@ -1,6 +1,7 @@
 ﻿namespace wwDrink.Tests.Integration.Pages
 {
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Linq;
     using System.Threading;
 
@@ -21,7 +22,14 @@
             {
                 drinks.Add(new Drink { Name = link.Text });
             }
-            DrinkResults = new DrinkResults { Drinks = drinks.ToArray() };
+
+            var reviews = new List<Review>();
+            var reviewDivs = Driver.FindElements(By.CssSelector("div.beverage-review-body span"));
+            foreach (var review in reviewDivs)
+            {
+                reviews.Add(new Review { ReviewText = review.Text });
+            }
+            DrinkResults = new DrinkResults { Drinks = drinks.ToArray(), Reviews = reviews.ToArray() };
             DrinkResults.SearchButtonVisible = Driver.FindElements(By.Id("search_button")).Any();
             DrinkResults.Title = Driver.FindElement(By.CssSelector("h2")).Text;
         }
@@ -35,6 +43,27 @@
             searchBox.SendKeys("\n");
 
             Driver.FindElement(By.Id("search_button")).Click();
+
+            Thread.Sleep(100);
+            var result = new BeerPage();
+            result.GetElements();
+            return result;
+        }
+
+        public BeerPage EnterDrinkReview(string drink, string reviewText)
+        {
+            this.SearchForDrink(drink);
+
+            Driver.FindElement(By.Id("search_button")).Click();
+
+            Thread.Sleep(100);
+            Driver.FindElement(By.LinkText(drink)).Click();
+
+            Driver.FindElement(By.Id("ShowAddReviewButton")).Click();
+
+            Driver.FindElement(By.Id("ReviewText")).SendKeys(reviewText);
+
+            Driver.FindElement(By.Id("AddReviewButton")).Click();
 
             Thread.Sleep(100);
             var result = new BeerPage();

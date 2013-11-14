@@ -14192,3 +14192,6 @@ INSERT INTO Drinks ([DrinkPk],[CrafterFk],[Name],[Vegan],[Type]) VALUES ('6D7EF3
 INSERT INTO Drinks ([DrinkPk],[CrafterFk],[Name],[Vegan],[Type]) VALUES ('161D04D4-E9E5-4EBB-B49D-4CEF97A23A39', 'DBE7A419-A290-4702-8928-546032D14271', 'Zorvino Fruit Wines', 0, 'wine') 
 INSERT INTO Drinks ([DrinkPk],[CrafterFk],[Name],[Vegan],[Type]) VALUES ('C6C5F07D-8F86-4EF9-AE15-DFED837A1D0C', 'DBE7A419-A290-4702-8928-546032D14271', 'Zorvino Reds', 1, 'wine') 
 INSERT INTO Drinks ([DrinkPk],[CrafterFk],[Name],[Vegan],[Type]) VALUES ('8B43916E-2644-4875-A0FB-798696DBDF8D', 'DBE7A419-A290-4702-8928-546032D14271', 'Zorvino Whites', 1, 'wine') 
+
+UPDATE Drinks SET MainImageUrl = 'http://www.tooheysnew.com.au/images/logo-Tooheys-old-261x351.png' WHERE DrinkPk = 'D0982F9F-79DC-411F-B502-86323F521B80'
+UPDATE Drinks SET MainImageUrl = 'http://www.tooheysnew.com.au/images/logo-Tooheys-257x354.png' WHERE DrinkPk = 'E12C0B56-4353-43E3-A03C-D273F27F1AE2'

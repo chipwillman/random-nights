@@ -37,7 +37,6 @@ nav, section {
 }
 
 header {
-    background-color:#EDCD3E;
     height:25px;
     margin: 8px auto;
 }
@@ -116,7 +115,7 @@ h5, h6 {
 }
 
     .main-content {
-        width: 760px;
+        max-width: 760px;
         /*background: url("../Images/accent.png") no-repeat;
         padding-left: 10px;
         padding-top: 30px;*/
@@ -177,19 +176,20 @@ footer {
         text-shadow: 1px 1px 2px #AAA;
         font-size: 1.1em;
         font-weight: 600;
-        background-color: #EDCD3E;
+        background:#efefef;
+        color: #333;
         margin-left: 5px;
         margin-right: 3px;
         padding: 4px 8px;
-        color: #FDFDFD;
         text-decoration: none;
+        -webkit-border-radius: 6px;
     }
 
     #login a.username {
         background: none;
         margin: 0;
         padding: 0;
-        text-decoration: underline;
+        text-decoration: none;
     }
 
     #login ul {
@@ -207,6 +207,23 @@ footer {
             text-decoration: none;
         }
 
+    div.manage-user-menu {
+        display: inline;
+        text-decoration: none;
+        text-shadow: 1px 1px 2px #AAA;
+        font-size: 1.1em;
+        font-weight: 600;
+        background:#efefef;
+        color: #333;
+        margin-left: 5px;
+        margin-right: 3px;
+        padding: 4px 8px;
+        text-decoration: none;
+        -webkit-border-radius: 6px;
+    }
+
+    a#ManageUser {
+   }
 
 /* menu
 ----------------------------------------------------------*/
@@ -226,14 +243,18 @@ ul#menu li {
 }
 
         ul#menu li a {
-            background:#EDCD3E;
+            background:#efefef;
             text-shadow: 1px 1px 2px #AAA;
             font-size: 1.1em;
             margin-left: 5px;
             margin-right: 3px;
-            padding: 4px 8px;
-            color: #FDFDFD;
+            padding-top: 4px;
+            padding-left: 10px;
+            padding-right: 12px;
+            padding-bottom: 5px;
+            color: #333;
             text-decoration: none;
+            -webkit-border-radius: 6px;
         }
 
         ul#menu li a:hover {
@@ -257,7 +278,7 @@ ul#menu li {
         background-image: -webkit-linear-gradient(left, #7ac0da 0%, #a4d4e6 100%);
         background-image: linear-gradient(left, #7ac0da 0%, #a4d4e6 100%);*/
         color: #3e5667;
-        padding: 20px 40px 30px 40px;
+        /* padding: 20px 40px 30px 40px; */
         height: 150px;
     }
 
@@ -267,7 +288,7 @@ ul#menu li {
     }
 
     .featured .main-search {
-        margin-top: 45px;
+        margin-top: 25px;
         background-color: #FFF;
         float: right;
     }
@@ -309,9 +330,8 @@ ul#menu li {
         background-color: #000;
     }
 
-    #search_results {
-        /*margin-top: -65px;*/
-        /*max-height: 400px;*/
+    div#search_results {
+        border-top: 2px solid #ccc;
     }
 
     #search_results div label {
@@ -319,7 +339,7 @@ ul#menu li {
     }
 
     .ui-state-active {
-        border-bottom: solid 1px #EBE5A7 !important;
+        border-bottom: solid 1px #eeeacd !important;
     }
 
     .tab-header {
@@ -334,7 +354,8 @@ ul#menu li {
     }
 
     img.close-button:hover {
-        background-image: url('../Images/close_button_active.png')
+        background-image: url('../Images/close_button_active.png');
+        -webkit-border-top-right-radius: 16px;
     }
 
     .tab-item {
@@ -343,39 +364,65 @@ ul#menu li {
         background-color: #EBE5A7 !important;
     }
 
-    .tab-item a:hover {
-        background-color: #edcd3e;
+    li.tab-item {
+        -webkit-border-top-left-radius: 16px;
+        -webkit-border-top-right-radius: 16px;
     }
+
+    .tab-item a:hover {
+        background-color: #EBE5A7;
+        -webkit-border-top-left-radius: 16px;
+        -webkit-border-top-right-radius: 16px;
+    }
+
+    div.tab-close-button {
+        display: inline-block;
+        height: 30px;
+    }
+
+    div.tab-background {
+        height: 34px;
+        -webkit-border-top-left-radius: 16px;
+        -webkit-border-top-right-radius: 16px;
+    }
+
+    div.ui-tabs-panel {
+        border: 1px solid #333;
+    }
+
+    .tab-item.ui-tabs-selected div.tab-background {
+        background-color: #eeeacd;
+    } 
+
+    .tab-item.ui-tabs-selected div.tab-background :hover {
+        background-color: #eeeacd;
+        -webkit-border-top-left-radius: 16px;
+        -webkit-border-top-right-radius: 16px;
+    }
+    
+    /* ui-state-active */
 
     div#result_pages {
         margin-top: -4px;
-        background-color: #EBE5A7;
+        background-color: #eeeacd;
         background-image: none !important;
-    }
-
-    div#result_pages {
-            background-image: none !important;
-    }
-
-    div#result_tab {
-        width: 500px;
+        font-family: Helvetica;
     }
 
     div#results_tabs ul{
-        height: 40px;
+        /*height: 40px;*/
         overflow: auto;
     }
 
     div.establishment-listing {
         background-color: #fdfdfd;
         display: block;
-        /*height: 500px;*/
     }
 
     div#results_tabs div ul {
         background-color: #fdfdfd;
         list-style: none;
-        height: 280px;
+        /*height: 280px;*/
         padding: 5px;
         overflow: hidden;
     }
@@ -394,6 +441,11 @@ ul#menu li {
         float: left;
         width: 200px;
         text-align: center;  
+    }
+
+    img.establishment-details-current-image {
+        padding-left: 6px;
+        padding-top: 6px;
     }
 
     div.establishment-image-thumbnails {
@@ -436,11 +488,12 @@ ul#menu li {
 
     div.establishment-ticks div {
         display: inline-block;
-        background-color: #DCD60E;
-        font-size: 9px;
+        background-color: #EDCD3E;
+
+        font-size: 10px;
         font-weight: bold;
         text-transform: capitalize;
-        border: none; /*solid 1px #333;*/
+        border: 1px solid #aaa;
         padding: 5px;
         margin: 3px;
         line-height: 20px;
@@ -451,6 +504,69 @@ ul#menu li {
         min-width: 100px;
     }
 
+    div.review-author {
+        text-transform: capitalize;
+        font-weight: bold;
+    }
+
+    div.beverage-rating {
+        float: right;
+        margin-top: -32px;
+    }
+
+    div.review-date {
+        font-style: italic;
+        font-size: 0.7em;
+    }
+
+    div.review-text {
+        width: 60%;
+    }
+
+    div.AddReview {
+        background-color: #fefaed;
+        min-height: 42px;
+    }
+
+    div.ReviewPanel {
+        display: block;
+        padding: 5px;
+        margin: 8px;
+    }
+
+    div.ReviewPanel form {
+        display: block;
+    }
+
+    div.review-body {
+        display: table-row;
+    }
+
+    div.review-text {
+        display: table-cell;
+        width: 80%;
+        font-size: 11px;
+    }
+
+    div.aspect-rating {
+        display: table-cell;
+        padding: 10px;
+        min-width: 100px;
+    }
+
+    div.aspect-rating-rating {
+        display: table-cell;
+        min-width: 60px;
+    }
+
+    div.aspect-rating-name {
+        text-transform: capitalize;
+        font-size: 11px;
+        padding-left: 10px;
+        padding-right: 10px;
+        min-width: 50px;
+        display: table-cell;
+    }
     .tick-link a{
         width: 200px;
     }
@@ -459,12 +575,13 @@ ul#menu li {
         width:196px;
         height: 153px;
         overflow: hidden;
-        border: solid 2px #444;
     }
 
     div#establishments {
         height: 240px;
-        width: 960px;
+        min-width: 200px;
+        max-width: 960px;
+        width: 98%;
         overflow: hidden;
         /*overflow-y: hidden;
         overflow-x: scroll;*/
@@ -480,7 +597,7 @@ ul#menu li {
     }
 
     div.establishment-open {
-        width: 200px;
+        width: 174px;
         min-height: 26px;
         background-color: #338833;
         margin-bottom: 10px;
@@ -489,6 +606,7 @@ ul#menu li {
     .establishment-open {
         text-align:center;
         padding-top: 7px;
+        margin-left: 8px;
         font-weight: 600;
         text-shadow: 1px 1px 1px #666;
         font-family: Futura, sans-serif;
@@ -504,7 +622,8 @@ ul#menu li {
 
     div.establishment-closed {
         padding-top: 8px;
-        width: 200px;
+        margin-left: 8px;
+        width: 174px;
         text-align:center;
         text-shadow: 1px 1px 1px #666;
         font-weight: 600;
@@ -518,6 +637,20 @@ ul#menu li {
     .establishment h4 {
         margin-top: 3px;
         white-space: nowrap;
+    }
+
+    div.establishment-reviews {
+        margin-top: 10px;
+        background-color: #fefaed;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    div.establishment-review {
+        padding-bottom: 5px;
+        margin-bottom: 25px;
+        border-bottom: 1px solid #cccccc;
+        display: inline-block;
     }
 
        .featured hgroup.title h1 {
@@ -700,30 +833,44 @@ ol.round {
         }
 
 
-.stepcarousel{
-position: relative; /*leave this value alone*/
-/* border: 20px solid navy; */
-overflow: scroll; /*leave this value alone*/
-height: 250px; /*Height should enough to fit largest content's height*/
+.stepcarousel {
+    position: relative; /*leave this value alone*/
+    overflow: scroll; /*leave this value alone*/
+    width: 98%;
+    height: 250px; /*Height should enough to fit largest content's height*/
 }
 
-.stepcarousel .belt{
-position: absolute; /*leave this value alone*/
-left: 0;
-top: 0;
-    width: 3000px;
-    height: 221px;
-}
+    .stepcarousel .belt {
+        position: absolute; /*leave this value alone*/
+        left: -300px;
+        top: 0;
+        width: 3000px;
+        height: 221px;
+    }
 
-.stepcarousel .panel{
-float: left; /*leave this value alone*/
-overflow: hidden; /*clip content that go outside dimensions of holding panel DIV*/
-margin: 10px; /*margin around each panel*/
-width: 200px; /*Width of each panel holding each content. If removed, widths should be individually defined on each content DIV then. */
-}
+    .stepcarousel .panel {
+        float: left; /*leave this value alone*/
+        overflow: hidden; /*clip content that go outside dimensions of holding panel DIV*/
+        margin: 5px; /*margin around each panel*/
+        width: 200px; /*Width of each panel holding each content. If removed, widths should be individually defined on each content DIV then. */
+    }
 
 div.nav-buttons {
     margin-top: -25px;
+}
+
+#ShowAddReviewButton,
+#AddReviewButton,
+div.nav-buttons input {
+    display: inline-block;
+    color: #FDFDFD;
+    background-color: #EDCD3E;
+    text-shadow: 1px 1px 2px #AAA;
+    border: 1px solid #aaaaaa;
+}
+
+div.add-review-collapsed {
+    padding-left: 10px;
 }
 
 div.nav-buttons-forward {
@@ -732,6 +879,7 @@ div.nav-buttons-forward {
 }
 
 div.nav-buttons-back {
+    margin-left: 10px;
 }
 /* content */
 article {
@@ -807,7 +955,8 @@ aside {
 }
 
 #logoutForm {
-    display: inline;
+    display: inline-block;
+    margin-top: 4px;
 }
 
 /* contact */
@@ -825,6 +974,96 @@ aside {
 }
 
 /* Beer */
+div.beverage-navigation {
+    padding-top: 35px;
+    max-width: 500px;
+}
+
+div.beverage-navigation-bottom {
+    padding-top: 55px;
+    max-width: 500px;
+}
+
+div.beverage-static-rating {
+    float: right;
+    margin-top: -26px;
+    margin-right: 15px;
+    padding-top: 4px;
+    padding-bottom: 3px;
+    padding-right: 8px;
+    padding-left: 8px;
+    background-color: #fefefe;
+    -webkit-border-top-left-radius: 12px;
+    -webkit-border-top-right-radius: 12px;
+    -webkit-border-bottom-left-radius: 12px;
+    -webkit-border-bottom-right-radius: 12px;
+}
+
+div.beverage-detail-rating {
+    padding-top: 5px;
+}
+
+div.beverage-heading-selected h3,
+div.beverage-heading h3 {
+    font-size: 18px;
+    margin-top: 0;
+}
+
+div.beverage-heading-selected,
+div.beverage-heading {
+    margin-top: 10px;
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-bottom: 10px;
+    background-color: #edcd3e;
+    text-shadow: 1px 1px 2px #AAA;
+    -webkit-border-top-left-radius: 32px;
+    -webkit-border-top-right-radius: 32px;
+}
+
+div.beverage-heading-selected {
+    width: 40%;
+}
+div.beverage-heading {
+    width: 100%;
+}
+
+div.beverage-heading {
+    -webkit-border-bottom-left-radius: 32px;
+    -webkit-border-bottom-right-radius: 32px;
+}
+div.beverage-heading-selected {
+    background-color: #edcd3e;
+    text-shadow: 1px 1px 2px #AAA;
+    -webkit-border-top-left-radius: 32px;
+    -webkit-border-top-right-radius: 32px;
+}
+
+.beverage-heading a,
+.beverage-heading-selected a {
+    color: #fefefe;
+    text-decoration: none;
+}
+
+.beverage-heading a:hover,
+.beverage-heading-selected a:hover {
+    text-shadow: 2px 2px 2px #AAA;
+    background-color: transparent;
+    text-decoration: none;
+}
+
+.image-cell img {
+    margin-top: 5px;
+    margin-left: 25px;
+}
+
+.beverage-details {
+    border: 8px solid #edcd3e;
+    -webkit-border-top-right-radius: 8px;
+    -webkit-border-bottom-left-radius: 8px;
+    -webkit-border-bottom-right-radius: 8px;
+}
+
 .beverage-row {
     display: table-row;
 }
@@ -838,6 +1077,24 @@ aside {
 .beverage-cell h5 {
     -webkit-margin-before: 10px;
     -webkit-margin-after: 10px;
+}
+
+.beverage-review {
+    display: block;
+}
+
+div#DrinkResults {
+    max-width: 550px;
+    /*border: 1px solid #999999;*/
+}
+
+div.beverage-review {
+    margin-left: 20px;
+}
+
+div.beverage-reviews {
+    margin-left: 30px;
+    margin-right: 30px;
 }
 
 /* forms */

@@ -1,4 +1,4 @@
-BEGIN TRANSACTION
+--BEGIN TRANSACTION
 
 INSERT INTO Crafter ([CrafterPk],[Name],[Address],[Phone],[Fax],[Email],[Url]) VALUES ('95AC5953-76ED-473E-86E0-F3B206F1B011', '10 Barrel Brewing', '62970 18th Stree  Bend, Oregon, 97701  USA', '(541) 585-1007', '(541) 585-1008', '', 'http://www.10barrel.com/')
 INSERT INTO Crafter ([CrafterPk],[Name],[Address],[Phone],[Fax],[Email],[Url]) VALUES ('FC98C60C-D811-4D13-8FB4-55494C56FBB7', '10 International', '10 International, The lodge. Guildford Road  Effingham, Leatherhead, Surry, KT24 5PE  UK', '44 (0) 1372 454910', '', '', '10international.com')
@@ -3006,4 +3006,4 @@ INSERT INTO Crafter ([CrafterPk],[Name],[Address],[Phone],[Fax],[Email],[Url]) V
 INSERT INTO Crafter ([CrafterPk],[Name],[Address],[Phone],[Fax],[Email],[Url]) VALUES ('DBE7A419-A290-4702-8928-546032D14271', 'Zorvino Vineyards', '226 Main Street  Sandown, NH  USA', '603-887-8463', '', '', 'www.zorvino.com')
 
 
-COMMIT TRANSACTION
+-- COMMIT TRANSACTION

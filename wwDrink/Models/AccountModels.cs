@@ -21,9 +21,12 @@ namespace wwDrink.Models
     [Table("UserProfile")]
     public class UserProfile
     {
-        [Key]
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }
+
+        [Key]
+        public Guid UserPk { get; set; }
+
         public string UserName { get; set; }
     }
 

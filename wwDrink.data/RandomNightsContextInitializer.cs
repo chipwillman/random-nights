@@ -1,14 +1,64 @@
 ﻿namespace wwDrink.data
 {
     using System;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using System.Configuration;
     using System.Data.Entity;
-
+    using System.Data.SqlClient;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
     using wwDrink.data.Models;
 
     public class RandomNightsContextInitializer : DropCreateDatabaseIfModelChanges<RandomNightsContext>
     {
+        public string ScriptDirectory { get; set; }
+
+        public string MasterfileScripts { get; set; }
+
+        private const string CreateIndexQueryTemplate = "CREATE {unique} INDEX {indexName} ON {tableName} ({columnName})";
+
+        public void InitializeIndex(RandomNightsContext context)
+        {
+            const BindingFlags PublicInstance = BindingFlags.Public | BindingFlags.Instance;
+
+            foreach (var dataSetProperty in typeof(RandomNightsContext).GetProperties(PublicInstance).Where(
+                p => p.PropertyType.Name == typeof(DbSet<>).Name))
+            {
+                var entityType = dataSetProperty.PropertyType.GetGenericArguments().Single();
+
+                var tableAttributes = (TableAttribute[])entityType.GetCustomAttributes(typeof(TableAttribute), false);
+
+                foreach (var property in entityType.GetProperties(PublicInstance))
+                {
+                    var indexAttributes = (IndexAttribute[])property.GetCustomAttributes(typeof(IndexAttribute), false);
+                    var notMappedAttributes = (NotMappedAttribute[])property.GetCustomAttributes(typeof(NotMappedAttribute), false);
+                    if (indexAttributes.Length > 0 && notMappedAttributes.Length == 0)
+                    {
+                        var columnAttributes = (ColumnAttribute[])property.GetCustomAttributes(typeof(ColumnAttribute), false);
+
+                        foreach (var indexAttribute in indexAttributes)
+                        {
+                            string indexName = indexAttribute.Name;
+                            string tableName = tableAttributes.Length != 0 ? tableAttributes[0].Name : dataSetProperty.Name;
+                            string columnName = columnAttributes.Length != 0 ? columnAttributes[0].Name : property.Name;
+                            string query = CreateIndexQueryTemplate.Replace("{indexName}", indexName)
+                                .Replace("{tableName}", tableName)
+                                .Replace("{columnName}", columnName)
+                                .Replace("{unique}", indexAttribute.IsUnique ? "UNIQUE" : string.Empty);
+
+                            context.Database.CreateIfNotExists();
+
+                            context.Database.ExecuteSqlCommand(query);
+                        }
+                    }
+                }
+            }
+        }
+
         protected override void Seed(RandomNightsContext context)
         {
+            InitializeIndex(context);
             context.Categories.Add(
                 new PreferenceCategory
                     {
@@ -442,9 +492,20 @@
                         AspectName = "House System",
                         PreferenceCategoryPk = new Guid("5384B9B6-1BDF-46F2-901A-6863D7EDEE1C")
                     });
+            this.RunMasterfilesScripts(context);
+        }
 
-            //context.Crafters.Add(new Crafter { CrafterPk = new Guid("743AA966-46E1-4E34-ADAE-3AE1B362A556"), Name = "Lion", Address = "Locked Bag 58  Silverwater, NSW, 1811  Australia", Phone = "1800 308 388", Fax = "", Email = "http://lionco.com/supplementary/contact-us/", Url = "http://lionco.com" });
-            //context.Drinks.Add(new Drink { DrinkPk = new Guid("86BD7899-3CDE-4C0D-81DD-2904D523B657"), CrafterFk = new Guid("743AA966-46E1-4E34-ADAE-3AE1B362A556"), Name = "Tooheys Old", Type = "beer" });
+        private void RunMasterfilesScripts(RandomNightsContext context)
+        {
+            foreach (var script in MasterfileScripts.Split(','))
+            {
+                var file = Path.Combine(ScriptDirectory, script);
+                if (File.Exists(file))
+                {
+                    var sqlScript = File.ReadAllText(file);
+                    context.Database.ExecuteSqlCommand(sqlScript);
+                }
+            }
         }
     }
 }

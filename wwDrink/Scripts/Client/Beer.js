@@ -3,3 +3,4 @@ beer_model.drinkType("beer");
 
 ko.applyBindings(beer_model);
 
+$("#loading_div").show();

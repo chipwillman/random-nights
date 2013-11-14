@@ -121,7 +121,7 @@ Stepcarousel = function () {
                     config.autostep.hoverstate = "out";
                 }
             });
-            config.steptimer = setInterval(function () { self.autorotate(config.galleryid); }, config.autostep.pause); //automatically rotate Carousel Viewer
+            config.steptimer = (typeof config.steptimer == "undefined") ? setInterval(function () { self.autorotate(config.galleryid); }, config.autostep.pause) : config.steptimer; //automatically rotate Carousel Viewer
         } //end enable auto stepping check
         this.createpaginate($, config);
         this.statusreport(config.galleryid);
@@ -273,7 +273,7 @@ Stepcarousel = function () {
         config.panelbehavior.wrapbehavior = config.panelbehavior.wrapbehavior || "pushpull"; //default wrap behavior to "pushpull"
         config.$paginatediv = $('#' + config.galleryid + '-paginate'); //get pagination DIV (if defined)
         if (config.autostep)
-            config.autostep.pause += config.panelbehavior.speed;
+            config.autostep.pause = config.panelbehavior.speed * 8;
         config.onpanelclick = (typeof config.onpanelclick == "undefined") ? function(target) {
         } : config.onpanelclick; //attach custom "onpanelclick" event handler
         config.onslideaction = (typeof config.onslide == "undefined") ? function() {

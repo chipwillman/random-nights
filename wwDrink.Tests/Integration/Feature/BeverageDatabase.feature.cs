@@ -144,18 +144,16 @@ this.ScenarioSetup(scenarioInfo);
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("View Liqour Database")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "BeverageDatabase")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("wip")]
         public virtual void ViewLiqourDatabase()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("View Liqour Database", new string[] {
-                        "wip"});
-#line 27
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("View Liqour Database", ((string[])(null)));
+#line 26
 this.ScenarioSetup(scenarioInfo);
-#line 28
+#line 27
  testRunner.Given("I have visited wwDrink", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 29
+#line 28
  testRunner.When("I press the Liquor Menu", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 30
+#line 29
  testRunner.Then("I should be presented with a search for Liqour page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -164,18 +162,16 @@ this.ScenarioSetup(scenarioInfo);
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Search Liqour Database")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "BeverageDatabase")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("wip")]
         public virtual void SearchLiqourDatabase()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Search Liqour Database", new string[] {
-                        "wip"});
-#line 33
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Search Liqour Database", ((string[])(null)));
+#line 31
 this.ScenarioSetup(scenarioInfo);
-#line 34
+#line 32
  testRunner.Given("I am at the Liqour Page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 35
+#line 33
  testRunner.When("I search for Jack Daniels", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 36
+#line 34
  testRunner.Then("I should be presented with search results Jack Daniels", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();

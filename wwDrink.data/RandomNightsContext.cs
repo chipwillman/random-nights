@@ -15,6 +15,8 @@
 
         public DbSet<Establishment> Establishments { get; set; }
 
+        public DbSet<Review> Reviews { get; set; }
+
         public DbSet<PreferenceCategory> Categories { get; set; }
 
         public DbSet<Profile> Profiles { get; set; }

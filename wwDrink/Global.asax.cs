@@ -10,6 +10,7 @@ using System.Web.Routing;
 namespace wwDrink
 {
     using System.Collections.ObjectModel;
+    using System.Configuration;
     using System.Data.Entity.Infrastructure;
     using System.Web.Caching;
 
@@ -71,8 +72,22 @@ namespace wwDrink
             {
                 using (var context = new RandomNightsContext())
                 {
-                    System.Data.Entity.Database.SetInitializer(new RandomNightsContextInitializer());
+                    var initializer = new RandomNightsContextInitializer
+                                          {
+                                              ScriptDirectory = Server.MapPath(
+                                                  ConfigurationManager.AppSettings[
+                                                      "ScriptsDirectory"]),
+                                              MasterfileScripts =
+                                                  ConfigurationManager.AppSettings[
+                                                      "MasterfileScripts"]
+                                          };
+
+                    System.Data.Entity.Database.SetInitializer(initializer);
                     context.Database.Initialize(false);
+                }
+                if (!WebSecurity.Initialized)
+                {
+                    WebSecurity.InitializeDatabaseConnection("DefaultConnection", "UserProfile", "UserId", "UserName", autoCreateTables: true);
                 }
             }
             catch (Exception ex)

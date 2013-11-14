@@ -90,6 +90,7 @@
         public ManageUserPage ManageUser()
         {
             Driver.FindElement(By.Id("ManageUser")).Click();
+            Thread.Sleep(100);
             var result = new ManageUserPage();
             result.GetElements();
             return result;

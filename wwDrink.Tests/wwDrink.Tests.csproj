@@ -219,6 +219,8 @@
     <Compile Include="Integration\Pages\RegisterPage.cs" />
     <Compile Include="Integration\Pages\SearchPage.cs" />
     <Compile Include="Integration\StepDefinitions\AdditionalPicturesSteps.cs" />
+    <Compile Include="Integration\StepDefinitions\AddReviewsSteps.cs" />
+    <Compile Include="Integration\StepDefinitions\AuthenticatedPageSteps.cs" />
     <Compile Include="Integration\StepDefinitions\BeverageDatabaseSteps.cs" />
     <Compile Include="Integration\StepDefinitions\DataSteps.cs" />
     <Compile Include="Integration\StepDefinitions\EditPersonalPreferencesSteps.cs" />
@@ -232,6 +234,7 @@
     <Content Include="Jasmine\ManageUser.html" />
     <Content Include="Jasmine\Search.html" />
     <Content Include="Jasmine\spec\ManageUserSpec.js" />
+    <Content Include="Jasmine\spec\ReviewSpec.js" />
     <Content Include="Jasmine\spec\SearchSpec.js" />
   </ItemGroup>
   <ItemGroup>
@@ -321,6 +324,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Jasmine\lib\jasmine-1.2.0.rc3\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

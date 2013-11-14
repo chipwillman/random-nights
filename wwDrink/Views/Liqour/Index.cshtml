@@ -1,11 +1,12 @@
 ﻿@model dynamic
 
 @{
-    ViewBag.Title = "Liqour";
+    ViewBag.Title = "Liquor";
 }
+<link rel="stylesheet" href="~/Content/themes/base/jquery.ui.all.css">
+<link rel="stylesheet" href="~/Content/rateit.css">
 
-<h2>Liqour</h2>
-
+<h2>Liquor</h2>
 
 <div>
     <form>
@@ -13,65 +14,146 @@
     </form>
 </div>
 
-<div>
-    <input value="First" type="submit" id="FirstButton" data-bind="click: FirstClick, visible: FirstButtonVisible"/>
-    <input value="Prev" type="submit" id="PrevButton" data-bind="click: PrevClick, visible: PrevButtonVisible"/>
-    <input value="Next" type="submit" id="NextButton" data-bind="click: NextClick, visible: NextButtonVisible"/>
-    <input value="Last" type="submit" id="LastButton" data-bind="click: LastClick, visible: LastButtonVisible"/>
-</div>
-
-<div data-bind="foreach: DrinkResults">
-    <div class="beverage-row">
-        <div class="beverage-cell" >
-            <h5><a href="#" data-bind="click: ShowDetailsClick, text: Name"></a></h5>
+<div id="loading_div" style="display: none">
+    <div class="beverage-navigation">
+        <div class="nav-buttons">
+            <div class="nav-buttons-back">
+                <input id="StepFirstButton" type="button" data-bind="click: FirstClick, visible: FirstButtonVisible"value ="&nbsp;&nbsp;&nbsp;&nbsp;<<&nbsp;&nbsp;&nbsp;&nbsp;" /> <input id="StepBackButton" type="button" data-bind="click: PrevClick, visible: PrevButtonVisible"value="&nbsp;&nbsp;&nbsp;&nbsp;<&nbsp;&nbsp;&nbsp;&nbsp;" />
+            </div>
+            <div class="nav-buttons-forward">
+                <input id="StepForwardButton" type="button" data-bind="click: NextClick, visible: NextButtonVisible"value="&nbsp;&nbsp;&nbsp;&nbsp;>&nbsp;&nbsp;&nbsp;&nbsp;"/><input id="StepLastButton" type="button" data-bind="click: LastClick, visible: LastButtonVisible" value="&nbsp;&nbsp;&nbsp;&nbsp;>>&nbsp;&nbsp;&nbsp;&nbsp;" />
+            </div>
         </div>
-        <div class="beverage-cell">
-            <div class="beverage-row">
-                <div class="beverage-cell">
-                    Brewery: 
+    </div>
+
+    <div id="DrinkResults" data-bind="foreach: DrinkResults">
+        <div class="beverage-heading" data-bind="attr: { class: BeverageHeadingClass }">
+            <h3 data-bind="click: ShowDetailsClick"><a href="#" data-bind="text: Name"></a></h3>
+            <div class="beverage-static-rating" data-bind="visible: NotShowDetails">
+                <div data-bind="rateit: { value: BeverageRating, max: 5, step: 0.1, readonly: true }"></div>
+            </div>
+        </div>
+        <div class="beverage-details" data-bind="visible: ShowDetails">
+            <div class="image-cell">
+                <img src="/Images/missing_establishment_image.png" data-bind="attr: { src: MainImageUrl }"  width='130px' height='175px'/>
+                <div style="float:right; width: 300px">
+                    <div class="beverage-row">
+                        <div class="beverage-cell">
+                            Rating:
+                        </div>
+                        <div class="beverage-cell">
+                            <div class="beverage-detail-rating">
+                                <div data-bind="rateit: { value: BeverageRating, max: 5, step: 0.1, readonly: true }"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="beverage-row">
+                        <div class="beverage-cell">
+                            Distillery: 
+                        </div>
+                        <div class="beverage-cell">
+                            <h5><span data-bind="text: Brewery" /></h5>
+                        </div>
+                    </div>
+                    <div class="beverage-row">
+                        <div class="beverage-cell">
+                            Url: 
+                        </div>
+                        <div class="beverage-cell">
+                            <a href="#" target="0" data-bind="attr: { href: Url, target: Brewery }, text: Url"></a>
+                        </div>
+                    </div>
+                    <div class="beverage-row">
+                        <div class="beverage-cell">
+                            Email: 
+                        </div>
+                        <div class="beverage-cell">
+                            <span data-bind="text: Email" />
+                        </div>
+                    </div>
+                    <div class="beverage-row">
+                        <div class="beverage-cell">
+                            Phone: 
+                        </div>
+                        <div class="beverage-cell">
+                            <span data-bind="text: Phone" />
+                        </div>
+                    </div>
+                    <div class="beverage-row">
+                        <div class="beverage-cell">
+                            Address: 
+                        </div>
+                        <div class="beverage-cell">
+                            <p data-bind="text: Address" />
+                        </div>
+                    </div>
+                    <div class="beverage-row">
+                        <div class="beverage-cell">
+                            Vegan: 
+                        </div>
+                        <div class="beverage-cell">
+                            <input type="checkbox" disabled="true" data-bind="checked: Vegan" />
+                        </div>
+                    </div>
                 </div>
-                <div class="beverage-cell">
-                    <span data-bind="text: Brewery" />
+            </div>
+            @if (Request.IsAuthenticated)
+            {
+                <div class="beverage-review">
+                    <div class="add-review-collapsed" data-bind="visible: NotAddingReview">
+                        <input type="submit" id="ShowAddReviewButton" value="Add Review" data-bind="click: ShowAddReviewClick"/>
+                    </div>
+                    <div class="BeverageReviewPanel" data-bind="visible: AddingReview">
+                        <form>
+                            <div class="rateit" data-bind="rateit: Rating"></div>
+                
+                            <textarea name="ReviewText" id="ReviewText" rows="5" style="width: 90%;" data-bind="value: ReviewText"></textarea>
+                            <input type="submit" id="AddReviewButton" value="Post Review" data-bind="click: $parent.AddReviewClick"/>
+                        </form>
+                    </div>
+                </div>
+            }
+            <div class="beverage-reviews" data-bind="foreach: reviews, visible: ShowDetails">
+                <div class="beverage-review">
+                    <div class="review-header">
+                        <div class="review-author">
+                            <h4>Review by: <span data-bind="text: author"></span></h4>
+                        </div>
+                        <div class="review-date">
+                            Review date: <span data-bind="text: date"></span>
+                        </div>
+                    </div>
+                    <div class="beverage-rating">
+                        <div class="rateit" data-rateit-readonly="true" data-bind="attr: { 'data-rateit-value': computeRating }"></div><br/>
+                    </div>
+                    <div class="beverage-review-body">
+                        <div class="beverage-review-text">
+                            <p>
+                                <span data-bind="text: review_short, visible: ShowShortReview" ></span>
+                                <a href="#" data-bind="click: ToggleReview, visible: ShowMoreButton">show more</a>
+                                <span data-bind="text: review, visible: ShowFullReview"></span>
+                                <a href="#" data-bind="click: ToggleReview, visible: ShowLessButton">hide</a>
+                            </p>
+                        </div>
+                        <div class="aspect-rating">
+                            <div data-bind="foreach: aspects">
+                                <div style="display: table-row">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="beverage-row" data-bind="visible: ShowDetails">
-        <div class="beverage-cell">
-            Beverage <br />Image
-        </div>
-        <div class="beverage-cell">
-            <div class="beverage-row">
-                <div class="beverage-cell">
-                    Url: 
-                </div>
-                <div class="beverage-cell">
-                    <a target="0" data-bind="attr: { href: Url, target: Brewery }, text: Url"></a>
-                </div>
+
+    <div class="beverage-navigation-bottom">
+        <div class="nav-buttons">
+            <div class="nav-buttons-back">
+                <input id="StepFirstButton" type="button" data-bind="click: FirstClick, visible: FirstButtonVisible"value ="&nbsp;&nbsp;&nbsp;&nbsp;<<&nbsp;&nbsp;&nbsp;&nbsp;" /> <input id="StepBackButton" type="button" data-bind="click: PrevClick, visible: PrevButtonVisible"value="&nbsp;&nbsp;&nbsp;&nbsp;<&nbsp;&nbsp;&nbsp;&nbsp;" />
             </div>
-            <div class="beverage-row">
-                <div class="beverage-cell">
-                    Email: 
-                </div>
-                <div class="beverage-cell">
-                    <span data-bind="text: Email" />
-                </div>
-            </div>
-            <div class="beverage-row">
-                <div class="beverage-cell">
-                    Phone: 
-                </div>
-                <div class="beverage-cell">
-                    <span data-bind="text: Phone" />
-                </div>
-            </div>
-            <div class="beverage-row">
-                <div class="beverage-cell">
-                    Address: 
-                </div>
-                <div class="beverage-cell">
-                    <span data-bind="text: Address" />
-                </div>
+            <div class="nav-buttons-forward">
+                <input id="StepForwardButton" type="button" data-bind="click: NextClick, visible: NextButtonVisible"value="&nbsp;&nbsp;&nbsp;&nbsp;>&nbsp;&nbsp;&nbsp;&nbsp;"/><input id="StepLastButton" type="button" data-bind="click: LastClick, visible: LastButtonVisible" value="&nbsp;&nbsp;&nbsp;&nbsp;>>&nbsp;&nbsp;&nbsp;&nbsp;" />
             </div>
         </div>
     </div>
@@ -79,11 +161,14 @@
 
 @section Scripts {
     @Scripts.Render("~/Scripts/jquery-ui-1.8.20.js")
+    @Scripts.Render("~/Scripts/jquery.rateit.min.js")
     @Scripts.Render("~/Scripts/stepcarousel.js")
     @Scripts.Render("~/Scripts/knockout-2.1.0.js")
+    @Scripts.Render("~/Scripts/knockout-binding-handlers.js")
     @Scripts.Render("~/Scripts/guid.js")
     @Scripts.Render("http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false")
+    @Scripts.Render("~/Scripts/Client/Review.js")
     @Scripts.Render("~/Scripts/Client/Drink.js")
     @Scripts.Render("~/Scripts/Client/drinklisting.js")
-    @Scripts.Render("~/Scripts/Client/Liqour.js")
+    @Scripts.Render("~/Scripts/Client/Liquor.js")
 }

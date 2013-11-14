@@ -167,10 +167,12 @@
     <Compile Include="Controllers\AspectController.cs" />
     <Compile Include="Controllers\BeerController.cs" />
     <Compile Include="Controllers\DrinksController.cs" />
+    <Compile Include="Controllers\EstablishmentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LiqourController.cs" />
     <Compile Include="Controllers\PreferencesController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
+    <Compile Include="Controllers\ReviewController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\WineController.cs" />
@@ -182,12 +184,19 @@
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\ClientAspect.cs" />
     <Compile Include="Models\DrinkSearchModel.cs" />
+    <Compile Include="Models\EstablishmentModel.cs" />
     <Compile Include="Models\Favorite.cs" />
     <Compile Include="Models\Pagination.cs" />
+    <Compile Include="Models\ReviewModel.cs" />
     <Compile Include="Models\SearchModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Crafters.sql" />
+    <Content Include="App_Data\Drinks.sql" />
+    <Content Include="Content\delete.gif" />
+    <Content Include="Content\rateit.css" />
+    <Content Include="Content\star.gif" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -253,6 +262,7 @@
     <Content Include="Images\missing_establishment_image.png" />
     <Content Include="Images\Pint.jpg" />
     <Content Include="Images\select_list_arrow.png" />
+    <Content Include="Images\wwDrinkLogo.png" />
     <Content Include="Scripts\Client\Beer.js" />
     <Content Include="Scripts\Client\Drink.js" />
     <Content Include="Scripts\Client\drinklisting.js" />
@@ -262,11 +272,15 @@
     <Content Include="Scripts\Client\Liqour.js" />
     <Content Include="Scripts\Client\manage.js" />
     <Content Include="Scripts\Client\manageuser.js" />
+    <Content Include="Scripts\Client\Review.js" />
     <Content Include="Scripts\Client\Search.js" />
     <Content Include="Scripts\Client\Wine.js" />
     <Content Include="Scripts\guid.js" />
     <Content Include="Scripts\jquery-1.7.1.js" />
     <Content Include="Scripts\jquery-1.7.1.min.js" />
+    <Content Include="Scripts\jquery.rateit.js" />
+    <Content Include="Scripts\jquery.rateit.min.js" />
+    <Content Include="Scripts\jquery.rateit.min.js.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.8.20.js" />
     <Content Include="Scripts\jquery-ui-1.8.20.min.js" />
@@ -278,6 +292,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\knockout-2.1.0.js" />
+    <Content Include="Scripts\knockout-binding-handlers.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
     <Content Include="Scripts\stepcarousel.js" />
     <Content Include="Scripts\underscore.js" />
@@ -329,9 +344,7 @@
     <Content Include="Views\Wine\Index.cshtml" />
     <Content Include="Views\Liqour\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config">
       <SubType>Designer</SubType>

@@ -11,15 +11,9 @@
     using wwDrink.Tests.Integration.Support;
 
     [Binding]
-    public class EditPersonalPreferencesSteps
+    public class EditPersonalPreferencesSteps : AuthenticatedPageSteps
     {
-        private HomePage homePage;
-
-        private LoginPage loginPage;
-
         private ManageUserPage manageUserPage;
-
-        private RegisterPage registerPage;
 
         public string UserName = "peter.pubgoer";
 
@@ -28,7 +22,7 @@
         [Given(@"I am at the manage user page")]
         public void GivenIAmAtTheManageUserPage()
         {
-            EnsureCurrentUser(UserName, Password);
+            this.EnsureCurrentUser(UserName, Password);
             ManageUserPage.Driver = BrowserDriver.Driver;
             this.manageUserPage = this.homePage.ManageUser();
         }
@@ -127,26 +121,5 @@
                 }
             }
         }
-
-
-        #region Implementation
-
-        private void EnsureCurrentUser(string userName, string password)
-        {
-            this.homePage = HomePage.NavigateTo(BrowserDriver.Driver);
-            if (homePage.UserLoggedOn)
-            {
-                this.homePage = this.homePage.LogOff();
-            }
-            registerPage = homePage.ClickRegister();
-            this.homePage = registerPage.Register(new RegisterDetails { Username = userName, Password = password, ConfirmPassword = password });
-            if (!homePage.UserLoggedOn)
-            {
-                this.loginPage = this.homePage.LogOn();
-            }
-            this.homePage = loginPage.Login(new LoginDetails { Username = userName, Password = password });
-        }
-
-        #endregion
     }
 }

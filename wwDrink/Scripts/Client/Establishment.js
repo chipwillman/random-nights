@@ -2,11 +2,12 @@
     var self = this;
     self.PK = ko.observable();
     self.detailsRequested = ko.observable(false);
+    self.source = ko.observable(false);
     self.name = ko.observable();
     self.latitude = ko.observable();
     self.longitude = ko.observable();
     self.suburb = ko.observable();
-    self.imageUrl = ko.observable();
+    self.imageUrl = ko.observable("/Images/missing_establishment_image.png");
     self.open = ko.observable();
     self.closed = function() { return !self.open; };
     self.index = ko.observable();
@@ -14,6 +15,12 @@
     self.google_reference = ko.observable();
 
     self.address = ko.observable();
+    self.address_street_number = ko.observable();
+    self.address_street = ko.observable();
+    self.address_city = ko.observable();
+    self.address_state = ko.observable();
+    self.address_country = ko.observable();
+    self.address_post_code = ko.observable();
 
     self.features = ko.observableArray();
     self.open_hours = ko.observableArray();
@@ -28,7 +35,33 @@
         self.imageUrl(link.imageUrl);
     };
 
+    self.Rating = ko.observable(3);
 
+    self.AddingReview = ko.observable(false);
+    self.NotAddingReview = ko.observable(true);
+    self.ReviewText = ko.observable();
+    self.ShowAddReviewClick = function () {
+        self.AddingReview(true);
+        self.NotAddingReview(false);
+        $('.rateit').rateit({ backingfld: '#backing2b' });
+    };
+
+    self.AddPhoto = function (imageUrl) {
+        for (var i = self.photos().length - 1; i > -1; i--) {
+            if (self.photos()[i].imageUrl == imageUrl)
+                return;
+        }
+        self.photos.push({ imageUrl: imageUrl });
+    };
+
+    self.AddReview = function (review) {
+        for (var i = self.photos().length - 1; i > -1; i--) {
+            if (self.photos()[i].author == review.author())
+                return;
+        }
+
+        self.reviews.push(review);
+    };
 }
 
 function OpenHours() {
@@ -56,22 +89,25 @@ function OpenHours() {
     };
 
     self.getTime = function (hour, minute) {
-        var amPm = " pm";
-        var hourString = hour.toString();
-        var minuteString = "00";
-        if (minute != 0) {
-            minuteString = minute.toString();
-        }
-        if (hour >= 12) {
-            if (hour != 12) 
-                hourString = (hour - 12).toString();
-        } else {
-            amPm = " am";
-            if (hour == 0) {
-                hourString = "12";
+        var result = "";
+        if (hour != null && minute != null) {
+            var amPm = " pm";
+            var hourString = hour.toString();
+            var minuteString = "00";
+            if (minute != 0) {
+                minuteString = minute.toString();
             }
+            if (hour >= 12) {
+                if (hour != 12)
+                    hourString = (hour - 12).toString();
+            } else {
+                amPm = " am";
+                if (hour == 0) {
+                    hourString = "12";
+                }
+            }
+            result = hourString + ":" + minuteString + amPm;
         }
-        var result = hourString + ":" + minuteString + amPm;
         return result;
     };
 

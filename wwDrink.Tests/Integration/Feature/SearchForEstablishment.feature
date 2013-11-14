@@ -7,7 +7,7 @@ Scenario: Search by City
 	Given I navigate to wwDrink 
 	And I search for "kensington, victoria"
 	When I press the search button
-	Then the results should contain "Hardimans"
+	Then the results should contain "Hardiman"
 
 # barnivore.com for veggies
 # happycow.com (org/net) also

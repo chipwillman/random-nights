@@ -28,15 +28,17 @@
 
     self.AddDrink = function(drink) {
         var d = new Drink();
-        d.Name = drink.Name;
+        d.Name(drink.Name);
+        d.PK(drink.DrinkPk);
         if (drink.Crafter) {
-            d.Brewery = drink.Crafter.Name;
-            d.Address = drink.Crafter.Address;
-            d.Phone = drink.Crafter.Phone;
-            d.Fax = drink.Crafter.Fax;
-            d.Email = drink.Crafter.Email;
-            d.Url = drink.Crafter.Url;
-            
+            d.Brewery(drink.Crafter.Name);
+            d.Address(drink.Crafter.Address);
+            d.Phone(drink.Crafter.Phone);
+            d.Fax(drink.Crafter.Fax);
+            d.Email(drink.Crafter.Email);
+            d.MainImageUrl(drink.MainImageUrl);
+            d.Url(drink.Crafter.Url);
+            d.Vegan(drink.Vegan);
         }
         self.DrinkResults.push(d);
     };
@@ -82,5 +84,30 @@
     self.LastClick = function () {
         self.StartPage(self.Pages());
         self.DoSearch(self.StartPage(), self.PageSize());
+    };
+    
+    self.AddReviewClick = function () {
+        var beverage = this;
+        var wwDrinkReview = "/api/Review";
+
+        var review = {
+            pk: Guid.create().toString(),
+            reviewText: beverage.ReviewText(),
+            rating: beverage.Rating(),
+            parentFk: beverage.PK().toString(),
+            parentTable: "Drink"
+        };
+        $.post(wwDrinkReview, review, function (data) {
+            if (data) {
+                beverage.AddingReview(false);
+                var date = new Date(data.ReviewDate);
+                var review = new Review();
+                review.rating(data.Rating);
+                review.review(data.ReviewText);
+                review.author(data.Profile.UserName);
+                review.date(date.toLocaleDateString());
+                beverage.reviews.unshift(review);
+            }
+        });
     };
 }

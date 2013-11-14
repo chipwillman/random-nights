@@ -70,6 +70,28 @@ namespace wwDrink.Tests.Integration.Feature
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Seed ratings and aspects from google reviews")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "UserRatings")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("wip")]
+        public virtual void SeedRatingsAndAspectsFromGoogleReviews()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Seed ratings and aspects from google reviews", new string[] {
+                        "wip"});
+#line 7
+this.ScenarioSetup(scenarioInfo);
+#line 8
+ testRunner.Given("I have found an establishment with google reviews", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 9
+ testRunner.And("it is not yet known to wwDrink", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 10
+ testRunner.When("I view the details page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 11
+ testRunner.Then("reviews and aspect ratings should be present", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Rate an Establishment")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "UserRatings")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("wip")]
@@ -77,13 +99,13 @@ namespace wwDrink.Tests.Integration.Feature
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Rate an Establishment", new string[] {
                         "wip"});
-#line 7
+#line 14
 this.ScenarioSetup(scenarioInfo);
-#line 8
+#line 15
  testRunner.Given("I have found an establishment with ratings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 9
+#line 16
  testRunner.When("I rate an establishment 4 stars", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 10
+#line 17
  testRunner.Then("establishment should include my result in the ratings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -97,13 +119,13 @@ this.ScenarioSetup(scenarioInfo);
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Rate an Establishments aspects", new string[] {
                         "wip"});
-#line 13
+#line 20
 this.ScenarioSetup(scenarioInfo);
-#line 14
+#line 21
  testRunner.Given("I have found an establishment with ratings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 15
+#line 22
  testRunner.When("I rate an establishment aspect 1 stars", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 16
+#line 23
  testRunner.Then("establishment aspect should include my result in the ratings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
