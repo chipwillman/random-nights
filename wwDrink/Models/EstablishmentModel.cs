@@ -4,6 +4,15 @@
 
     using System.Runtime.Serialization;
 
+    public class EstablishmentImageModel
+    {
+        public Guid EstablishmentFk { get; set; }
+        [DataMember(Name = "imageUrl")]
+        public string ImageUrl { get; set; }
+        public Guid EstablishmentImagePk { get; set; }
+        public string Aspect { get; set; }
+    }
+
     public class EstablishmentModel
     {
         public Guid PK { get; set; }
@@ -21,25 +30,25 @@
         public string GoogleReference { get; set; }
 
         public string Address { get; set; }
-        [DataMember(Name = "address_street_number")]
+        [DataMember(Name = "addressStreetNumber")]
         public string AddressStreetNumber { get; set; }
-        [DataMember(Name = "address_street")]
+        [DataMember(Name = "addressStreet")]
         public string AddressStreet { get; set; }
-        [DataMember(Name = "address_city")]
+        [DataMember(Name = "addressCity")]
         public string AddressCity { get; set; }
-        [DataMember(Name = "address_state")]
+        [DataMember(Name = "addressState")]
         public string AddressState { get; set; }
-        [DataMember(Name = "address_country")]
+        [DataMember(Name = "addressCountry")]
         public string AddressCountry { get; set; }
-        [DataMember(Name = "address_post_code")]
+        [DataMember(Name = "addressPostCode")]
         public string AddressPostCode { get; set; }
 
         public string[] Features { get; set; }
         [DataMember(Name = "open_hours")]
         public string[] OpenHours { get; set; }
 
-        [DataMember(Name = "photo_urls")]
-        public string[] PhotosUrls { get; set; }
+        [DataMember(Name = "photosUrls")]
+        public EstablishmentImageModel[] PhotosUrls { get; set; }
 
         public string Rating { get; set; }
     }

@@ -5,6 +5,10 @@ if (typeof (Number.prototype.toRad) === "undefined") {
     };
 }
 
+var availableAspects = [];
+availableAspects.push("");
+infowindow = new google.maps.InfoWindow();
+
 function EstablishmentSearch() {
     var self = this;
 
@@ -14,7 +18,7 @@ function EstablishmentSearch() {
         panelclass: 'panel', //class of panel DIVs each holding content
         autostep: { enable: true, moveby: 1, pause: 3000 },
         panelbehavior: { speed: 500, wraparound: false, wrapbehavior: 'slide', persist: true },
-        defaultbuttons: { enable: true, moveby: 1, leftnav: ['/Images/back_arrow.png', -15, 80], rightnav: ['/Images/forward_arrow.png', -50, 80] },
+        defaultbuttons: { enable: true, moveby: 1, leftnav: ['/Images/mback_arrow.png', -15, 80], rightnav: ['/Images/mforward_arrow.png', -50, 80] },
         statusvars: ['statusA', 'statusB', 'statusC'], //register 3 variables that contain current panel (start), current panel (last), and total panels
         contenttype: ['inline'] //content setting ['inline'] or ['ajax', 'path_to_external_file']
     };
@@ -46,7 +50,6 @@ function EstablishmentSearch() {
     self.radius(500);
 
     self.service = ko.observable();
-    self.infowindow = ko.observable();
     self.Listeners = new ko.observableArray();
 
     self.carousel = new Stepcarousel();
@@ -54,6 +57,8 @@ function EstablishmentSearch() {
 
     self.IsMacUser = ko.observable(navigator.platform != "Win32");
     self.IsWindowsUser = ko.observable(navigator.platform == "Win32");
+
+    
 
     self.init_location = function() {
         if (window.XMLHttpRequest) xmlhttp = new XMLHttpRequest();
@@ -114,7 +119,6 @@ function EstablishmentSearch() {
             self.Search();
         });
         
-        self.infowindow(new google.maps.InfoWindow());
         self.service(new google.maps.places.PlacesService(self.map));
     };
 
@@ -138,8 +142,11 @@ function EstablishmentSearch() {
             //    self.Establishments.unshift(establishment);
             //}
         } else {
-            var establishment = new Establishment();
+            var establishment = new Establishment(function(establishment) {
+                 self.ShowDetails(establishment);
+            });
             establishment.PK(Guid.create());
+            establishment.Rating(place.rating);
             establishment.name(place.name);
             establishment.google_id(place.id);
             establishment.google_reference(place.reference);
@@ -157,7 +164,8 @@ function EstablishmentSearch() {
 
             }
             self.Establishments.push(establishment);
-            self.CreateMarker(place.name, place.geometry.location);
+            self.Establishments.sort(function (a, b) { return b.Rating() - a.Rating(); });
+            self.CreateMarker(establishment);
         }
 
         try {
@@ -195,17 +203,23 @@ function EstablishmentSearch() {
         self.Interests.remove(establishment);
     };
 
-    self.CreateMarker = function (name, placeLoc) {
+    self.CreateMarker = function (establishment) {
+         
+        var placeLoc = new google.maps.LatLng(establishment.latitude(), establishment.longitude());
+
         var marker = new google.maps.Marker({
             map: self.map,
             position: placeLoc
         });
 
         self.Listeners.push(marker);
-
-        google.maps.event.addListener(marker, 'click', function() {
-            self.infowindow().setContent(name);
-            self.infowindow().open(self.map, this);
+        establishment.map = self.map;
+        establishment.marker = marker;
+        google.maps.event.addListener(marker, 'click', function () {
+            if (!establishment.detailsRequested()) {
+                self.RequestEstablishmentDetails(establishment);
+            }
+             establishment.ShowInfoWindow();
         });
     };
 
@@ -284,14 +298,24 @@ function EstablishmentSearch() {
     self.establishmentIndex = 0;
 
     self.SelectEstablishment = function (establishment) {
+        establishment.ShowInfoWindow();
+        return (establishment.open_hours().length == 0 && establishment.features().length == 0 && !establishment.detailsRequested());
+    };
+
+    self.ShowDetails = function(establishment) {
         establishment.index(self.establishmentIndex++);
         var elementName = "results_tabs-" + (establishment.index() + 1).toString();
         establishment.tab_href("#" + elementName);
         establishment.tab_name(elementName);
         self.Interests.unshift(establishment);
-        $('.rateit').rateit();
-
-        return (establishment.open_hours().length == 0 && establishment.features().length == 0 && !establishment.detailsRequested());
+        
+        $(function () {
+            var options = { active: establishment.index() + 1 };
+            var resultsTabs = $("#results_tabs");
+            resultsTabs.tabs('destroy');
+            resultsTabs.tabs(options);
+            $('a[href$="' + establishment.tab_href() + '"]:first').click();
+        });
     };
 
     self.MapAddress = function (establishment, place) {
@@ -309,12 +333,7 @@ function EstablishmentSearch() {
         $.get(establishmentReviewUrl, function(data) {
             if (data) {
                 for (var reviewIndex in data) {
-                    var review = new Review();
-                    var date = new Date(data[reviewIndex].ReviewDate);
-                    review.review(data[reviewIndex].ReviewText);
-                    review.author(data[reviewIndex].Profile.UserName);
-                    review.date(date.toLocaleDateString());
-                    
+                    var review = self.MapEstablishmentReview(data[reviewIndex]);
                     establishment.reviews.push(review);
                 }
             }
@@ -352,9 +371,17 @@ function EstablishmentSearch() {
         self.service().getDetails(request, function(place, status) {
             if (status == google.maps.places.PlacesServiceStatus.OK) {
                 self.MapAddress(establishment, place);
+                if (!establishment.source()) {
+                    establishment.Rating(place.rating);
+                }
+                establishment.WebSite(place.website);
                 var i;
                 for (i = 0; i < place.types.length; i++) {
-                    establishment.features.push({ name: place.types[i] });
+                    if (place.types[i] != "establishment") {
+                        var feature = new EstablishmentFeature();
+                        feature.Name(place.types[i]);
+                        establishment.features.push(feature);
+                    }
                 }
                 if (place.reviews) {
                     for (i = 0; i < place.reviews.length; i++) {
@@ -370,7 +397,6 @@ function EstablishmentSearch() {
                             var reviewAspect = new ReviewAspect();
                             reviewAspect.aspectType(aspectRating.type);
                             reviewAspect.rating(aspectRating.rating);
-                            reviewAspect.aspectBackingId('reviewAspectRating' + aspectRatingIndex);
                             userReview.aspects.push(reviewAspect);
                         }
                             
@@ -388,18 +414,17 @@ function EstablishmentSearch() {
         });
     };
 
-    self.SelectEstablishmentClick = function() {
+    self.SelectEstablishmentClick = function () {
         var establishment = this;
-        self.SelectEstablishment(establishment);
-        self.RequestEstablishmentDetails(establishment);
-
-        $(function() {
-            var options = { active: establishment.index() + 1 };
-            var resultsTabs = $("#results_tabs");
-            resultsTabs.tabs('destroy');
-            resultsTabs.tabs(options);
-            $('a[href$="' + establishment.tab_href() + '"]:first').click();
-        });
+        if (!$('a[href$="#results_tabs-0"]:first').parent().parent().hasClass("ui-tabs-selected")) {
+            self.ShowDetails(establishment);
+            // $('a[href$="#results_tabs-0"]:first').click();
+        } else {
+            self.SelectEstablishment(establishment);
+        }
+        if (!establishment.detailsRequested()) {
+            self.RequestEstablishmentDetails(establishment);
+        }
     };
 
     self.StepBack = function() {
@@ -436,7 +461,6 @@ function EstablishmentSearch() {
 
     self.SearchClick = function() {
         var searchString = self.searchText();
-        self.clearOverlays();
 
         if (self.LocationChanged()) {
             self.geocoder.geocode({ 'address': searchString }, function(results, status) {
@@ -457,7 +481,7 @@ function EstablishmentSearch() {
                         if (self.longitude() == null) {
                             self.longitude(results[0].geometry.bounds.getCenter().lng());
                         }
-                        var radius = self.GetDistanceInMeters(results[0].geometry.bounds.getNorthEast().lat(), results[0].geometry.bounds.getSouthWest().lat(), results[0].geometry.bounds.getNorthEast().lng(), results[0].geometry.bounds.getSouthWest().lat);
+                        var radius = self.GetDistanceInMeters(results[0].geometry.bounds.getNorthEast().lat(), results[0].geometry.bounds.getSouthWest().lat(), results[0].geometry.bounds.getNorthEast().lng(), results[0].geometry.bounds.getSouthWest().lng());
                         if (radius > 5000.0) {
                             radius = 5000.0;
                         } else {
@@ -486,7 +510,7 @@ function EstablishmentSearch() {
             Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1r) * Math.cos(lat2r);
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         var d = R * c;
-        return (d * 1000) / 2;
+        return (d * 1000)/2;
     };
 
     self.GetSearchRequest = function(types) {
@@ -500,7 +524,7 @@ function EstablishmentSearch() {
             var currentLocation = new google.maps.LatLng(self.latitude(), self.longitude());
             request = {
                 location: currentLocation,
-                radius: '5000',
+                radius: '1000',
                 types: types
             };
         }
@@ -520,9 +544,16 @@ function EstablishmentSearch() {
     self.EstablishmentsMap = {};
 
     self.CreateEstablishment = function(establishment) {
-        var result = new Establishment();
+        var result = new Establishment(function (establishmentb) {
+            self.ShowDetails(establishmentb);
+        });
         result.PK(establishment.EstablishmentPk);
         result.source(true);
+        if (establishment.Images) {
+            for (var i in establishment.Images) {
+                result.AddPhoto(establishment.Images[i].ImageUrl);
+            }
+        }
         return self.MapEstablishment(result, establishment);
     };
 
@@ -561,8 +592,7 @@ function EstablishmentSearch() {
                     } else {
                         self.EstablishmentsMap[establishment.google_id()] = establishment;
                         self.Establishments.unshift(establishment);
-                        var establishmentLocation = new google.maps.LatLng(establishment.latitude(), establishment.longitude());
-                        self.CreateMarker(establishment.name(), establishmentLocation);
+                        self.CreateMarker(establishment);
                     }
                 }
             }
@@ -579,13 +609,24 @@ function EstablishmentSearch() {
             self.searching = true;
             setTimeout(function () { self.searching = false; }, 2000);
             
-            self.latitude(self.map.getCenter().lat());
-            self.longitude(self.map.getCenter().lng());
-            self.bounds(self.map.getBounds());
             self.clearOverlays();
-            var wwDrinkSearch = "/api/Search?Query=" + self.searchText() + self.SearchCriteria();
             self.EstablishmentsMap = {};
             self.Establishments.removeAll();
+            
+            self.latitude(self.map.getCenter().lat());
+            self.longitude(self.map.getCenter().lng());
+            var bounds = self.map.getBounds();
+            if (bounds) {
+                self.bounds(bounds);
+                var radius = self.GetDistanceInMeters(bounds.getNorthEast().lat(), bounds.getSouthWest().lat(), bounds.getNorthEast().lng(), bounds.getSouthWest().lng());
+                if (radius > 5000.0) {
+                    radius = 5000.0;
+                }
+                
+                self.radius(radius);
+            }
+            
+            var wwDrinkSearch = "/api/Search?Query=" + self.searchText() + self.SearchCriteria();
             $.getJSON(wwDrinkSearch, self.wwDrinkSearchCallback);
         }
     };
@@ -619,83 +660,116 @@ function EstablishmentSearch() {
         return result;
     };
 
-
-    self.AddReviewClick = function() {
+    self.AddReviewClick = function () {
         var establishment = this;
-        var data = {
-            PK: establishment.PK().toString(),
-            details_requested: establishment.detailsRequested(),
-            source: establishment.source(),
-            name: establishment.name(),
-            latitude: establishment.latitude(),
-            longitude: establishment.longitude(),
-            suburb: establishment.suburb(),
-            open: establishment.open(),
-            googleId: establishment.google_id(),
-            googleReference: establishment.google_reference(),
-            address: establishment.address(),
-            features: self.GetFeatures(establishment),
-            openHours: self.GetOpenHours(establishment),
-            photosUrls: self.GetPhotos(establishment),
-            rating: establishment.Rating()
-        };
-        var wwDrinkEstablishment = "/api/Establishment";
 
-        var wwDrinkReview = "/api/Review";
+        if (establishment.ReviewText().length > 10) {
 
-        if (this.source()) {
-            $.ajax({
-                type: "PUT",
-                url: wwDrinkEstablishment + "/" + establishment.PK(),
-                data: data,
-                success: function (data) {
+            var data = {
+                PK: establishment.PK().toString(),
+                details_requested: establishment.detailsRequested(),
+                source: establishment.source(),
+                name: establishment.name(),
+                latitude: establishment.latitude(),
+                longitude: establishment.longitude(),
+                suburb: establishment.suburb(),
+                open: establishment.open(),
+                googleId: establishment.google_id(),
+                googleReference: establishment.google_reference(),
+                address: establishment.address(),
+                features: self.GetFeatures(establishment),
+                openHours: self.GetOpenHours(establishment),
+                photosUrls: self.GetPhotos(establishment),
+                rating: establishment.Rating(),
+                addressStreetNumber: establishment.address_street_number,
+                addressStreet : establishment.address_street,
+                addressCity : establishment.address_city,
+                addressState : establishment.address_state,
+                addressCountry : establishment.address_country,
+                addressPostCode : establishment.address_post_code
+            };
+            var wwDrinkEstablishment = "/api/Establishment";
+
+            var wwDrinkReview = "/api/Review";
+
+            if (this.source()) {
+                $.ajax({
+                    type: "PUT",
+                    url: wwDrinkEstablishment + "/" + establishment.PK(),
+                    data: data,
+                    success: function(data) {
+                        if (data != null) {
+                            var review = {
+                                pk: Guid.create().toString(),
+                                reviewText: establishment.ReviewText(),
+                                parentFk: establishment.PK().toString(),
+                                rating: establishment.ReviewRating(),
+                                features: establishment.GetEstablishmentFeatures(),
+                                parentTable: "Establishment"
+                            };
+                            $.post(wwDrinkReview, review, function(data) {
+                                if (data) {
+                                    establishment.AddingReview(false);
+                                    var review = self.MapEstablishmentReview(data);
+                                    establishment.reviews.unshift(review);
+                                }
+                            });
+                        }
+                    }
+                });
+            } else {
+                $.post(wwDrinkEstablishment, data, function(data) {
                     if (data) {
+                        establishment.source(true);
+                        establishment.PK(data.EstablishmentPk);
                         var review = {
                             pk: Guid.create().toString(),
                             reviewText: establishment.ReviewText(),
+                            rating: establishment.ReviewRating(),
+                            features: establishment.GetEstablishmentFeatures(),
                             parentFk: establishment.PK().toString(),
                             parentTable: "Establishment"
                         };
-                        $.post(wwDrinkReview, review, function (data) {
+                        $.post(wwDrinkReview, review, function(data) {
                             if (data) {
-                                var date = new Date(data.ReviewDate);
                                 establishment.AddingReview(false);
-                                var review = new Review();
-                                review.review(data.ReviewText);
-                                review.author(data.Profile.UserName);
-                                review.date(date.toLocaleDateString());
+                                var review = self.MapEstablishmentReview(data);
                                 establishment.reviews.unshift(review);
                             }
                         });
                     }
-                }
-            });
-        } else {
-            $.post(wwDrinkEstablishment, data, function (data) {
-                if (data) {
-                    establishment.source(true);
-                    establishment.PK(data.EstablishmentPk);
-                    var review = {
-                        pk: Guid.create().toString(),
-                        reviewText: establishment.ReviewText(),
-                        rating: establishment.Rating(),
-                        parentFk: establishment.PK().toString(),
-                        parentTable: "Establishment"
-                    };
-                    $.post(wwDrinkReview, review, function (data) {
-                        if (data) {
-                            var date = new Date(data.ReviewDate);
-                            establishment.AddingReview(false);
-                            var review = new Review();
-                            review.review(data.ReviewText);
-                            review.author(data.Profile.UserName);
-                            review.date(date.toLocaleDateString());
-                            establishment.reviews.unshift(review);
-                        }
-                    });
-                }
-            });
+                });
+            }
         }
+    };
+
+    self.MapEstablishmentReview = function (data) {
+        var date = new Date(data.ReviewDate);
+        var result = new Review();
+        result.review(data.ReviewText);
+        result.author(data.Profile.UserName);
+        result.date(date.toLocaleDateString());
+        result.rating(data.Rating);
+        for (var establishmentFeatureIndex in data.Aspects) {
+            var aspectRating = data.Aspects[establishmentFeatureIndex];
+            var reviewAspect = new ReviewAspect();
+            reviewAspect.aspectType(aspectRating.Aspect.AspectName);
+            reviewAspect.rating(aspectRating.Rating);
+            result.aspects.push(reviewAspect);
+        }
+        return result;
+    };
+
+    self.init_autocomplete = function() {
+        $.getJSON("/api/Aspect/", function (data) {
+            
+            if (data && data.length > 0) {
+                for (var i = 0; i < data.length; i++) {
+                    var aspect = data[i];
+                    availableAspects.push(aspect.AspectName);
+                }
+            }
+        });
     };
 }
 

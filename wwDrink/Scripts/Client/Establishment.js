@@ -1,5 +1,8 @@
-﻿function Establishment() {
+﻿var missingImageUrl = "/Images/missing_establishment_image.png";
+
+function Establishment(selectEstablishmentCallback) {
     var self = this;
+    self.SelectEstablishmentCallback = selectEstablishmentCallback;
     self.PK = ko.observable();
     self.detailsRequested = ko.observable(false);
     self.source = ko.observable(false);
@@ -7,7 +10,7 @@
     self.latitude = ko.observable();
     self.longitude = ko.observable();
     self.suburb = ko.observable();
-    self.imageUrl = ko.observable("/Images/missing_establishment_image.png");
+    self.imageUrl = ko.observable(missingImageUrl);
     self.open = ko.observable();
     self.closed = function() { return !self.open; };
     self.index = ko.observable();
@@ -36,14 +39,54 @@
     };
 
     self.Rating = ko.observable(3);
+    self.WebSite = ko.observable();
+
+    self.SearchAspect = ko.observable();
 
     self.AddingReview = ko.observable(false);
     self.NotAddingReview = ko.observable(true);
+    self.ReviewRating = ko.observable(3);
     self.ReviewText = ko.observable();
+    self.ReviewAspects = ko.observableArray();
     self.ShowAddReviewClick = function () {
         self.AddingReview(true);
         self.NotAddingReview(false);
-        $('.rateit').rateit({ backingfld: '#backing2b' });
+    };
+
+    self.GetEstablishmentFeatures = function() {
+        var result = [];
+        for (var aspect in self.ReviewAspects()) {
+            var feature = self.ReviewAspects()[aspect];
+            result.push({ Name: feature.Name(), Rating: feature.Rating() });
+        }
+
+        return result;
+    };
+
+    self.AddAspectVisible = ko.computed(function() {
+        var result = true;
+        if (self.ReviewAspects().length >= 3) {
+            result = false;
+        }
+        return result;
+    });
+
+    self.AddAspect = function () {
+        for (var i = 0; i < availableAspects.length; i++) {
+            var feature = availableAspects[i];
+            if (feature == self.SearchAspect()) {
+                var establishmentFeature = new EstablishmentFeature();
+                establishmentFeature.Name(self.SearchAspect());
+                self.ReviewAspects.push(establishmentFeature);
+                self.SearchAspect("");
+                break;
+            }
+        }
+    };
+
+    self.DeleteAspect = function () {
+        var establishmentFeature = this;
+        self.ReviewAspects.remove(establishmentFeature);
     };
 
     self.AddPhoto = function (imageUrl) {
@@ -52,15 +95,61 @@
                 return;
         }
         self.photos.push({ imageUrl: imageUrl });
+        if (self.imageUrl() == missingImageUrl) {
+            self.imageUrl(imageUrl);
+        }
     };
 
     self.AddReview = function (review) {
-        for (var i = self.photos().length - 1; i > -1; i--) {
-            if (self.photos()[i].author == review.author())
+        for (var i = self.reviews().length - 1; i > -1; i--) {
+            if (self.reviews()[i].author == review.author())
                 return;
         }
 
         self.reviews.push(review);
+    };
+
+    self.marker = {};
+    self.map = {};
+    self.ShowInfoWindow = function () {
+
+        var content = '    <div id="establishmentInfoWindow">' +
+            '<div class="establishment-open"  data-bind="visible: open()"><span>Open</span></div>' +
+            '<div class="establishment-closed" data-bind="visible: !open()"><span>Currently Closed</span></div>' +
+            '<div class="establishment">' +
+            '    <h4 data-bind="text: name"></h4>' +
+            '    <img data-bind="attr:{src: imageUrl}, click: ShowEstablishmentDetails" alt="loading image" width="174" height="102" /><br/>' +
+            '    <span data-bind="text: suburb"> </span>' +
+            '</div>' +
+            '</div>';
+
+        infowindow.setContent(content);
+        infowindow.open(self.map, self.marker);
+        // bind knockout when dom is ready
+        
+        var listener = google.maps.event.addListener(infowindow, 'domready', function () {
+            var element = $('#establishmentInfoWindow')[0];
+            ko.cleanNode(element);
+            ko.applyBindings(self, document.getElementById("establishmentInfoWindow"));
+            google.maps.event.removeListener(listener);
+        });
+    };
+
+    self.AllowAddReview = ko.computed(function () {
+        var result = screenName != "";
+        for (var i in self.reviews()) {
+            var review = self.reviews()[i];
+            if (review.author() == screenName) {
+                result = false;
+            }
+        }
+        return result;
+    });
+
+    self.ShowEstablishmentDetails = function () {
+        if (self.SelectEstablishmentCallback) {
+            self.SelectEstablishmentCallback(self);
+        }
     };
 }
 

@@ -3,6 +3,9 @@
     ViewBag.Title = "wwDrink";
 }
 @section featured {
+    <script type="text/javascript">
+        var screenName = '@ViewBag.ScreenName';
+    </script>
     <section class="featured">
         <form>
             <div class="content-wrapper">
@@ -42,7 +45,7 @@
                                         <div class="establishment-closed" data-bind="visible: !open()"><span>Currently Closed</span></div>
                                         <div class="establishment">
                                             <h4 data-bind="text: name"></h4>
-                                            <img data-bind="attr:{src: imageUrl}" alt="loading image" width="174" height="102" />
+                                            <img data-bind="attr:{src: imageUrl}" alt="loading image" width="174" height="102" /><br/>
                                             <span data-bind="text: suburb"> </span>
                                         </div>
                                     </div>
@@ -50,6 +53,16 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="nav-buttons">
+                        <div class="nav-buttons-back">
+                            <input id="StepFirstButton" type="button" data-bind="click: StepFirst" value ="&nbsp;&nbsp;&nbsp;&nbsp;<<&nbsp;&nbsp;&nbsp;&nbsp;" /> <input id="StepBackButton" type="button" data-bind="click: StepBack" value="&nbsp;&nbsp;&nbsp;&nbsp;<&nbsp;&nbsp;&nbsp;&nbsp;" />
+                        </div>
+                        <div class="nav-buttons-forward">
+                            <input id="StepForwardButton" type="button" data-bind="click: StepForward" value="&nbsp;&nbsp;&nbsp;&nbsp;>&nbsp;&nbsp;&nbsp;&nbsp;"/><input id="StepLastButton" type="button" data-bind="click: StepLast" value="&nbsp;&nbsp;&nbsp;&nbsp;>>&nbsp;&nbsp;&nbsp;&nbsp;" />
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </form>
@@ -59,14 +72,6 @@
 <link rel="stylesheet" href="~/Content/rateit.css">
 
 <div id="results_tabs">
-    <div class="nav-buttons">
-        <div class="nav-buttons-back">
-            <input id="StepFirstButton" type="button" data-bind="click: StepFirst" value ="&nbsp;&nbsp;&nbsp;&nbsp;<<&nbsp;&nbsp;&nbsp;&nbsp;" /> <input id="StepBackButton" type="button" data-bind="click: StepBack" value="&nbsp;&nbsp;&nbsp;&nbsp;<&nbsp;&nbsp;&nbsp;&nbsp;" />
-        </div>
-        <div class="nav-buttons-forward">
-            <input id="StepForwardButton" type="button" data-bind="click: StepForward" value="&nbsp;&nbsp;&nbsp;&nbsp;>&nbsp;&nbsp;&nbsp;&nbsp;"/><input id="StepLastButton" type="button" data-bind="click: StepLast" value="&nbsp;&nbsp;&nbsp;&nbsp;>>&nbsp;&nbsp;&nbsp;&nbsp;" />
-        </div>
-    </div>
 
     <ul class="tab-header">
         <li class="tab-item" style="background-image: none;">
@@ -122,9 +127,24 @@
                         </div>
                     </li>
                     <li>
-                        <div class="establishment-ticks">
+                        <div class="establishment-ratings">
+                            <div class="establishment-rating" style="display: table-row">
+                                <div class="aspect-rating-name">
+                                    <span></span>
+                                </div>
+                                <div class="aspect-rating-rating">
+                                    <div data-bind="rateit : { value: Rating, max: 5, step: 0.1, readonly: true }"></div>
+                                </div>
+                            </div>
                             <!-- ko foreach: features -->
-                            <div class="feature-tick"><span data-bind="text: name"></span></div>
+                            <div class="establishment-rating" style="display: table-row">
+                                <div class="aspect-rating-name">
+                                    <span data-bind="text: Name"></span>:
+                                </div>
+                                <div class="aspect-rating-rating">
+                                    <div data-bind="rateit :  { value: Rating, max: 5, step: 0.1, readonly: true }"></div>
+                                </div>
+                            </div>
                             <!-- /ko -->
                         </div>
                     </li>
@@ -132,21 +152,52 @@
             </div>
             @if (Request.IsAuthenticated)
             {
-                <div class="AddReview">
+                <div class="AddReview" data-bind="visible: AllowAddReview">
                     <div class="add-review-collapsed" data-bind="visible: NotAddingReview">
                         <input type="submit" id="ShowAddReviewButton" value="Add Review" data-bind="click: ShowAddReviewClick"/>
                     </div>
+                    <div class="add-review-overall-rating" data-bind="visible: AddingReview">
+                        <div class="add-review-ratings">
+                            <div class="add-review-search-aspect">
+                                <div class="add-review-search-aspect-cell">
+                                    &nbsp;
+                                </div>
+                                <div class="add-review-search-aspect-cell">
+                                    <div data-bind="rateit: ReviewRating"></div>
+                                </div>
+                            </div>
+                            <div class="add-review-search-aspect">
+                                <div class="add-review-search-aspect-cell">
+                                    Key aspects:
+                                </div>
+                                <div class="add-review-search-aspect-cell">
+                                    &nbsp;
+                                </div>
+                            </div>
+                            <div class="add-review-search-aspect">
+                                <div class="add-review-search-aspect-cell">
+                                    <input class="search-aspect" type="text" data-bind="autoComplete: availableAspects, value: SearchAspect, autoCompleteOptions: {autoFocus: false}" /> 
+                                </div>
+                                <div class="add-review-search-aspect-cell">
+                                    <a href="#" data-bind="click: AddAspect, visible: AddAspectVisible">Add Aspect</a>
+                                </div>
+                            </div>
+                            <!-- ko foreach: ReviewAspects -->
+                            <div class="add-review-aspect">
+                                <div class="add-review-aspect-cell">
+                                    <button class="add-review-remove-aspect" data-bind="click: $parent.DeleteAspect"></button>
+                                    <span data-bind="text: Name"></span> 
+                                </div>
+                                <div class="add-review-aspect-cell">
+                                    <div class="add-review-rating" data-bind="rateit: Rating"></div>
+                                </div>
+                            </div>
+                            <!-- /ko -->
+                        </div>
+                    </div>
                     <div class="ReviewPanel" data-bind="visible: AddingReview">
                         <form>
-                            <select id="backing2b" data-bind="value: Rating" style="display:none">
-                                <option value="0">Clear</option>
-                                <option value="1">Bad</option>
-                                <option value="2">Poor</option>
-                                <option value="3">Ok</option>
-                                <option value="4">Great</option>
-                                <option value="5">Excellent</option>
-                            </select>
-                            <div class="rateit" data-rateit-backingfld="#backing2b"></div><br/>
+                            <div class="rateit: Rating"></div><br/>
                 
                             <textarea name="ReviewText" id="ReviewText" rows="5" style="width:60%;" data-bind="value: ReviewText"></textarea>
                             <br/>
@@ -155,6 +206,17 @@
                     </div>
                 </div>
             }
+            else
+            {
+                <div class="UserNotAuthorized">
+                    <div class="login_social_media">To leave a review, log on with one of the following: <br/>
+                        <section class="social" id="socialLoginForm">
+                            @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
+                        </section>
+                    </div>
+                </div>
+            }
+            
             <div class="establishment-reviews" data-bind="foreach: reviews">
                 <div class="establishment-review">
                     <div class="review-header">
@@ -164,6 +226,9 @@
                         <div class="review-date">
                             Review date: <span data-bind="text: date"></span>
                         </div>
+                    </div>
+                    <div class="review-overall-rating">
+                        <div data-bind="rateit: { value: rating, max: 5, step: 0.1, readonly: true }"></div>
                     </div>
                     <div class="review-body">
                         <div class="review-text">
@@ -181,7 +246,7 @@
                                         <span data-bind="text: aspectType"></span>                        
                                     </div>
                                     <div class="aspect-rating-rating">
-                                        <div class="rateit" data-rateit-readonly="true" data-bind="attr: { 'data-rateit-value': computeRating }"></div><br/>
+                                        <div data-bind="rateit: { value: rating, max: 5, step: 0.1, readonly: true }"></div>
                                     </div>
                                 </div>
                             </div>
@@ -203,6 +268,7 @@
     @Scripts.Render("~/Scripts/knockout-binding-handlers.js")
     @Scripts.Render("~/Scripts/guid.js")
     @Scripts.Render("http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false")
+    @Scripts.Render("~/Scripts/Client/Aspect.js")
     @Scripts.Render("~/Scripts/Client/Review.js")
     @Scripts.Render("~/Scripts/Client/Establishment.js")
     @Scripts.Render("~/Scripts/Client/Search.js")

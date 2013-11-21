@@ -163,6 +163,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AspectController.cs" />
     <Compile Include="Controllers\BeerController.cs" />
@@ -258,18 +259,22 @@
     <Content Include="Images\back_arrow.png" />
     <Content Include="Images\close_button.png" />
     <Content Include="Images\close_button_active.png" />
+    <Content Include="Images\NoImageBeer.png" />
     <Content Include="Images\forward_arrow.png" />
     <Content Include="Images\missing_establishment_image.png" />
+    <Content Include="Images\NoImageSpirits.png" />
+    <Content Include="Images\NoImageWine.png" />
     <Content Include="Images\Pint.jpg" />
     <Content Include="Images\select_list_arrow.png" />
     <Content Include="Images\wwDrinkLogo.png" />
+    <Content Include="Scripts\Client\Aspect.js" />
     <Content Include="Scripts\Client\Beer.js" />
     <Content Include="Scripts\Client\Drink.js" />
     <Content Include="Scripts\Client\drinklisting.js" />
     <Content Include="Scripts\Client\Establishment.js" />
     <Content Include="Scripts\Client\favoriteaspect.js" />
     <Content Include="Scripts\Client\home.js" />
-    <Content Include="Scripts\Client\Liqour.js" />
+    <Content Include="Scripts\Client\Liquor.js" />
     <Content Include="Scripts\Client\manage.js" />
     <Content Include="Scripts\Client\manageuser.js" />
     <Content Include="Scripts\Client\Review.js" />
@@ -343,6 +348,8 @@
     <Content Include="Views\Beer\Index.cshtml" />
     <Content Include="Views\Wine\Index.cshtml" />
     <Content Include="Views\Liqour\Index.cshtml" />
+    <Content Include="Views\Home\_ExternalLoginsListPartial.cshtml" />
+    <Content Include="Views\About\Index.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

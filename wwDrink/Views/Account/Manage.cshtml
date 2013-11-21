@@ -66,13 +66,15 @@
 
 <p>You're logged in as <strong>@User.Identity.Name</strong>.</p>
 
-<div id="accordion">
-    <h3>Personal Details</h3>
-    <div>
+<div id="user-details">
+    <div class="preference-heading" data-bind="attr: { class: AspectHeadingClass }">
+        <h3 data-bind="click: ShowPersonalClick"><a href="#">Personal Details</a></h3>
+    </div>
+    <div class="preference-details" data-bind="visible: ShowPersonalDetails">
         <form>
             <div id="personal_details_div_readonly" data-bind="visible: !editPersonalDetails()">
-                <span">Screen Name:</span><span id="screen_name_readonly" data-bind="text: screenName"></span>
-                <span>Age Range:</span><span id="age_range_readonly" data-bind="text: ageRange"></span><br/>
+                <span>Screen Name:</span><span id="screen_name_readonly" data-bind="text: screenName"></span>
+                <span id="age_range_readonly_heading">Age Range:</span><span id="age_range_readonly" data-bind="text: ageRange"></span><br/>
                 <div class="MusicPreferences">
                     <h5>Musical Preferences</h5>
                     <div data-bind="template: { name: 'readonly-display-template', foreach: musicalSettings }" ></div>
@@ -112,8 +114,10 @@
             <input type="button" id="save_details" value="Save Details" data-bind="click: SavePersonalDetailsClick"/>
         </form>
     </div>
-    <h3>Establishment Preferences</h3>
-    <div>
+    <div class="preference-heading" data-bind="attr: { class: EstablishmentHeadingClass }">
+        <h3 data-bind="click: ShowEstablishmentClick"><a href="#" >Establishment Preferences</a></h3>
+    </div>
+    <div class="preference-details" data-bind="visible: ShowEstablishmentDetails">
         <form>
             <div id="establishment_details_div_readonly" data-bind="visible: !editEstablishmentDetails()">
                 <h5>Service and Staff</h5>
@@ -164,8 +168,10 @@
             <input type="button" id="save_establishment_details" value="Save Details" data-bind="click: SaveEstablishmentDetailsClick"/>
         </form>
     </div>
-    <h3>Beverage Preferences</h3>
-    <div>
+    <div class="preference-heading" data-bind="attr: { class: BeverageHeadingClass }">
+        <h3 data-bind="click: ShowBeverageClick"><a href="#" >Beverage Preferences</a></h3>
+    </div>
+    <div class="preference-details" data-bind="visible: ShowBeverageDetails">
         <form>
             <div class="FavoriteSection">
                 <span>Favorite Beer</span>
@@ -185,8 +191,10 @@
             </div>
         </form>
     </div>
-    <h3>Access Preferences</h3>
-    <div>
+    <div class="preference-heading" data-bind="attr: { class: AccessHeadingClass }">
+        <h3 data-bind="click: ShowAccessClick"><a href="#" >Access Preferences</a></h3>
+    </div>
+    <div class="preference-details" data-bind="visible: ShowAccessDetails">
         @if (ViewBag.HasLocalPassword)
         {
             @Html.Partial("_ChangePasswordPartial")

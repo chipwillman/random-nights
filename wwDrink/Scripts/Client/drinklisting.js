@@ -36,7 +36,9 @@
             d.Phone(drink.Crafter.Phone);
             d.Fax(drink.Crafter.Fax);
             d.Email(drink.Crafter.Email);
-            d.MainImageUrl(drink.MainImageUrl);
+            if (drink.MainImageUrl != null) {
+                d.MainImageUrl(drink.MainImageUrl);
+            }
             d.Url(drink.Crafter.Url);
             d.Vegan(drink.Vegan);
         }

@@ -1,5 +1,6 @@
 ﻿namespace wwDrink.Controllers
 {
+    using System;
     using System.Data.Entity;
     using System.Data.Spatial;
     using System.Linq;
@@ -18,13 +19,16 @@
             var searchText = HttpContext.Current.Request.QueryString["Query"];
             var latitude = HttpContext.Current.Request.QueryString["Latitude"];
             var longitude = HttpContext.Current.Request.QueryString["Longitude"];
+            double range;
+            var rangeQueryString = HttpContext.Current.Request.QueryString["Range"];
+            double.TryParse(rangeQueryString, out range);
 
-            return this.Search(searchText, latitude, longitude);
+            return this.Search(searchText, latitude, longitude, range);
         }
 
         #region Implementation
 
-        private SearchModel Search(string searchText, string latitude, string longitude)
+        private SearchModel Search(string searchText, string latitude, string longitude, double range)
         {
             var pageSize = 40;
             var result = new SearchModel();
@@ -33,7 +37,7 @@
                 var searchLocation = DbGeography.FromText(string.Format("POINT({1} {0})", latitude, longitude));
 
                 var establishments = (from e in db.Establishments
-                                      where e.Location.Distance(searchLocation) < 5000
+                                      where e.Location.Distance(searchLocation) < range
                                       orderby e.Rating, e.Location.Distance(searchLocation)
                                       select e).Include(e => e.Images).Skip(0).Take(pageSize);
                 result.Establishments = establishments.ToArray();

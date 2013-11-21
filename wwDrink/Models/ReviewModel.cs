@@ -3,6 +3,12 @@
     using System;
     using System.Runtime.Serialization;
 
+    public class EstablishmentFeatures
+    {
+        public string Name { get; set; }
+        public decimal Rating { get; set; }
+    }
+
     [DataContract]
     public class ReviewModel
     {
@@ -17,5 +23,7 @@
         public string ReviewText { get; set; }
 
         public decimal Rating { get; set; }
+
+        public EstablishmentFeatures[] Features { get; set; }
     }
 }

@@ -23,14 +23,62 @@
     self.musicPerformanceAspects = ko.observableArray();
     self.atmosphereAspects = ko.observableArray();
 
-    self.AddFavoriteAspect = function (aspect) {
-        var favorite = new FavoriteAspect();
+    self.ShowPersonalDetails = ko.observable();
+    self.ShowEstablishmentDetails = ko.observable();
+    self.ShowBeverageDetails = ko.observable();
+    self.ShowAccessDetails = ko.observable();
+
+    self.AspectHeadingClass = ko.computed(function () {
+        if (self.ShowPersonalDetails()) {
+            return "preference-heading-selected";
+        }
+        return "preference-heading";
+    });
+
+    self.EstablishmentHeadingClass = ko.computed(function () {
+        if (self.ShowEstablishmentDetails()) {
+            return "preference-heading-selected";
+        }
+        return "preference-heading";
+    });
+
+    self.BeverageHeadingClass = ko.computed(function () {
+        if (self.ShowBeverageDetails()) {
+            return "preference-heading-selected";
+        }
+        return "preference-heading";
+    });
+
+    self.AccessHeadingClass = ko.computed(function () {
+        if (self.ShowAccessDetails()) {
+            return "preference-heading-selected";
+        }
+        return "preference-heading";
+    });
+
+    self.ShowPersonalClick = function () {
+        self.ShowPersonalDetails(!self.ShowPersonalDetails());
+    };
+
+    self.ShowEstablishmentClick = function () {
+        self.ShowEstablishmentDetails(!self.ShowEstablishmentDetails());
+    };
+
+    self.ShowBeverageClick = function () {
+        self.ShowBeverageDetails(!self.ShowBeverageDetails());
+    };
+
+    self.ShowAccessClick = function () {
+        self.ShowAccessDetails(!self.ShowAccessDetails());
+    };
+
+    self.AddFavoriteAspect = function (aspect) {var favorite = new FavoriteAspect();
         favorite.Name(aspect.AspectName);
         favorite.AspectFk(aspect.AspectPk);
         return favorite;
     };
 
-    self.AddPreference = function(list, detail) {
+    self.AddPreference = function (list, detail) {
         for (var i = 0; i < list.length; i++) {
             var listItem = list[i];
             if (listItem.AspectFk() == detail.AspectFk) {
@@ -287,12 +335,6 @@
             }
             
             ko.applyBindings(manage_users_model);
-
-            $(function () {
-                $("#accordion").accordion({
-                    collapsible: true
-                });
-            });
 
         });
     };

@@ -32,7 +32,7 @@ namespace wwDrink.Controllers
             Guid parent;
             if (Guid.TryParse(parentQueryString, out parent))
             {
-                reviews = db.Reviews.Where(r => r.ParentFk == parent).Include(r => r.Profile);
+                reviews = db.Reviews.Where(r => r.ParentFk == parent).Include(r => r.Profile).Include("Aspects").Include("Aspects.Aspect");
             }
             else
             {
@@ -117,6 +117,7 @@ namespace wwDrink.Controllers
             if (profile != null)
             {
                 result.UserFk = profile.UserPk;
+                result.Aspects = new List<ReviewAspectLink>();
                 result.Profile = profile;
                 result.ReviewText = review.ReviewText;
                 result.ParentTable = review.ParentTable;
@@ -125,6 +126,24 @@ namespace wwDrink.Controllers
                 result.ReviewPk = Guid.NewGuid();
                 result.ReviewDate = DateTime.UtcNow;
                 result.CreatedDate = DateTime.UtcNow;
+
+                if (review.Features != null)
+                {
+                    foreach (var feature in review.Features)
+                    {
+                        var aspect = db.Aspects.FirstOrDefault(a => a.AspectName == feature.Name);
+                        if (aspect != null)
+                        {
+                            var reviewAspectLink = new ReviewAspectLink();
+                            reviewAspectLink.Aspect = aspect;
+                            reviewAspectLink.ReviewAspectPk = Guid.NewGuid();
+                            reviewAspectLink.AspectFk = aspect.AspectPk;
+                            reviewAspectLink.ReviewFk = result.ReviewPk;
+                            reviewAspectLink.Rating = feature.Rating;
+                            result.Aspects.Add(reviewAspectLink);
+                        }
+                    }
+                }
             }
             return result;
         }

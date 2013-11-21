@@ -198,7 +198,7 @@ namespace wwDrink.Controllers
             return result;
         }
 
-        private List<EstablishmentImage> MapImages(IEnumerable<string> photosUrls, Guid establishmentModelPk)
+        private List<EstablishmentImage> MapImages(IEnumerable<EstablishmentImageModel> photosUrls, Guid establishmentModelPk)
         {
             var result = new List<EstablishmentImage>();
             if (photosUrls != null)
@@ -210,7 +210,7 @@ namespace wwDrink.Controllers
                             {
                                 EstablishmentImagePk = Guid.NewGuid(),
                                 EstablishmentFk = establishmentModelPk,
-                                ImageUrl = photoUrl
+                                ImageUrl = photoUrl.ImageUrl
                             });
                 }
             }

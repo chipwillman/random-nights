@@ -3,15 +3,6 @@
     self.pk = ko.observable();
     self.aspectType = ko.observable();
     self.rating = ko.observable();
-    self.aspectBackingId = ko.observable();
-    self.dataAspectBackingId = ko.computed(function() {
-        return '#' + self.aspectBackingId();
-    });
-
-    self.computeRating = ko.computed(function () {
-        setTimeout(function() { $('.rateit').rateit() }, 200);
-        return self.rating();
-    });
 }
 
 function Review() {
@@ -33,11 +24,6 @@ function Review() {
     self.date = ko.observable();
     self.rating = ko.observable();
     self.aspects = ko.observableArray();
-
-    self.computeRating = ko.computed(function () {
-        setTimeout(function () { $('.rateit').rateit(); }, 200);
-        return self.rating();
-    });
 
     self.ShowShortReview = ko.observable(true);
     self.ShowFullReview = ko.observable(false);

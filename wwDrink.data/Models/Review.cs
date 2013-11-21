@@ -1,8 +1,25 @@
 ﻿namespace wwDrink.data.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+
+    public class ReviewAspectLink
+    {
+        [Key]
+        public Guid ReviewAspectPk { get; set; }
+
+        [Index("IDX_Review", false)]
+        public Guid ReviewFk { get; set;}
+
+        public Guid AspectFk { get; set; }
+
+        [ForeignKey("AspectFk")]
+        public Aspect Aspect { get; set; }
+
+        public decimal Rating { get; set; }
+    }
 
     [Table("Reviews")]
     public class Review
@@ -34,5 +51,7 @@
         public DateTime CreatedDate { get; set; }
 
         public DateTime ReviewDate { get; set; }
+
+        public List<ReviewAspectLink> Aspects { get; set; }
     }
 }

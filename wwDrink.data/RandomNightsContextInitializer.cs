@@ -326,11 +326,18 @@
                     });
             context.Aspects.Add(
                 new Aspect
-                    {
-                        AspectPk = new Guid("5D2AD98B-BE7D-4C14-8973-72E949C5CEE3"),
-                        AspectName = "Darts",
-                        PreferenceCategoryPk = new Guid("044B345D-A6EF-48E4-858B-16059105DA20")
-                    });
+                {
+                    AspectPk = new Guid("5D2AD98B-BE7D-4C14-8973-72E949C5CEE3"),
+                    AspectName = "Darts",
+                    PreferenceCategoryPk = new Guid("044B345D-A6EF-48E4-858B-16059105DA20")
+                });
+            context.Aspects.Add(
+                new Aspect
+                {
+                    AspectPk = new Guid("78010126-18C0-46BD-9C9E-96E75F5CDE64"),
+                    AspectName = "Foosball",
+                    PreferenceCategoryPk = new Guid("044B345D-A6EF-48E4-858B-16059105DA20")
+                });
             context.Aspects.Add(
                 new Aspect
                     {

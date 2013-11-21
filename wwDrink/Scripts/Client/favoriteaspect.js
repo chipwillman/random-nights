@@ -21,4 +21,19 @@
     self.ExcludedCheckboxReadonlyId = ko.computed(function () { return self.Name().replace(" ", "") + "_exclude_readonly_checkbox"; });
     self.RequiredCheckboxReadonlyId = ko.computed(function () { return self.Name().replace(" ", "") + "_require_readonly_checkbox"; });
     self.FactorReadonlyId = ko.computed(function () { return self.Name().replace(" ", "") + "_readonly_factor"; });
+
+    self.Excluded.subscribe(function() {
+        self.Enabled(true);
+        self.Factor(0);
+    });
+    
+    self.Required.subscribe(function () {
+        self.Enabled(true);
+        self.Factor(100);
+    });
+
+    self.Factor.subscribe(function() {
+        self.Enabled(true);
+    });
+
 }

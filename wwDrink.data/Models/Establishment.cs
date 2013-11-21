@@ -20,10 +20,12 @@
     {
         [Key]
         public Guid AspectEstablishmentLinkPk { get; set; }
-        [Index("IDX_Aspect", false)]
         public Guid AspectFk { get; set; }
+        [ForeignKey("AspectFk")]
+        public Aspect Aspect { get; set; }
         [Index("IDX_Establishment", false)]
         public Guid EstablishmentFk { get; set; }
+        public decimal Rating { get; set; }
     }
 
     [Table("Establishments")]

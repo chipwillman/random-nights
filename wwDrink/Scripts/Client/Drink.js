@@ -1,5 +1,6 @@
 ﻿function Drink() {
     var self = this;
+    self.DefaultImage = "/Images/NoImageBeer.png";
     self.PK = ko.observable();
     self.Name = ko.observable();
     self.Vegan = ko.observable(false);
@@ -8,7 +9,7 @@
     self.Phone = ko.observable("Phone Not Set");
     self.Fax = ko.observable("Fax not set");
     self.Email = ko.observable("Email not set");
-    self.MainImageUrl = ko.observable();
+    self.MainImageUrl = ko.observable(self.DefaultImage);
     self.Url = ko.observable("Url not set");
     self.reviews = ko.observableArray();
     self.BeverageRating = ko.observable(3);
@@ -39,6 +40,17 @@
         self.NotAddingReview(false);
         $('.rateit').rateit({ backingfld: '#ReviewSelect' });
     };
+
+    self.AllowAddReview = ko.computed(function () {
+        var result = screenName != "";
+        for (var i in self.reviews()) {
+            var review = self.reviews()[i];
+            if (review.author() == screenName) {
+                result = false;
+            }
+        }
+        return result;
+    });
 
     self.ReviewsRequested = false;
 
