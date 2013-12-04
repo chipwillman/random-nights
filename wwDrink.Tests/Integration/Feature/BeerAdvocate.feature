@@ -3,7 +3,7 @@
 	As pub crawler
 	I want to be able to see beer reviews from day dot
 
-@wip
+@ignore @wip
 Scenario: Add two numbers
 	Given I have entered 50 into the calculator
 	And I have entered 70 into the calculator

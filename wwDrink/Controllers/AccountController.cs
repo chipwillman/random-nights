@@ -13,6 +13,8 @@ using wwDrink.Models;
 
 namespace wwDrink.Controllers
 {
+    using wwDrink.data;
+
     [Authorize]
     [InitializeSimpleMembership]
     public class AccountController : Controller
@@ -81,6 +83,15 @@ namespace wwDrink.Controllers
                 {
                     WebSecurity.CreateUserAndAccount(model.UserName, model.Password, new { UserPk = Guid.NewGuid() });
                     WebSecurity.Login(model.UserName, model.Password);
+                    using (var db = new RandomNightsContext())
+                    {
+                        var profile = db.Profiles.FirstOrDefault(p => p.UserId == WebSecurity.CurrentUserId);
+                        if (profile != null)
+                        {
+                            profile.ScreenName = WebSecurity.CurrentUserName;
+                            db.SaveChanges();
+                        }
+                    }
                     return RedirectToAction("Index", "Home");
                 }
                 catch (MembershipCreateUserException e)
@@ -232,6 +243,15 @@ namespace wwDrink.Controllers
             {
                 // If the current user is logged in add the new account
                 OAuthWebSecurity.CreateOrUpdateAccount(result.Provider, result.ProviderUserId, User.Identity.Name);
+                using (var db = new RandomNightsContext())
+                {
+                    var profile = db.Profiles.FirstOrDefault(p => p.UserId == WebSecurity.CurrentUserId);
+                    if (profile != null)
+                    {
+                        profile.ScreenName = WebSecurity.CurrentUserName;
+                        db.SaveChanges();
+                    }
+                }
                 return RedirectToLocal(returnUrl);
             }
             else
@@ -240,7 +260,7 @@ namespace wwDrink.Controllers
                 string loginData = OAuthWebSecurity.SerializeProviderUserId(result.Provider, result.ProviderUserId);
                 ViewBag.ProviderDisplayName = OAuthWebSecurity.GetOAuthClientData(result.Provider).DisplayName;
                 ViewBag.ReturnUrl = returnUrl;
-                return View("ExternalLoginConfirmation", new RegisterExternalLoginModel { UserName = result.UserName, ExternalLoginData = loginData });
+                return View("ExternalLoginConfirmation", new RegisterExternalLoginModel { UserName = result.UserName, ScreenName = result.UserName, ExternalLoginData = loginData });
             }
         }
 
@@ -270,7 +290,7 @@ namespace wwDrink.Controllers
                     if (user == null)
                     {
                         // Insert name into the profile table
-                        db.UserProfiles.Add(new UserProfile { UserName = model.UserName, UserPk = Guid.NewGuid() });
+                        db.UserProfiles.Add(new UserProfile { UserName = model.UserName, ScreenName = model.ScreenName, UserPk = Guid.NewGuid() });
                         db.SaveChanges();
 
                         OAuthWebSecurity.CreateOrUpdateAccount(provider, providerUserId, model.UserName);

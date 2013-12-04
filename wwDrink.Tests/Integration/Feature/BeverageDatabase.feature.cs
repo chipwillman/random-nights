@@ -154,7 +154,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 28
  testRunner.When("I press the Liquor Menu", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 29
- testRunner.Then("I should be presented with a search for Liqour page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("I should be presented with a search for Liquor page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

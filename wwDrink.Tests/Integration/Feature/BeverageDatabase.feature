@@ -26,7 +26,7 @@ Scenario: Search Wine Database
 Scenario: View Liqour Database
 	Given I have visited wwDrink
 	When I press the Liquor Menu
-	Then I should be presented with a search for Liqour page
+	Then I should be presented with a search for Liquor page
 
 Scenario: Search Liqour Database
 	Given I am at the Liqour Page

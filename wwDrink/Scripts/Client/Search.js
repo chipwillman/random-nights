@@ -18,7 +18,7 @@ function EstablishmentSearch() {
         panelclass: 'panel', //class of panel DIVs each holding content
         autostep: { enable: true, moveby: 1, pause: 3000 },
         panelbehavior: { speed: 500, wraparound: false, wrapbehavior: 'slide', persist: true },
-        defaultbuttons: { enable: true, moveby: 1, leftnav: ['/Images/mback_arrow.png', -15, 80], rightnav: ['/Images/mforward_arrow.png', -50, 80] },
+        defaultbuttons: { enable: true, moveby: 1, leftnav: ['/Images/bullet.png', -15, 80], rightnav: ['/Images/bullet.png', -50, 80] },
         statusvars: ['statusA', 'statusB', 'statusC'], //register 3 variables that contain current panel (start), current panel (last), and total panels
         contenttype: ['inline'] //content setting ['inline'] or ['ajax', 'path_to_external_file']
     };
@@ -35,19 +35,18 @@ function EstablishmentSearch() {
 
     self.Interests = ko.observableArray();
 
-    self.country_name = ko.observable();
-    self.country_code = ko.observable();
-    self.city = ko.observable();
+    self.country_name = ko.observable("");
+    self.country_code = ko.observable("");
+    self.city = ko.observable("");
     self.ip_address = ko.observable();
     self.latitude = ko.observable();
     self.longitude = ko.observable();
-    self.radius = ko.observable();
+    self.radius = ko.observable(500);
     self.bounds = ko.observable();
 
-    self.latitude("-37.7949955");
-    self.longitude("144.92515895");
-    self.searchText("Kensington, Australia");
-    self.radius(500);
+    //self.latitude("-37.7949955");
+    //self.longitude("144.92515895");
+    //self.searchText("Kensington, Australia");
 
     self.service = ko.observable();
     self.Listeners = new ko.observableArray();
@@ -58,89 +57,116 @@ function EstablishmentSearch() {
     self.IsMacUser = ko.observable(navigator.platform != "Win32");
     self.IsWindowsUser = ko.observable(navigator.platform == "Win32");
 
-    
+    //#region HostLookup
+
+    self.ParseHostLookup = function(data) {
+        var hostipInfo = data.split("\n");
+        for (i = 0; hostipInfo.length >= i; i++) {
+            try {
+                info_part = hostipInfo[i].split(":");
+                if (info_part[0] == "IP") self.ip_address(info_part[1].trim());
+                if (info_part[0] == "City") {
+                    if (info_part[1] != " (Unknown city)") {
+                        self.city(info_part[1].trim());
+                    }
+                }
+                if (info_part[0] == "Country") {
+                    if (info_part[1] != " (Unknown country) (XX)") {
+                        self.country_name(info_part[1].trim());
+                    }
+                }
+                if (info_part[0] == "Latitude") {
+                    self.latitude(info_part[1].trim());
+                }
+                if (info_part[0] == "Longitude") {
+                    self.longitude(info_part[1].trim());
+                }
+            } catch (e) {
+            }
+        }
+    };
 
     self.init_location = function() {
         if (window.XMLHttpRequest) xmlhttp = new XMLHttpRequest();
         else xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
         
-        $.get("http://api.hostip.info/get_html.php?position=true", function(data) {
-            var hostipInfo = data.split("\n");
-            for (i = 0; hostipInfo.length >= i; i++) {
-                try {
-                    info_part = hostipInfo[i].split(":");
-                    if (info_part[0] == "IP") self.ip_address(info_part[1]);
-                    if (info_part[0] == "City") {
-                        self.city(info_part[1]);
-                        self.searchText(info_part[i] + ", " + self.country_name());
-                    }
-                    if (info_part[0] == "Country") {
-                        self.country_name(info_part[1]);
-                    }
-                    if (info_part[0] == "Latitude") {
-                        self.latitude(info_part[1]);
-                    }
-                    if (info_part[0] == "Longitude") {
-                        self.longitude(info_part[1]);
-                    }
-                } catch(e) {
+        $.get("http://api.hostip.info/get_html.php?position=true", function (data) {
+            self.ParseHostLookup(data);
+
+            if (self.country_name != "") {
+                if (self.city() != "") {
+                    self.searchText(self.city() + ", " + self.country_name());
+                } else {
+                    self.searchText(self.country_name());
+                    self.radius(20000);
                 }
+                
+                self.initializeGoogleAndSearch(self);
             }
         });
+    };
 
-        //$.getJSON("http://api.hostip.info/get_json.php&position=true", function (data) {
-        //    self.country_code(data.country_code);
-        //    self.country_name(data.country_name);
-        //    self.city(data.city);
-        //    self.ip_address(data.ip);
-        //    self.latitude(data.latitude);
-        //    self.longitude(data.longitude);
-        //});
+    self.googleInitialized = false;
 
+    self.initializeGoogleAndSearch = function () {
+        if (!self.googleInitialized) {
+            if (currentReview != "") {
+                self.DisplayReview(currentEstablishment, currentReview);
+            } else if (currentEstablishment != "") {
+                self.DisplayEstablishment(currentEstablishment);
+            } else if (self.latitude() != null) {
+                self.Search();
+            }
+        }
     };
 
     if (self.latitude() == null) {
         self.init_location();
     }
 
-    self.init_google = function() {
+    self.timeout = null;
+
+    self.CancelDelayedSearch = function() {
+        if (self.timeout != null) {
+            clearTimeout(self.timeout);
+            self.timeout = null;
+        }
+    };
+
+    self.DelayedSearch = function () {
+        self.CancelDelayedSearch();
+        self.timeout = setTimeout(self.Search, 2000);
+    };
+
+    self.init_google = function () {
+        
         var currentLocation = new google.maps.LatLng(self.latitude(), self.longitude());
 
-        self.map = new google.maps.Map(document.getElementById('map'), {
+        self.googleMap = new google.maps.Map(document.getElementById('map'), {
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             center: currentLocation,
             zoom: 15
         });
         self.geocoder = new google.maps.Geocoder();
-        google.maps.event.addListener(self.map, 'dragend', function() {
-            self.Search();
+        google.maps.event.addListener(self.googleMap, 'dragend', function () {
+            self.DelayedSearch();
         });
-        google.maps.event.addListener(self.map, 'zoom_changed', function () {
-            self.Search();
+        google.maps.event.addListener(self.googleMap, 'zoom_changed', function () {
+            self.DelayedSearch();
         });
         
-        self.service(new google.maps.places.PlacesService(self.map));
+        self.service(new google.maps.places.PlacesService(self.googleMap));
     };
 
     self.AddRadarHit = function(radarHit) {
         var establishment = new Establishment();
         establishment.google_reference(radarHit.reference);
-
-        // self.RequestEstablishmentDetails(establishment);
-        // self.Establishments.push(establishment);
-        // self.CreateMarker(radarHit.geometry.location);
-        // self.UpdateCarousel();
-        
         self.RadarResults.push(establishment);
     };
 
     self.AddEstablishment = function (place) {
         if (self.EstablishmentsMap[place.id]) {
             var establishment = self.EstablishmentsMap[place.id];
-
-            //if (!self.Establishments().contains(establishment)) {
-            //    self.Establishments.unshift(establishment);
-            //}
         } else {
             var establishment = new Establishment(function(establishment) {
                  self.ShowDetails(establishment);
@@ -208,12 +234,12 @@ function EstablishmentSearch() {
         var placeLoc = new google.maps.LatLng(establishment.latitude(), establishment.longitude());
 
         var marker = new google.maps.Marker({
-            map: self.map,
+            googleMap: self.googleMap,
             position: placeLoc
         });
 
         self.Listeners.push(marker);
-        establishment.map = self.map;
+        establishment.googleMap = self.googleMap;
         establishment.marker = marker;
         google.maps.event.addListener(marker, 'click', function () {
             if (!establishment.detailsRequested()) {
@@ -230,7 +256,7 @@ function EstablishmentSearch() {
                 self.AddEstablishment(place);
             }
             self.UpdateCarousel();
-            self.SearchGoogleRadar();
+            // self.SearchGoogleRadar();
             self.searching = false;
         }
     };
@@ -315,6 +341,9 @@ function EstablishmentSearch() {
             resultsTabs.tabs('destroy');
             resultsTabs.tabs(options);
             $('a[href$="' + establishment.tab_href() + '"]:first').click();
+            
+            // $('#' + establishment.fbLinkId()).attr('data-href', establishment.EstablishmentLikeHref());
+            // FB.XFBML.parse(document.getElementById(establishment.fbLinkId()).parentNode);
         });
     };
 
@@ -334,8 +363,18 @@ function EstablishmentSearch() {
             if (data) {
                 for (var reviewIndex in data) {
                     var review = self.MapEstablishmentReview(data[reviewIndex]);
-                    establishment.reviews.push(review);
+                    establishment.AddReview(review);
                 }
+            }
+        });
+    };
+
+    self.LoadReview = function(establishment, reviewPk) {
+        var establishmentReviewUrl = "/api/Review/" + reviewPk;
+        $.get(establishmentReviewUrl, function (data) {
+            if (data) {
+                var review = self.MapEstablishmentReview(data);
+                establishment.InsertReview(review);
             }
         });
     };
@@ -466,7 +505,7 @@ function EstablishmentSearch() {
             self.geocoder.geocode({ 'address': searchString }, function(results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
                     if (results[0].geometry.location) {
-                        self.map.setCenter(results[0].geometry.location);
+                        self.googleMap.setCenter(results[0].geometry.location);
                         self.latitude(results[0].geometry.location.lat());
                         self.longitude(results[0].geometry.location.lng());
                     } else {
@@ -485,7 +524,7 @@ function EstablishmentSearch() {
                         if (radius > 5000.0) {
                             radius = 5000.0;
                         } else {
-                            self.map.fitBounds(results[0].geometry.bounds);
+                            self.googleMap.fitBounds(results[0].geometry.bounds);
                         }
                         self.radius(radius);
                     } else {
@@ -605,6 +644,11 @@ function EstablishmentSearch() {
     self.searching = false;
 
     self.Search = function () {
+        if (!self.googleInitialized) {
+            self.googleInitialized = true;
+            self.init_google();
+        }
+
         if (!self.searching) {
             self.searching = true;
             setTimeout(function () { self.searching = false; }, 2000);
@@ -613,9 +657,9 @@ function EstablishmentSearch() {
             self.EstablishmentsMap = {};
             self.Establishments.removeAll();
             
-            self.latitude(self.map.getCenter().lat());
-            self.longitude(self.map.getCenter().lng());
-            var bounds = self.map.getBounds();
+            self.latitude(self.googleMap.getCenter().lat());
+            self.longitude(self.googleMap.getCenter().lng());
+            var bounds = self.googleMap.getBounds();
             if (bounds) {
                 self.bounds(bounds);
                 var radius = self.GetDistanceInMeters(bounds.getNorthEast().lat(), bounds.getSouthWest().lat(), bounds.getNorthEast().lng(), bounds.getSouthWest().lng());
@@ -629,6 +673,38 @@ function EstablishmentSearch() {
             var wwDrinkSearch = "/api/Search?Query=" + self.searchText() + self.SearchCriteria();
             $.getJSON(wwDrinkSearch, self.wwDrinkSearchCallback);
         }
+    };
+
+    self.DisplayEstablishmentDetails = function(establishmentPk, reviewPk) {
+        var wwDrinkEstablishment = "/api/Establishment";
+        var establishmentDetailsUrl = wwDrinkEstablishment + "/" + establishmentPk;
+        $.get(establishmentDetailsUrl, function(data) {
+            if (data) {
+                var establishment = self.CreateEstablishment(data);
+                self.MapEstablishment(establishment, data);
+                self.GetReviews(establishment);
+                if (reviewPk) {
+                    self.LoadReview(establishment, reviewPk);
+                }
+                self.ShowDetails(establishment);
+            }
+
+            if (!establishment.detailsRequested()) {
+                establishment.detailsRequested(true);
+                self.RequestGoogleDetails(establishment);
+            }
+        }).error(function() {
+            establishment.detailsRequested(true);
+            self.RequestGoogleDetails(establishment);
+        });
+    };
+
+    self.DisplayReview = function(establishmentPk, reviewPk) {
+        self.DisplayEstablishmentDetails(establishmentPk, reviewPk);
+    };
+
+    self.DisplayEstablishment = function(establishmentPk) {
+        self.DisplayEstablishmentDetails(establishmentPk, null);
     };
 
     self.ReviewText = ko.observable();
@@ -747,7 +823,9 @@ function EstablishmentSearch() {
         var date = new Date(data.ReviewDate);
         var result = new Review();
         result.review(data.ReviewText);
-        result.author(data.Profile.UserName);
+        result.author(data.Profile.ScreenName);
+        result.pk(data.ReviewPk);
+        result.EstablishmentFk(data.ParentFk);
         result.date(date.toLocaleDateString());
         result.rating(data.Rating);
         for (var establishmentFeatureIndex in data.Aspects) {

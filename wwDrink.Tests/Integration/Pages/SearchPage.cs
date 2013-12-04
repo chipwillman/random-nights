@@ -1,5 +1,6 @@
 ﻿namespace wwDrink.Tests.Integration.Pages
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
@@ -18,17 +19,18 @@
             SearchResults = this.GetSearchResults();
         }
 
-        public EstablishmentDetails SelectEstablishment(string establishment)
+        public EstablishmentDetails SelectEstablishment()
         {
             var resultsDivs = Driver.FindElements(By.ClassName("establishment"));
-            foreach (var div in resultsDivs)
+            for (int i = 0; i < resultsDivs.Count; i++)
             {
-                if (div.Text.Contains(establishment))
-                {
-                    div.Click();
-                    break;
-                }
+                var div = resultsDivs[i];
+                div.Click();
+                break;
             }
+
+            Thread.Sleep(100);
+            Driver.FindElement(By.ClassName("establishmentInfoWindowImage")).Click();
             Thread.Sleep(100);
             return this.GetEstablishmentDetails();
         }
@@ -59,7 +61,13 @@
             var reviewList = new List<string>();
             foreach (var review in reviews)
             {
-                reviewList.Add(review.Text);
+                try
+                {
+                    reviewList.Add(review.Text);
+                }
+                catch (Exception)
+                {
+                }
             }
             result.Reviews = reviewList.ToArray();
             return result;

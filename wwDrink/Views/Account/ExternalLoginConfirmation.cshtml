@@ -25,6 +25,11 @@
                 @Html.TextBoxFor(m => m.UserName)
                 @Html.ValidationMessageFor(m => m.UserName)
             </li>
+            <li class="name">
+                @Html.LabelFor(m => m.ScreenName)
+                @Html.TextBoxFor(m => m.ScreenName)
+                @Html.ValidationMessageFor(m => m.ScreenName)
+            </li>
         </ol>
         @Html.HiddenFor(m => m.ExternalLoginData)
         <input type="submit" value="Register" />

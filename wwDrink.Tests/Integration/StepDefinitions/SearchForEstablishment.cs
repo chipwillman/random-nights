@@ -69,7 +69,7 @@
         [Then(@"I should be presented with the ability to log on with facebook")]
         public void ThenIShouldBePresentedWithTheAbilityToLogOnWithFacebook()
         {
-            Assert.IsFalse(string.IsNullOrEmpty(loginPage.LoginForm.AlternateLoginServices.FirstOrDefault(s => s == "Facebook")));
+            Assert.IsTrue(loginPage.LoginForm.AlternateLoginServices[0] == "Facebook");
         }
 
         [When(@"I press Register")]

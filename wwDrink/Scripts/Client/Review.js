@@ -27,6 +27,17 @@ function Review() {
 
     self.ShowShortReview = ko.observable(true);
     self.ShowFullReview = ko.observable(false);
+
+    self.EstablishmentFk = ko.observable();
+    self.ReviewLikeHref = ko.computed(function () {
+        return "http://www.wwDrink.com/Home/Review/" + self.pk();
+    });
+    self.fbLinkId = ko.computed(function() {
+        return "fb" + self.pk();
+    });
+    self.ShowLikeReview = ko.computed(function() {
+        return self.pk() != undefined;
+    });
     self.ShowMoreButton = ko.computed(function () {
         if (self.review()) {
             return (self.review().length > 500) && self.ShowShortReview();

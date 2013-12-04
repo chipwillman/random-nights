@@ -5,7 +5,7 @@
 
 # Adding drink specials in included in the Establishment Management feature
 
-@wip
+@ignore @wip
 Scenario: View drink specials
 	Given I have navigated to the specials page
 	And an establishment exists in my local area

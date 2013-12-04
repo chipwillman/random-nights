@@ -3,13 +3,13 @@
 	As an administrator
 	I want users to be able to provide content
 
-@wip
+@ignore @wip
 Scenario: User add establishment aspects
 	Given I am viewing an establishments details
 	When I elect to add aspects 
 	Then others should be able to see the added aspects
 
-@wip
+@ignore @wip
 Scenario: User add establishment beverages
 	Given I am viewing an establishments details
 	When I elect to add a beverage

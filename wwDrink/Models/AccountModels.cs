@@ -27,7 +27,12 @@ namespace wwDrink.Models
         [Key]
         public Guid UserPk { get; set; }
 
+        [MaxLength(100)]
         public string UserName { get; set; }
+        [MaxLength(100)]
+        public string ScreenName { get; set; }
+        [MaxLength(20)]
+        public string AgeRange { get; set; }
     }
 
     public class RegisterExternalLoginModel
@@ -35,6 +40,13 @@ namespace wwDrink.Models
         [Required]
         [Display(Name = "User name")]
         public string UserName { get; set; }
+
+        [Required]
+        [Display(Name = "Screen name")]
+        public string ScreenName { get; set; }
+
+        [Display(Name = "Age Range")]
+        public string AgeRange { get; set; }
 
         public string ExternalLoginData { get; set; }
     }

@@ -37,7 +37,7 @@ nav, section {
 }
 
 header {
-    height:25px;
+    /* height:25px; */
     margin: 8px auto;
 }
 
@@ -45,6 +45,10 @@ mark {
     background-color: #a6dbed;
     padding-left: 5px;
     padding-right: 5px;
+}
+
+.float-none {
+    float: none;
 }
 
 .float-left {
@@ -128,7 +132,7 @@ h5, h6 {
 header .content-wrapper {
     padding-top: 0; 
     background-color:#FDFDFD;
-    height: 25px;
+    /* height: 25px; */
 }
 
 header .search-wrapper {
@@ -147,6 +151,14 @@ footer {
 
 /* site title
 ----------------------------------------------------------*/
+.title-search-wrapper {
+    display: inline-block;
+}
+
+.title-search-wrapper:after {
+    display: block;
+}
+
 .site-title {
     color: #c8c8c8;
     font-family: Rockwell, Consolas, "Courier New", Courier, monospace;
@@ -235,6 +247,20 @@ footer {
 
 /* menu
 ----------------------------------------------------------*/
+.top-menu-wrapper:after {
+    overflow: auto;
+    clear: both;
+}
+
+.top-menu-wrapper:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0; 
+}
+
 ul#menu {
     font-size: .85em;
     font-weight: bold;
@@ -263,6 +289,7 @@ ul#menu li {
             padding-left: 10px;
             padding-right: 12px;
             padding-bottom: 5px;
+            line-height: 2;
             color: #888;
             text-decoration: none;
             -webkit-border-radius: 6px;
@@ -290,7 +317,7 @@ ul#menu li {
         background-image: linear-gradient(left, #7ac0da 0%, #a4d4e6 100%);*/
         color: #3e5667;
         /* padding: 20px 40px 30px 40px; */
-        height: 150px;
+        /* height: 150px; */
     }
 
     .featured .title-box {
@@ -302,6 +329,10 @@ ul#menu li {
         margin-top: 25px;
         background-color: #FFF;
         float: right;
+    }
+
+    div.main-search {
+        margin-left: 45px;
     }
 
     .main-search select {
@@ -330,6 +361,8 @@ ul#menu li {
 
     #search_query  {
         border: 3px solid #CCC;
+        width: 25%;
+        min-width: 200px;
         -webkit-border-radius: 4px;
     }
 
@@ -413,7 +446,41 @@ ul#menu li {
         -webkit-border-top-left-radius: 16px;
         -webkit-border-top-right-radius: 16px;
     }
-    
+
+    div.google-as-top {
+        margin: 10px auto 10px;
+        max-width: 600px;
+    }
+
+    div.google-as-left {
+        position: absolute;
+        margin-left: -170px;
+        margin-top: -40px;
+        width: 150px;
+    }
+
+    div.google-as-right {
+        position: absolute;
+        margin-left: 770px;
+        width: 150px;
+    }
+
+    div.mock-ad-horizontal {
+        text-align: center;
+        height: 65px;
+        background-color: #ffdead;
+        max-width: 600px;
+        border-radius: 10px;
+    }
+
+    div.mock-ad {
+        text-align: center;
+        height: 360px;
+        background-color: #7ac0da;
+        border-color: #aaaaaa;
+        border-radius: 10px;
+    }
+
     /* ui-state-active */
 
     div#result_pages {
@@ -725,6 +792,14 @@ ul#menu li {
         display: table-row;
     }
 
+    div.fb-like {
+        display: table-cell;
+    }
+
+    div.establishment-like {
+        margin-left: 10px;
+    }
+
     div.establishment-reviews {
         margin-top: 10px;
         background-color: #fefaed;
@@ -1030,6 +1105,15 @@ aside {
     #loginForm input[type="button"],
     #loginForm button {
         width: auto;
+    }
+
+    fieldset#socialLoginList button {
+        background-image: Url('/Images/login-with-facebook-button.png');
+        width: 154px;
+        height: 22px;
+        padding: 0 0 0 154px !important; /* Fix for Internet Explorer */
+        line-height: 1 !important;
+        color: transparent; /* Fix for Firefox */
     }
 
 #socialLoginForm {
@@ -1559,6 +1643,10 @@ tr.pager td {
     /* forms */
     input {
         width: 90%;
+    }
+
+    div.establishment-review {
+        display: block;
     }
 
     /* login page */

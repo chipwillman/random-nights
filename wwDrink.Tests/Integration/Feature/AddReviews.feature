@@ -3,14 +3,14 @@
 	As a pub crawler
 	I want be able to leave reviews
 
-@wip
+@ignore @wip
 Scenario: Review an establishment
 	Given I have a new registered user 
 	And I am at an establishments details page
 	When I enter an establishment review 
 	Then others should be able to view my establishment review
 
-@wip
+@ignore @wip
 Scenario: Review a beverage
 	Given I have a new registered user 
 	And I am at a beverage detail page

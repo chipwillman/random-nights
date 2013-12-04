@@ -213,6 +213,7 @@
                 url: "/api/Profile/" + self.UserId(),
                 data: {
                     UserId: self.UserId(),
+                    UserPk: self.profilePk(),
                     UserName: self.UserName(),
                     ScreenName: self.screenName(),
                     AgeRange: self.ageRange()
@@ -295,6 +296,7 @@
         $.getJSON('/api/Profile/', function (data) {
             if (data.length == 1) {
                 self.UserId(data[0].UserId);
+                self.profilePk(data[0].UserPk);
                 self.UserName(data[0].UserName);
                 self.ageRange(data[0].AgeRange);
                 self.screenName(data[0].ScreenName);

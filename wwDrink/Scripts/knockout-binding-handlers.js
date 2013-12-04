@@ -239,3 +239,22 @@ ko.bindingHandlers.autoComplete = {
         }
     }
 };
+
+ko.bindingHandlers.updateFacebook = {
+    init: function (element) {
+        var id = $(element).attr('id');
+        var dataHref = $(element).attr('data-href');
+        if (id != undefined && dataHref != undefined) {
+            FB.XFBML.parse(document.getElementById(id).parentNode);
+        }
+    },
+    update: function(element, valueAccessor) {
+        var id = $(element).attr('id');
+        var dataHref = $(element).attr('data-href');
+        if (id != undefined && dataHref != undefined) {
+            setTimeout(function() {
+                FB.XFBML.parse(document.getElementById(id).parentNode);
+            }, 250);
+        }
+    }
+};

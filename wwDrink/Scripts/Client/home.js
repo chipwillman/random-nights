@@ -7,12 +7,3 @@ $(function () {
 search_view_model.init_autocomplete();
 
 ko.applyBindings(search_view_model);
-
-search_view_model.init_google();
-
-if (search_view_model.latitude() != null) {
-    search_view_model.Search();
-}
-
-
-

@@ -52,6 +52,7 @@
         {
             var logOnLink = Driver.FindElement(By.Id("loginLink"));
             logOnLink.Click();
+            Thread.Sleep(250);
             LoginPage.Driver = Driver;
             var result = new LoginPage();
             result.GetElements();
@@ -62,13 +63,14 @@
         {
             var searchTextBox = Driver.FindElement(By.Id("search_query"));
             searchTextBox.Clear();
-            searchTextBox.SendKeys(searchFor.SearchText);
+            searchTextBox.SendKeys(searchFor.SearchText + "\n");
         }
 
         public SearchPage Search()
         {
             var searchButton = Driver.FindElement(By.Id("search_button"));
             searchButton.Click();
+            Thread.Sleep(500);
             SearchPage.Driver = Driver;
             var result = new SearchPage();
             result.GetElements();

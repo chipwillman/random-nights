@@ -3,14 +3,14 @@
 	As a pub crawler
 	I want to see what drinks are available at an establishment
 
-@wip
+@ignore @wip
 Scenario: Establishment Beverage Listings
 	Given a claimed establishment has a drink menu
 	And I have searched for a local establishment
 	When I view the establishment details
 	Then the details should contain the available drinks
 
-@wip
+@ignore @wip
 Scenario: Searching by beverage to find an establishment
 	Given a claimed establishment has a drink menu
 	And I have select to search for a drink

@@ -11,8 +11,12 @@ describe("user Model", function () {
     });
 
     describe("has preferrences", function() {
-        it("in the category personal details", function() {
+        it("of ageRange", function () {
             expect(userModel.ageRange).toBeDefined();
+        });
+        
+        it("of screen name", function () {
+            expect(userModel.screenName).toBeDefined();
         });
     });
 });

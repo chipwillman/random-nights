@@ -15,7 +15,6 @@ Scenario: Register a new account
 	When I press Register
 	Then I should redirected to the register page
 
-@wip
 Scenario: Log on with an existing account
 	Given User Credential Exist 
 	And I navigate to wwDrink

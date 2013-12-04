@@ -45,7 +45,8 @@ namespace wwDrink.Controllers
         // GET api/Review/5
         public Review GetReview(Guid id)
         {
-            Review review = db.Reviews.Find(id);
+            Review review = db.Reviews.Where(r => r.ReviewPk == id).Include(r => r.Profile).Include("Aspects").Include("Aspects.Aspect").FirstOrDefault();
+
             if (review == null)
             {
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));

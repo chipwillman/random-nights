@@ -9,24 +9,49 @@
         @Scripts.Render("~/bundles/modernizr")
     </head>
     <body>
+        <div id="fb-root"></div>
+        <script>
+            window.fbAsyncInit = function() {
+                // init the FB JS SDK
+                FB.init({
+                    appId: '225723827594346',                        // App ID from the app dashboard
+                    status : true,                                 // Check Facebook Login status
+                    xfbml : true                                  // Look for social plugins on the page
+                });
+            };
+
+            (function(d, s, id){
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) {return;}
+                js = d.createElement(s); js.id = id;
+                js.src = "//connect.facebook.net/en_US/all.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        </script>
+        
         <header>
             <div class="content-wrapper">
-                <div class="float-left">
-                    <nav>
-                        <ul id="menu">
-                            <li>@Html.ActionLink("wwDrink", "Index", "Home")</li>
-                            <li>@Html.ActionLink("Beer", "Index", "Beer", null, new { id = "BeerButton"})</li>
-                            <li>@Html.ActionLink("Wine", "Index", "Wine", null, new { id = "WineButton"})</li>
-                            <li>@Html.ActionLink("Liquor", "Index", "Liqour", null, new { id = "LiqourButton"})</li>
-@*                            <li>@Html.ActionLink("Specials", "Index", "Specials", null, new { id = "SpecialsButton"})</li>*@
-                            <li>@Html.ActionLink("About", "Index", "About", null, new { id = "AboutButton"})</li>
-                        </ul>
-                    </nav>
+                <div class="google-as-top" >
+                    <div class="mock-ad-horizontal">Ad Top</div>
                 </div>
-                <div class="float-right">
-                    <section id="login">
-                        @Html.Partial("_LoginPartial")
-                    </section>
+                <div class="top-menu-wrapper">
+                    <div class="float-left">
+                        <nav>
+                            <ul id="menu">
+                                <li>@Html.ActionLink("wwDrink", "Index", "Home")</li>
+                                <li>@Html.ActionLink("Beer", "Index", "Beer", null, new { id = "BeerButton"})</li>
+                                <li>@Html.ActionLink("Wine", "Index", "Wine", null, new { id = "WineButton"})</li>
+                                <li>@Html.ActionLink("Liquor", "Index", "Liqour", null, new { id = "LiqourButton"})</li>
+                                @*                            <li>@Html.ActionLink("Specials", "Index", "Specials", null, new { id = "SpecialsButton"})</li>*@
+                                <li>@Html.ActionLink("About", "Index", "About", null, new { id = "AboutButton"})</li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="float-right">
+                        <section id="login">
+                            @Html.Partial("_LoginPartial")
+                        </section>
+                    </div>
                 </div>
             </div>
         </header>

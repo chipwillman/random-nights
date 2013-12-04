@@ -193,8 +193,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Aspects.sql" />
     <Content Include="App_Data\Crafters.sql" />
-    <Content Include="App_Data\Drinks.sql" />
+    <Content Include="App_Data\Drinks09.sql" />
+    <Content Include="App_Data\DrinksAB.sql" />
+    <Content Include="App_Data\DrinksCD.sql" />
+    <Content Include="App_Data\DrinksEJ.sql" />
+    <Content Include="App_Data\DrinksKO.sql" />
+    <Content Include="App_Data\DrinksPR.sql" />
+    <Content Include="App_Data\DrinksS.sql" />
+    <Content Include="App_Data\DrinksTZ.sql" />
     <Content Include="Content\delete.gif" />
     <Content Include="Content\rateit.css" />
     <Content Include="Content\star.gif" />
@@ -259,6 +267,7 @@
     <Content Include="Images\back_arrow.png" />
     <Content Include="Images\close_button.png" />
     <Content Include="Images\close_button_active.png" />
+    <Content Include="Images\login-with-facebook-button.png" />
     <Content Include="Images\NoImageBeer.png" />
     <Content Include="Images\forward_arrow.png" />
     <Content Include="Images\missing_establishment_image.png" />
@@ -273,6 +282,7 @@
     <Content Include="Scripts\Client\drinklisting.js" />
     <Content Include="Scripts\Client\Establishment.js" />
     <Content Include="Scripts\Client\favoriteaspect.js" />
+    <Content Include="Scripts\Client\GoogleMapProvider.js" />
     <Content Include="Scripts\Client\home.js" />
     <Content Include="Scripts\Client\Liquor.js" />
     <Content Include="Scripts\Client\manage.js" />

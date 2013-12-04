@@ -233,6 +233,8 @@
     <Content Include="App.config" />
     <Content Include="Jasmine\ManageUser.html" />
     <Content Include="Jasmine\Search.html" />
+    <Content Include="Jasmine\spec\AspectSpec.js" />
+    <Content Include="Jasmine\spec\DrinkSpec.js" />
     <Content Include="Jasmine\spec\ManageUserSpec.js" />
     <Content Include="Jasmine\spec\ReviewSpec.js" />
     <Content Include="Jasmine\spec\SearchSpec.js" />

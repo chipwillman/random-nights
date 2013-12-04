@@ -17,7 +17,7 @@
         public override void GetElements()
         {
             var drinks = new List<Drink>();
-            var drinkHeadings = Driver.FindElements(By.CssSelector("h5 > a"));
+            var drinkHeadings = Driver.FindElements(By.CssSelector("h3 > a"));
             foreach (var link in drinkHeadings)
             {
                 drinks.Add(new Drink { Name = link.Text });
@@ -44,7 +44,7 @@
 
             Driver.FindElement(By.Id("search_button")).Click();
 
-            Thread.Sleep(100);
+            Thread.Sleep(800);
             var result = new BeerPage();
             result.GetElements();
             return result;

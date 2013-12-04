@@ -44,7 +44,7 @@ namespace wwDrink.Tests.Integration.StepDefinitions
             this.homePage = HomePage.NavigateTo(BrowserDriver.Driver);
             homePage.SetSearch(new SearchFor { SearchText = "Kensington, Australia"});
             this.searchPage = homePage.Search();
-            this.searchPage.SelectEstablishment(establishment);
+            this.searchPage.SelectEstablishment();
         }
         
         [Given(@"I am at a beverage detail page")]
@@ -76,7 +76,7 @@ namespace wwDrink.Tests.Integration.StepDefinitions
             this.EnsureCurrentUser(this.username, this.password);
             this.homePage.SetSearch(new SearchFor { SearchText = "Kensington, Australia" });
             this.searchPage = homePage.Search();
-            this.establishmentsDetails = this.searchPage.SelectEstablishment(establishment);
+            this.establishmentsDetails = this.searchPage.SelectEstablishment();
             Assert.IsTrue(this.establishmentsDetails.Reviews.Any(s => s == reviewText));
         }
         

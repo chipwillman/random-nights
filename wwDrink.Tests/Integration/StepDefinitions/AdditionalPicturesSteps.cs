@@ -22,9 +22,11 @@ namespace wwDrink.Tests.Integration.StepDefinitions
         public void GivenIHaveOpenedADetailPage()
         {
             this.homePage = HomePage.NavigateTo(BrowserDriver.Driver);
+            this.homePage.SetSearch(new SearchFor() { SearchText = "Sydney, Australia" });
+            this.searchPage = this.homePage.Search();
             this.homePage.SetSearch(new SearchFor() { SearchText = "Melbourne, Australia" });
             this.searchPage = this.homePage.Search();
-            this.detailResult = this.searchPage.SelectEstablishment("MoVida");
+            this.detailResult = this.searchPage.SelectEstablishment();
             Assert.IsTrue(detailResult.Photos.Length > 1);
         }
         

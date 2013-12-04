@@ -3,7 +3,7 @@
 	As an administrator
 	I want to reviece ad recenue from Google adsense
 
-@wip
+@ignore @wip
 Scenario: Display Google ad in sidebar
 	Given I navigate to the home page
 	When I view the page

@@ -48,6 +48,13 @@ function Establishment(selectEstablishmentCallback) {
     self.ReviewRating = ko.observable(3);
     self.ReviewText = ko.observable();
     self.ReviewAspects = ko.observableArray();
+    self.fbLinkId = ko.computed(function() {
+        return "fbLink" + self.PK();
+    });
+    self.EstablishmentLikeHref = ko.computed(function() {
+        return "http://www.wwDrink.com/Home/Show/" + self.PK();
+    });
+
     self.ShowAddReviewClick = function () {
         self.AddingReview(true);
         self.NotAddingReview(false);
@@ -62,6 +69,10 @@ function Establishment(selectEstablishmentCallback) {
 
         return result;
     };
+
+    self.ShowFacebookLike = ko.computed(function() {
+        return self.source();
+    });
 
     self.AddAspectVisible = ko.computed(function() {
         var result = true;
@@ -100,17 +111,30 @@ function Establishment(selectEstablishmentCallback) {
         }
     };
 
+    self.InsertReview = function(review) {
+        for (var i = self.reviews().length - 1; i > -1; i--) {
+            if (self.reviews()[i].author() == review.author()) {
+                self.reviews().splice(i, 1);
+                break;
+            }
+        }
+        self.reviews.unshift(review);
+    };
+
     self.AddReview = function (review) {
         for (var i = self.reviews().length - 1; i > -1; i--) {
-            if (self.reviews()[i].author == review.author())
+            if (self.reviews()[i].author() == review.author())
                 return;
         }
-
         self.reviews.push(review);
+
+        // fbLinkId
+        //$('div#' + review.pk() + ' .fb-like').attr('data-href', review.ReviewLikeHref());
+        //FB.XFBML.parse(document.getElementById(review.pk()));
     };
 
     self.marker = {};
-    self.map = {};
+    self.googleMap = {};
     self.ShowInfoWindow = function () {
 
         var content = '    <div id="establishmentInfoWindow">' +
@@ -118,13 +142,13 @@ function Establishment(selectEstablishmentCallback) {
             '<div class="establishment-closed" data-bind="visible: !open()"><span>Currently Closed</span></div>' +
             '<div class="establishment">' +
             '    <h4 data-bind="text: name"></h4>' +
-            '    <img data-bind="attr:{src: imageUrl}, click: ShowEstablishmentDetails" alt="loading image" width="174" height="102" /><br/>' +
+            '    <img class="establishmentInfoWindowImage" data-bind="attr:{src: imageUrl}, click: ShowEstablishmentDetails" alt="loading image" width="174" height="102" /><br/>' +
             '    <span data-bind="text: suburb"> </span>' +
             '</div>' +
             '</div>';
 
         infowindow.setContent(content);
-        infowindow.open(self.map, self.marker);
+        infowindow.open(self.googleMap, self.marker);
         // bind knockout when dom is ready
         
         var listener = google.maps.event.addListener(infowindow, 'domready', function () {
