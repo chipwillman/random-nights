@@ -3,6 +3,7 @@
 	As a pub crawler
 	I want to be able to browse wwDrink Beverage Database
 
+@ignore
 Scenario: View Beer Database
 	Given I have visited wwDrink
 	When I press the Beer Menu
@@ -13,6 +14,7 @@ Scenario: Search Beer Database
 	When I search for Toohey's Old
 	Then I should be presented with search results Toohey's Old 
 
+@ignore
 Scenario: View Wine Database
 	Given I have visited wwDrink
 	When I press the Wine Menu
@@ -23,6 +25,7 @@ Scenario: Search Wine Database
 	When I search for Chianti
 	Then I should be presented with search results Chianti 
 
+@ignore
 Scenario: View Liqour Database
 	Given I have visited wwDrink
 	When I press the Liquor Menu

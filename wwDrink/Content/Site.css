@@ -332,7 +332,7 @@ ul#menu li {
     }
 
     div.main-search {
-        margin-left: 45px;
+        margin-left: 25px;
     }
 
     .main-search select {
@@ -794,6 +794,7 @@ ul#menu li {
 
     div.fb-like {
         display: table-cell;
+        overflow: hidden;
     }
 
     div.establishment-like {
@@ -1519,6 +1520,11 @@ tr.pager td {
 ********************/
 @media only screen and (max-width: 850px) {
 
+    body {
+        -webkit-overflow-scrolling: touch;
+        overflow-x: hidden;
+    }
+
     /* header
     ----------------------------------------------------------*/
     header .float-left,
@@ -1532,6 +1538,44 @@ tr.pager td {
         text-align: center;
     }
 
+    div.google-as-top {
+        display: none;
+    }
+
+    div.google-as-left {
+        display: none;
+    }
+
+    div.google-as-right {
+        display: none;
+    }
+
+    div.establishment-like {
+        width: 200px;
+        overflow: hidden;
+    }
+
+    div.main-search {
+        margin-left: 5px;
+    }
+
+    div.review-body {
+        display: block;
+    }
+
+    div.review-text {
+        display: block;
+        font-size: 11px;
+    }
+
+    div.aspect-rating {
+        display: block;
+        padding: 10px;
+        min-width: 100px;
+    }
+
+    div.aspect-rating-rating {
+    }
     /* login */
     #login {
         font-size: .85em;
@@ -1585,6 +1629,7 @@ tr.pager td {
     .main-content,
     .featured + .main-content {
         background-position: 10px 0;
+        overflow: hidden;
     }
 
     .content-wrapper {

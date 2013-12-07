@@ -78,8 +78,8 @@ IP: 54.201.146.244\n";
             });
             
             it("parses information from an unsuccessful lookup", function () {
-                var unknownCountryLookup = "Country: (Unknown country) (XX)\n\
-City: (Unknown city)\n\
+                var unknownCountryLookup = "Country: (Unknown country?) (XX)\n\
+City: (Unknown city?)\n\
 \n\
 Latitude: \n\
 Longitude: \n\

@@ -23,7 +23,7 @@ function EstablishmentSearch() {
         contenttype: ['inline'] //content setting ['inline'] or ['ajax', 'path_to_external_file']
     };
 
-    self.LocationChanged = ko.observable(false);
+    self.LocationChanged = ko.observable(true);
     self.searchText = ko.observable();
     self.searchText.subscribe(function() {
         self.LocationChanged(true);
@@ -48,16 +48,11 @@ function EstablishmentSearch() {
     //self.longitude("144.92515895");
     //self.searchText("Kensington, Australia");
 
-    self.service = ko.observable();
-    self.Listeners = new ko.observableArray();
-
     self.carousel = new Stepcarousel();
     self.carouselLoaded = false;
 
     self.IsMacUser = ko.observable(navigator.platform != "Win32");
     self.IsWindowsUser = ko.observable(navigator.platform == "Win32");
-
-    //#region HostLookup
 
     self.ParseHostLookup = function(data) {
         var hostipInfo = data.split("\n");
@@ -66,12 +61,12 @@ function EstablishmentSearch() {
                 info_part = hostipInfo[i].split(":");
                 if (info_part[0] == "IP") self.ip_address(info_part[1].trim());
                 if (info_part[0] == "City") {
-                    if (info_part[1] != " (Unknown city)") {
+                    if (info_part[1] != " (Unknown city)" && info_part[1] != " (Unknown City?)") {
                         self.city(info_part[1].trim());
                     }
                 }
                 if (info_part[0] == "Country") {
-                    if (info_part[1] != " (Unknown country) (XX)") {
+                    if (info_part[1] != " (Unknown Country?) (XX)") {
                         self.country_name(info_part[1].trim());
                     }
                 }
@@ -96,6 +91,7 @@ function EstablishmentSearch() {
             if (self.country_name != "") {
                 if (self.city() != "") {
                     self.searchText(self.city() + ", " + self.country_name());
+                    self.radius(1500);
                 } else {
                     self.searchText(self.country_name());
                     self.radius(20000);
@@ -110,12 +106,14 @@ function EstablishmentSearch() {
 
     self.initializeGoogleAndSearch = function () {
         if (!self.googleInitialized) {
+            self.googleInitialized = true;
+            self.init_google();
             if (currentReview != "") {
                 self.DisplayReview(currentEstablishment, currentReview);
             } else if (currentEstablishment != "") {
                 self.DisplayEstablishment(currentEstablishment);
             } else if (self.latitude() != null) {
-                self.Search();
+                self.map.GeocodeAddress(self.searchText(), self.LocationFound, self.LocationNotFound);
             }
         }
     };
@@ -130,46 +128,37 @@ function EstablishmentSearch() {
         if (self.timeout != null) {
             clearTimeout(self.timeout);
             self.timeout = null;
-        }
+        } 
     };
 
     self.DelayedSearch = function () {
-        self.CancelDelayedSearch();
-        self.timeout = setTimeout(self.Search, 2000);
+        if (self.timeout == null) {
+            self.Search();
+        }
     };
 
     self.init_google = function () {
-        
-        var currentLocation = new google.maps.LatLng(self.latitude(), self.longitude());
+        self.map = new GoogleMapProvider();
+        self.map.initializeMapProvider(self.latitude(), self.longitude(), self.DelayedSearch);
 
-        self.googleMap = new google.maps.Map(document.getElementById('map'), {
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            center: currentLocation,
-            zoom: 15
-        });
-        self.geocoder = new google.maps.Geocoder();
-        google.maps.event.addListener(self.googleMap, 'dragend', function () {
-            self.DelayedSearch();
-        });
-        google.maps.event.addListener(self.googleMap, 'zoom_changed', function () {
-            self.DelayedSearch();
-        });
-        
-        self.service(new google.maps.places.PlacesService(self.googleMap));
+        self.service = new GooglePlacesProvider(self.map.googleMap);
     };
 
     self.AddRadarHit = function(radarHit) {
-        var establishment = new Establishment();
+        var establishment = new Establishment(function (establishmentb) {
+            self.ShowDetails(establishmentb);
+        });
         establishment.google_reference(radarHit.reference);
         self.RadarResults.push(establishment);
     };
 
     self.AddEstablishment = function (place) {
+        var establishment;
         if (self.EstablishmentsMap[place.id]) {
-            var establishment = self.EstablishmentsMap[place.id];
+            establishment = self.EstablishmentsMap[place.id];
         } else {
-            var establishment = new Establishment(function(establishment) {
-                 self.ShowDetails(establishment);
+            establishment = new Establishment(function (establishmentb) {
+                self.ShowDetails(establishmentb);
             });
             establishment.PK(Guid.create());
             establishment.Rating(place.rating);
@@ -191,7 +180,7 @@ function EstablishmentSearch() {
             }
             self.Establishments.push(establishment);
             self.Establishments.sort(function (a, b) { return b.Rating() - a.Rating(); });
-            self.CreateMarker(establishment);
+            self.map.CreateMarker(establishment, self.RequestEstablishmentDetails);
         }
 
         try {
@@ -211,13 +200,6 @@ function EstablishmentSearch() {
         }
     };
 
-    self.clearOverlays = function() {
-        for (var i = 0; i < self.Listeners().length; i++) {
-            self.Listeners()[i].setMap(null);
-        }
-        self.Listeners.removeAll();
-    };
-
     self.CloseTab = function() {
         var establishment = this;
 
@@ -229,36 +211,17 @@ function EstablishmentSearch() {
         self.Interests.remove(establishment);
     };
 
-    self.CreateMarker = function (establishment) {
-         
-        var placeLoc = new google.maps.LatLng(establishment.latitude(), establishment.longitude());
-
-        var marker = new google.maps.Marker({
-            googleMap: self.googleMap,
-            position: placeLoc
-        });
-
-        self.Listeners.push(marker);
-        establishment.googleMap = self.googleMap;
-        establishment.marker = marker;
-        google.maps.event.addListener(marker, 'click', function () {
-            if (!establishment.detailsRequested()) {
-                self.RequestEstablishmentDetails(establishment);
-            }
-             establishment.ShowInfoWindow();
-        });
+    self.NearbySearchCallback = function(results, status) {
+        for (var i = 0; i < results.length; i++) {
+            var place = results[i];
+            self.AddEstablishment(place);
+        }
+        self.UpdateCarousel();
+        self.searching = false;
     };
 
-    self.NearbySearchCallback = function(results, status) {
-        if (status == google.maps.places.PlacesServiceStatus.OK) {
-            for (var i = 0; i < results.length; i++) {
-                var place = results[i];
-                self.AddEstablishment(place);
-            }
-            self.UpdateCarousel();
-            // self.SearchGoogleRadar();
-            self.searching = false;
-        }
+    self.NearbySearchFailed = function() {
+
     };
 
     self.UpdateCarousel = function() {
@@ -274,58 +237,10 @@ function EstablishmentSearch() {
         }
     };
 
-    self.RadarSearchCallback = function(results, status) {
-        if (status == google.maps.places.PlacesServiceStatus.OK) {
-            self.RadarResults.removeAll();
-            for (var i = 0; i < results.length; i++) {
-                var place = results[i];
-                self.AddRadarHit(place);
-            }
-        }
-    };
-
-    self.ParseOpenHours = function(openingHours) {
-        var result = [];
-        var previous = new OpenHours();
-        if (openingHours && openingHours.periods) {
-            for (var i = 0; i < openingHours.periods.length; i++) {
-                var period = openingHours.periods[i];
-                var hours = new OpenHours();
-                hours.start_day_begin(period.open.day);
-                hours.start_day_end(period.open.day);
-                hours.start_hour(period.open.hours);
-                hours.start_minute(period.open.minutes);
-
-                if (period.close) {
-                    hours.end_day_begin(period.close.day);
-                    hours.end_day_end(period.close.day);
-                    hours.end_hour(period.close.hours);
-                    hours.end_minute(period.close.minutes);
-                }
-                hours.start_day_begin(period.open.day);
-                if (result.length == 0 || (previous.start_hour() == hours.start_hour() && previous.start_minute() == hours.start_minute() &&
-                    previous.end_hour() == hours.end_hour() && previous.end_minute() == hours.end_minute())) {
-                    if (result.length == 0) {
-                        result.push(hours);
-                        previous = hours;
-                    } else {
-                        previous.end_day_end(hours.end_day_end());
-                        previous.start_day_end(hours.start_day_end());
-                    }
-                } else {
-                    result.push(hours);
-                    previous = hours;
-                }
-            }
-        }
-        return result;
-    };
-
     self.establishmentIndex = 0;
 
     self.SelectEstablishment = function (establishment) {
         establishment.ShowInfoWindow();
-        return (establishment.open_hours().length == 0 && establishment.features().length == 0 && !establishment.detailsRequested());
     };
 
     self.ShowDetails = function(establishment) {
@@ -341,20 +256,7 @@ function EstablishmentSearch() {
             resultsTabs.tabs('destroy');
             resultsTabs.tabs(options);
             $('a[href$="' + establishment.tab_href() + '"]:first').click();
-            
-            // $('#' + establishment.fbLinkId()).attr('data-href', establishment.EstablishmentLikeHref());
-            // FB.XFBML.parse(document.getElementById(establishment.fbLinkId()).parentNode);
         });
-    };
-
-    self.MapAddress = function (establishment, place) {
-        establishment.address(place.formatted_address);
-        establishment.address_street_number = ko.observable();
-        establishment.address_street = ko.observable();
-        establishment.address_city = ko.observable();
-        establishment.address_state = ko.observable();
-        establishment.address_country = ko.observable();
-        establishment.address_post_code = ko.observable();
     };
 
     self.GetReviews = function(establishment) {
@@ -379,6 +281,14 @@ function EstablishmentSearch() {
         });
     };
 
+    self.RequestDetailsSuccess = function(establishment) {
+
+    };
+
+    self.RequestDetailsFailed = function(establishment) {
+
+    };
+
     self.RequestEstablishmentDetails = function (establishment) {
         var wwDrinkEstablishment = "/api/Establishment";
         var establishmentDetailsUrl = wwDrinkEstablishment + "/" + establishment.google_id();
@@ -390,66 +300,11 @@ function EstablishmentSearch() {
                 
             if (!establishment.detailsRequested()) {
                 establishment.detailsRequested(true);
-                self.RequestGoogleDetails(establishment);
+                self.service.RequestGoogleDetails(establishment, self.RequestDetailsSuccess, self.RequestDetailsFailure);
             }
         }).error(function() {
             establishment.detailsRequested(true);
-            self.RequestGoogleDetails(establishment);
-        });
-    };
-
-    self.ParseUnixDate = function(time) {
-        var date = new Date(time*1000);
-        return date.toLocaleDateString();
-    };
-
-    self.RequestGoogleDetails = function(establishment) {
-        var request = {
-            reference: establishment.google_reference()
-        };
-        self.service().getDetails(request, function(place, status) {
-            if (status == google.maps.places.PlacesServiceStatus.OK) {
-                self.MapAddress(establishment, place);
-                if (!establishment.source()) {
-                    establishment.Rating(place.rating);
-                }
-                establishment.WebSite(place.website);
-                var i;
-                for (i = 0; i < place.types.length; i++) {
-                    if (place.types[i] != "establishment") {
-                        var feature = new EstablishmentFeature();
-                        feature.Name(place.types[i]);
-                        establishment.features.push(feature);
-                    }
-                }
-                if (place.reviews) {
-                    for (i = 0; i < place.reviews.length; i++) {
-                        var userReview = new Review();
-                        var reviewText = unescape(place.reviews[i].text).replace(/&#39\;/g, "'").replace(/&quot;/g, "'");
-                        userReview.review(reviewText);
-                        userReview.author(place.reviews[i].author_name);
-                        userReview.rating(place.reviews[i].rating);
-                        userReview.authorUrl(place.reviews[i].author_url);
-                        userReview.date(self.ParseUnixDate(place.reviews[i].time));
-                        for (var aspectRatingIndex in place.reviews[i].aspects) {
-                            var aspectRating = place.reviews[i].aspects[aspectRatingIndex];
-                            var reviewAspect = new ReviewAspect();
-                            reviewAspect.aspectType(aspectRating.type);
-                            reviewAspect.rating(aspectRating.rating);
-                            userReview.aspects.push(reviewAspect);
-                        }
-                            
-                        establishment.AddReview(userReview);
-                    }
-                }
-                if (place.photos) {
-                    for (i = 0; i < place.photos.length; i++) {
-                        var url = place.photos[i].getUrl({ 'maxWidth': 240, 'maxHeight': 180 });
-                        establishment.AddPhoto(url);
-                    }
-                }
-                establishment.open_hours(self.ParseOpenHours(place.opening_hours));
-            }
+            self.service.RequestGoogleDetails(establishment, self.RequestDetailsSuccess, self.RequestDetailsFailure);
         });
     };
 
@@ -457,7 +312,6 @@ function EstablishmentSearch() {
         var establishment = this;
         if (!$('a[href$="#results_tabs-0"]:first').parent().parent().hasClass("ui-tabs-selected")) {
             self.ShowDetails(establishment);
-            // $('a[href$="#results_tabs-0"]:first').click();
         } else {
             self.SelectEstablishment(establishment);
         }
@@ -498,86 +352,25 @@ function EstablishmentSearch() {
         }
     };
 
+    self.LocationNotFound = function() {
+
+    };
+
+    self.LocationFound = function (latitude, longitude, radius, bounds) {
+        self.latitude(latitude);
+        self.longitude(longitude);
+        self.radius(radius);
+        self.bounds(bounds);
+        self.Search();
+    };
+
     self.SearchClick = function() {
         var searchString = self.searchText();
-
         if (self.LocationChanged()) {
-            self.geocoder.geocode({ 'address': searchString }, function(results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    if (results[0].geometry.location) {
-                        self.googleMap.setCenter(results[0].geometry.location);
-                        self.latitude(results[0].geometry.location.lat());
-                        self.longitude(results[0].geometry.location.lng());
-                    } else {
-                        self.latitude(null);
-                        self.longitude(null);
-                    }
-                    if (results[0].geometry.bounds) {
-                        self.bounds(results[0].geometry.bounds);
-                        if (self.latitude() == null) {
-                            self.latitude(results[0].geometry.bounds.getCenter().lat());
-                        }
-                        if (self.longitude() == null) {
-                            self.longitude(results[0].geometry.bounds.getCenter().lng());
-                        }
-                        var radius = self.GetDistanceInMeters(results[0].geometry.bounds.getNorthEast().lat(), results[0].geometry.bounds.getSouthWest().lat(), results[0].geometry.bounds.getNorthEast().lng(), results[0].geometry.bounds.getSouthWest().lng());
-                        if (radius > 5000.0) {
-                            radius = 5000.0;
-                        } else {
-                            self.googleMap.fitBounds(results[0].geometry.bounds);
-                        }
-                        self.radius(radius);
-                    } else {
-                        self.bounds(null);
-                    }
-                    self.Search();
-                }
-            });
+            self.map.GeocodeAddress(searchString);
         } else {
             self.Search();
         }
-    };
-
-    self.GetDistanceInMeters = function(lat1, lat2, lon1, lon2) {
-        var R = 6371; // km
-        var dLat = (lat2 - lat1).toRad();
-        var dLon = (lon2 - lon1).toRad();
-        var lat1r = lat1.toRad();
-        var lat2r = lat2.toRad();
-
-        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1r) * Math.cos(lat2r);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        var d = R * c;
-        return (d * 1000)/2;
-    };
-
-    self.GetSearchRequest = function(types) {
-        var request;
-        if (self.bounds() != null) {
-            request = {
-                bounds: self.bounds(),
-                types: types
-            };
-        } else {
-            var currentLocation = new google.maps.LatLng(self.latitude(), self.longitude());
-            request = {
-                location: currentLocation,
-                radius: '1000',
-                types: types
-            };
-        }
-        return request;
-    };
-
-    self.SearchGoogleRadar = function() {
-        var request = self.GetSearchRequest(['bar']);
-        self.service().radarSearch(request, self.RadarSearchCallback);
-    };
-
-    self.SearchGoogleNearby = function() {
-        var request = self.GetSearchRequest(['bar']);
-        self.service().nearbySearch(request, self.NearbySearchCallback);
     };
 
     self.EstablishmentsMap = {};
@@ -631,45 +424,41 @@ function EstablishmentSearch() {
                     } else {
                         self.EstablishmentsMap[establishment.google_id()] = establishment;
                         self.Establishments.unshift(establishment);
-                        self.CreateMarker(establishment);
+                        self.map.CreateMarker(establishment, self.RequestEstablishmentDetails);
                     }
                 }
             }
-            self.SearchGoogleNearby();
+            if (self.service != undefined) {
+                self.service.SearchNearby(['bar'], self.latitude(), self.longitude(), self.bounds(), self.NearbySearchCallback, self.NearbySearchFailed);
+            }
         } catch (e) {
             console.error(e.toString());
         }
+        self.searching = false;
+        clearTimeout(self.timout);
     };
 
     self.searching = false;
 
     self.Search = function () {
-        if (!self.googleInitialized) {
-            self.googleInitialized = true;
-            self.init_google();
-        }
-
         if (!self.searching) {
             self.searching = true;
-            setTimeout(function () { self.searching = false; }, 2000);
-            
-            self.clearOverlays();
-            self.EstablishmentsMap = {};
-            self.Establishments.removeAll();
-            
-            self.latitude(self.googleMap.getCenter().lat());
-            self.longitude(self.googleMap.getCenter().lng());
-            var bounds = self.googleMap.getBounds();
-            if (bounds) {
-                self.bounds(bounds);
-                var radius = self.GetDistanceInMeters(bounds.getNorthEast().lat(), bounds.getSouthWest().lat(), bounds.getNorthEast().lng(), bounds.getSouthWest().lng());
-                if (radius > 5000.0) {
-                    radius = 5000.0;
-                }
-                
-                self.radius(radius);
+            if (self.timeout != undefined) {
+                clearTimeout(self.timout);
+            }
+            self.timout = setTimeout(function () { self.searching = false; }, 5000);
+
+            if (self.map != undefined) {
+                self.map.clearOverlays();
+                self.latitude(self.map.latitude());
+                self.longitude(self.map.longitude());
+                self.bounds(self.map.bounds());
+                self.radius(self.map.radius());
             }
             
+            self.EstablishmentsMap = {};
+            self.Establishments.removeAll();
+           
             var wwDrinkSearch = "/api/Search?Query=" + self.searchText() + self.SearchCriteria();
             $.getJSON(wwDrinkSearch, self.wwDrinkSearchCallback);
         }

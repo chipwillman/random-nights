@@ -283,6 +283,7 @@
     <Content Include="Scripts\Client\Establishment.js" />
     <Content Include="Scripts\Client\favoriteaspect.js" />
     <Content Include="Scripts\Client\GoogleMapProvider.js" />
+    <Content Include="Scripts\Client\GooglePlacesProvider.js" />
     <Content Include="Scripts\Client\home.js" />
     <Content Include="Scripts\Client\Liquor.js" />
     <Content Include="Scripts\Client\manage.js" />

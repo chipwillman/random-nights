@@ -30,7 +30,7 @@
                                 <option value="drink">Drink</option>
                             </select>
                             <input id="search_button" type="submit" value="Search" data-bind="click: SearchClick"/>
-                            <div class="fb-like" data-href="http://www.wwdrink.com" data-layout="standard" data-action="like" data-show-faces="true" data-share="true" width="250px">
+                            <div class="fb-like" data-href="http://www.wwdrink.com" data-layout="standard" data-action="like" data-show-faces="true" data-share="true" width="200px">
                             </div>
 
                             <div style="display:none">
@@ -295,6 +295,8 @@
     @Scripts.Render("~/Scripts/knockout-binding-handlers.js")
     @Scripts.Render("~/Scripts/guid.js")
     @Scripts.Render("http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false")
+    @Scripts.Render("~/Scripts/Client/GoogleMapProvider.js")
+    @Scripts.Render("~/Scripts/Client/GooglePlacesProvider.js")
     @Scripts.Render("~/Scripts/Client/Aspect.js")
     @Scripts.Render("~/Scripts/Client/Review.js")
     @Scripts.Render("~/Scripts/Client/Establishment.js")
