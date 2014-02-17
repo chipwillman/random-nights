@@ -13,6 +13,7 @@ function AspectRating() {
 
 function EstablishmentFeature() {
     var self = this;
+    self.PK = ko.observable();
     self.Name = ko.observable();
     self.Rating = ko.observable(0);
 }

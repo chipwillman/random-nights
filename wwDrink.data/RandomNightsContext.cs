@@ -6,6 +6,12 @@
 
     public class RandomNightsContext : DbContext
     {
+        static RandomNightsContext()
+        {
+            var _ = typeof(System.Data.Entity.SqlServer.SqlProviderServices);
+            Database.SetInitializer<RandomNightsContext>(null);
+        }
+
         public RandomNightsContext()
             : base("DefaultConnection")
         {

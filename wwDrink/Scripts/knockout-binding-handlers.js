@@ -245,15 +245,21 @@ ko.bindingHandlers.updateFacebook = {
         var id = $(element).attr('id');
         var dataHref = $(element).attr('data-href');
         if (id != undefined && dataHref != undefined) {
-            FB.XFBML.parse(document.getElementById(id).parentNode);
+            var fbelement = document.getElementById(id);
+            if (fbelement != null) {
+                FB.XFBML.parse(fbelement.parentNode);
+            }
         }
     },
     update: function(element, valueAccessor) {
         var id = $(element).attr('id');
         var dataHref = $(element).attr('data-href');
         if (id != undefined && dataHref != undefined) {
-            setTimeout(function() {
-                FB.XFBML.parse(document.getElementById(id).parentNode);
+            setTimeout(function () {
+                var fbelement = document.getElementById(id);
+                if (fbelement != null) {
+                    FB.XFBML.parse(fbelement.parentNode);
+                }
             }, 250);
         }
     }

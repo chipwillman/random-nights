@@ -3,7 +3,7 @@
     using System;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Spatial;
+    using System.Data.Entity.Spatial;
 
     [Table("Address")]
     public class Address

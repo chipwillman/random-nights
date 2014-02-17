@@ -18,14 +18,13 @@
         var radius = 500;
         if (self.bounds()) {
             radius = self.GetDistanceInMeters(self.bounds().getNorthEast().lat(), self.bounds().getSouthWest().lat(), self.bounds().getNorthEast().lng(), self.bounds().getSouthWest().lng());
-            if (radius > 5000.0) {
-                radius = 5000.0;
-            }
+            //if (radius > 5000.0) {
+            //    radius = 5000.0;
+            //}
         }
         return radius;
     };
     
-    self.service = {};
     self.geocoder = {};
     self.googleMap = {};
 
@@ -92,11 +91,17 @@
                 } else {
                     bounds = null;
                 }
-                successCallback(latitude, longitude, radius, bounds);
+                if (successCallback != undefined) {
+                    successCallback(latitude, longitude, radius, bounds);
+                }
             } else {
                 failureCallback();
             }
         });
+    };
+
+    self.CenterMap = function(lat, lon, radius) {
+        self.googleMap.setCenter(new google.maps.LatLng(lat, lon));
     };
     
     self.GetDistanceInMeters = function (lat1, lat2, lon1, lon2) {

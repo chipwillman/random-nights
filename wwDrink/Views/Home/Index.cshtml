@@ -22,16 +22,25 @@
                                 <h1>@ViewBag.Title</h1>
                                 <h2>@ViewBag.Message</h2>
                             </hgroup>
+                            <div class="fb-like" data-href="http://www.wwdrink.com" data-layout="standard" data-action="like" data-show-faces="true" data-share="true" width="200px">
+                            </div>
                         </div>
                         <div class="main-search">
+                            <div id="search-desc">
+                                <p id="details-description">
+                                    Where and What to Drink is the Worlds first site dedicated for finding the right place for you to enjoy a drink anywhere in the world.  Search for a location or click on the search nearby button to find bars, pubs and clubs near you.
+                                </p>
+                                <p>
+                                    Search for a location now.
+                                </p>
+                            </div>
                             <input id="search_query" type="text" data-bind="value: searchText"/>
                             <select id="search_type" style="display: none">
                                 <option value="location">Location</option>
                                 <option value="drink">Drink</option>
                             </select>
-                            <input id="search_button" type="submit" value="Search" data-bind="click: SearchClick"/>
-                            <div class="fb-like" data-href="http://www.wwdrink.com" data-layout="standard" data-action="like" data-show-faces="true" data-share="true" width="200px">
-                            </div>
+                            <input id="search_button" type="submit" value="City Search" data-bind="click: SearchClick"/>
+                            <input id="search_nearby_button" type="submit" value="Search Nearby" data-bind="click: SearchNearbyClick"/>
 
                             <div style="display:none">
                                 Latitude: <label id="latitude_label" data-bind="text: latitude">not set</label>
@@ -60,7 +69,6 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="nav-buttons">
                         <div class="nav-buttons-back">
                             <input id="StepFirstButton" type="button" data-bind="click: StepFirst" value ="&nbsp;&nbsp;<<&nbsp;&nbsp;" /> <input id="StepBackButton" type="button" data-bind="click: StepBack" value="&nbsp;&nbsp;<&nbsp;&nbsp;" />
@@ -69,7 +77,6 @@
                             <input id="StepForwardButton" type="button" data-bind="click: StepForward" value="&nbsp;&nbsp;>&nbsp;&nbsp;"/><input id="StepLastButton" type="button" data-bind="click: StepLast" value="&nbsp;&nbsp;>>&nbsp;&nbsp;" />
                         </div>
                     </div>
-
                 </div>
             </div>
         </form>
@@ -100,14 +107,41 @@
         </li>
         <!-- /ko -->
     </ul>
-    <div class="google-as-left">
+    <div class="panel-left">
         <div class="mock-ad">
-            Ad Left
+            <span data-bind="text: RequestDetail"></span>
+             <!-- Begin BidVertiser code -->
+@*            <SCRIPT LANGUAGE="JavaScript1.1" SRC="http://bdv.bidvertiser.com/BidVertiser.dbm?pid=576640&bid=1442379" type="text/javascript"></SCRIPT>
+            <noscript><a href="http://www.bidvertiser.com">advertising</a></noscript>*@
+            <!-- End BidVertiser code --> 
+            Local Specials
         </div>
     </div>
-    <div class="google-as-right">
+    <div class="panel-right">
         <div class="mock-ad">
-            Ad Right
+             <!-- Begin BidVertiser code -->
+@*            <SCRIPT LANGUAGE="JavaScript1.1" SRC="http://bdv.bidvertiser.com/BidVertiser.dbm?pid=576640&bid=1442379" type="text/javascript"></SCRIPT>
+            <noscript><a href="http://www.bidvertiser.com">advertising</a></noscript>*@
+            <!-- End BidVertiser code --> 
+            @*        <div id="pcentslab">
+            <a href="http://pocketcents.com/" alt="Local Online Advertising">Local Online Advertising</a>
+            <a href="http://pocketcents.com/Services/Coupons" alt="Local Online Coupon Advertising">Local Coupon Advertising</a>
+        </div>*@
+            Featured Establishments
+@*        <script>
+            var labID = '14975';
+
+            //You can use these variables below to change the colors of the Advertisements
+            var adTitleColor = '#000';
+            var adTextColor = '#000';
+            var adLinkColor = '#FF0';
+            var adBackColor = '#FFF';
+        </script>
+
+        <!-- Place this portion below at the bottom of your page to optimize speed -->
+        <script src="http://pocketcents.com/lab/lab.js"></script>*@
+
+
         </div>
     </div>
     <div id="result_pages">
@@ -136,6 +170,9 @@
                         <div class="establishment-details-header">
                             <h4><span data-bind="text: name"></span></h4>
                             <span class="establishment-address" data-bind="text: address"></span>
+                            <p>
+                                <a data-bind="attr: { href: WebSite, target: name }" >Official Site</a>
+                            </p>
                             <hr/>
                             <span class="open-hours-title">Open:</span><br/>
                             <!-- ko foreach: open_hours -->
@@ -295,6 +332,7 @@
     @Scripts.Render("~/Scripts/knockout-binding-handlers.js")
     @Scripts.Render("~/Scripts/guid.js")
     @Scripts.Render("http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false")
+    @Scripts.Render("~/Scripts/Client/wwDrinkPlacesProvider.js")
     @Scripts.Render("~/Scripts/Client/GoogleMapProvider.js")
     @Scripts.Render("~/Scripts/Client/GooglePlacesProvider.js")
     @Scripts.Render("~/Scripts/Client/Aspect.js")

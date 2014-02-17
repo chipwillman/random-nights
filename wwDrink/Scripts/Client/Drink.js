@@ -1,6 +1,6 @@
 ﻿function Drink() {
     var self = this;
-    self.DefaultImage = "/Images/NoImageBeer.png";
+    self.DefaultImage = ko.observable();
     self.PK = ko.observable();
     self.Name = ko.observable();
     self.Vegan = ko.observable(false);
@@ -9,7 +9,13 @@
     self.Phone = ko.observable("Phone Not Set");
     self.Fax = ko.observable("Fax not set");
     self.Email = ko.observable("Email not set");
-    self.MainImageUrl = ko.observable(self.DefaultImage);
+    self.MainImageUrl = ko.observable();
+    self.DisplayImageUrl = ko.computed(function() {
+        if (self.MainImageUrl() != undefined) {
+            return self.MainImageUrl();
+        }
+        return self.DefaultImage();
+    });
     self.Url = ko.observable("Url not set");
     self.reviews = ko.observableArray();
     self.BeverageRating = ko.observable(3);

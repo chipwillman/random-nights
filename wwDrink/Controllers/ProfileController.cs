@@ -9,6 +9,7 @@ using System.Web.Http;
 
 namespace wwDrink.Controllers
 {
+    using System.Data.Entity;
     using System.Web.Mvc;
     using WebMatrix.WebData;
 

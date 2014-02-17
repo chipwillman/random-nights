@@ -2,7 +2,7 @@
 {
     using System;
     using System.Data.Entity;
-    using System.Data.Spatial;
+    using System.Data.Entity.Spatial;
     using System.Linq;
     using System.Web;
     using System.Web.Http;
@@ -30,9 +30,9 @@
 
         private SearchModel Search(string searchText, string latitude, string longitude, double range)
         {
-            var pageSize = 40;
+            var pageSize = 50;
             var result = new SearchModel();
-            if (latitude != null && longitude != null)
+            if (latitude != null && longitude != null && range < 500000)
             {
                 var searchLocation = DbGeography.FromText(string.Format("POINT({1} {0})", latitude, longitude));
 

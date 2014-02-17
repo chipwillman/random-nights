@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Data.Spatial;
+    using System.Data.Entity.Spatial;
 
     public class EstablishmentImage
     {
@@ -40,6 +40,7 @@
         public Guid AddressFk { get; set; }
         [ForeignKey("AddressFk")]
         public Address Address { get; set; }
+        // public string WebsiteUrl { get; set; }
         public string MainImageUrl { get; set; }
         public DbGeography Location { get; set; }
         [Index("IDX_GoogleId")]

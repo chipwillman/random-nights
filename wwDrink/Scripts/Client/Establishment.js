@@ -1,8 +1,8 @@
 ﻿var missingImageUrl = "/Images/missing_establishment_image.png";
 
-function Establishment(selectEstablishmentCallback) {
+function Establishment() {
     var self = this;
-    self.SelectEstablishmentCallback = selectEstablishmentCallback;
+    self.SelectEstablishmentCallback = function () {};
     self.PK = ko.observable();
     self.detailsRequested = ko.observable(false);
     self.source = ko.observable(false);
@@ -29,6 +29,9 @@ function Establishment(selectEstablishmentCallback) {
     self.open_hours = ko.observableArray();
     self.photos = ko.observableArray();
     self.reviews = ko.observableArray();
+    self.reviews.subscribe(function () {
+        self.UpdateFeatureFromReviewAspects();
+    });
 
     self.tab_href = ko.observable();
     self.tab_name = ko.observable();
@@ -160,11 +163,13 @@ function Establishment(selectEstablishmentCallback) {
     };
 
     self.AllowAddReview = ko.computed(function () {
-        var result = screenName != "";
-        for (var i in self.reviews()) {
-            var review = self.reviews()[i];
-            if (review.author() == screenName) {
-                result = false;
+        var result = (screenName != undefined && screenName != "");
+        if (result) {
+            for (var i in self.reviews()) {
+                var review = self.reviews()[i];
+                if (review.author() == screenName) {
+                    result = false;
+                }
             }
         }
         return result;
@@ -173,6 +178,78 @@ function Establishment(selectEstablishmentCallback) {
     self.ShowEstablishmentDetails = function () {
         if (self.SelectEstablishmentCallback) {
             self.SelectEstablishmentCallback(self);
+        }
+    };
+
+    self.MapEstablishment = function(establishment) {
+        if (establishment.source()) {
+            self.PK(establishment.PK());
+            self.latitude(establishment.latitude());
+            self.longitude(establishment.longitude());
+        } else {
+            self.Rating(establishment.Rating());
+            self.name(establishment.name());
+            self.google_reference(establishment.google_reference());
+            if (establishment.imageUrl() && establishment.imageUrl().length > 0) {
+                for (var i in establishment.imageUrl()) {
+                    var imageUrl = establishment.imageUrl()[i];
+                    self.AddPhoto(imageUrl);
+                }
+            }
+            
+            if (self.suburb() == undefined) {
+                self.suburb(establishment.suburb());
+            }
+            self.open(establishment.open());
+        }
+    };
+
+    self.GetRelatedAspects = function(name) {
+        var results = [];
+        if (name.toLowerCase != "bar") {
+            for (var i in self.reviews()) {
+                var review = self.reviews()[i];
+                for (var j in review.aspects()) {
+                    var aspect = review.aspects()[j];
+                    if (name.toLowerCase() == "restaurant") {
+                        if (aspect.aspectType().toLowerCase() == "food" || aspect.aspectType().toLowerCase() == "service") {
+                            results.push(aspect);
+                        }
+                    } else if (name.toLowerCase() == "food") {
+                        if (aspect.aspectType().toLowerCase() == name.toLowerCase()) {
+                            results.push(aspect);
+                        }
+                    }
+                }
+            }
+            if (results.length == 0) {
+                for (var i in self.reviews()) {
+                    var review = self.reviews()[i];
+                    for (var j in review.aspects()) {
+                        var aspect = review.aspects()[j];
+                        if (aspect.aspectType().toLowerCase() == "overall") {
+                            results.push(aspect);
+                        }
+                    }
+                }
+            }
+        }
+        return results;
+    };
+
+    self.UpdateFeatureFromReviewAspects = function() {
+        for (var i in self.features()) {
+            var feature = self.features()[i];
+            var relatedReviewAspects = self.GetRelatedAspects(feature.Name());
+            if (relatedReviewAspects.length > 0) {
+                var rating = 0;
+                for (var j in relatedReviewAspects) {
+                    var aspect = relatedReviewAspects[j];
+                    rating += aspect.rating();
+                }
+                rating /= relatedReviewAspects.length;
+                feature.Rating(rating);
+            }
         }
     };
 }

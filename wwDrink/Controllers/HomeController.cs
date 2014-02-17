@@ -14,6 +14,7 @@ namespace wwDrink.Controllers
 
     using wwDrink.Models;
     using wwDrink.data;
+    using wwDrink.data.Models;
 
     public class HomeController : Controller
     {
@@ -84,6 +85,7 @@ namespace wwDrink.Controllers
         public ActionResult Review(string id)
         {
             Guid detailsPk;
+            Review review = null;
             if (Guid.TryParse(id, out detailsPk))
             {
                 ViewBag.Message = "Where and what to drink";
@@ -97,14 +99,26 @@ namespace wwDrink.Controllers
                     ViewBag.ScreenName = "";
                 }
 
-                var review = db.Reviews.Find(detailsPk);
+                review = db.Reviews.Find(detailsPk);
                 if (review != null)
                 {
                     ViewBag.Establishment = review.ParentFk.ToString();
                     ViewBag.Review = detailsPk.ToString();
                 }
             }
-            return View("Index", new SearchModel());
+            if (this.Request.Headers["User-Agent"].StartsWith("facebookexternalhit") && review != null)
+            {
+                Establishment establishment = db.Establishments.Find(review.ParentFk);
+                ViewBag.Title = establishment.Name + " at wwDrink.com";
+                ViewBag.EstablishmentName = establishment.Name;
+                ViewBag.ImageUrl = establishment.MainImageUrl;
+                ViewBag.Suburb = review.ReviewText;
+                return this.View(new SearchModel());
+            }
+            else
+            {
+                return this.View("Index", new SearchModel());
+            }
         }
 
         public ActionResult Show(string id)

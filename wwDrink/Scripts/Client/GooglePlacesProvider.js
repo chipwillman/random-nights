@@ -2,7 +2,7 @@
     var self = this;
     self.service = new google.maps.places.PlacesService(googleMap);
 
-    self.GetSearchRequest = function (types, latitude, longitude, bounds) {
+    self.GetSearchRequest = function (types, latitude, radius, longitude, bounds) {
         var request;
         if (bounds != null) {
             request = {
@@ -10,21 +10,73 @@
                 types: types
             };
         } else {
-            var currentLocation = new google.maps.LatLng(latitude, longitude);
+            var location = new google.maps.LatLng(latitude, longitude);
             request = {
-                location: currentLocation,
-                radius: '1000',
+                location: location,
+                radius: radius,
                 types: types
             };
         }
         return request;
     };
 
-    self.SearchNearby = function (aspects, latitude, longitude, bounds, searchCallback, failureCallback) {
-        var request = self.GetSearchRequest(aspects, latitude, longitude, bounds);
+    self.MapGooglePlaceToEstablishment = function (place) {
+        var establishment;
+        establishment = new Establishment(function (establishmentb) {
+            self.ShowDetails(establishmentb);
+        });
+        establishment.PK(Guid.create());
+        establishment.Rating(place.rating);
+        establishment.name(place.name);
+        establishment.google_id(place.id);
+        establishment.google_reference(place.reference);
+        if (place.photos && place.photos.length > 0) {
+            var url = place.photos[0].getUrl({ 'maxWidth': 240, 'maxHeight': 180 });
+            establishment.imageUrl(url);
+        } else {
+            establishment.imageUrl("/Images/missing_establishment_image.png");
+        }
+
+        try {
+            establishment.latitude(place.geometry.location.lat());
+            establishment.longitude(place.geometry.location.lng());
+        } catch (e) {
+
+        }
+
+        try {
+            var suburb = place.vicinity.split(', ');
+            if (suburb.length == 2) {
+                establishment.suburb(suburb[1]);
+            } else if (suburb.length == 1) {
+                establishment.suburb(suburb[0]);
+            }
+            if (place.opening_hours) {
+                establishment.open(place.opening_hours.open_now);
+            } else {
+                establishment.open(false);
+            }
+        } catch (e) {
+
+        }
+        return establishment;
+    };
+
+    self.MapGoogleResults = function (places) {
+        var results = [];
+        for (var i = 0; i < places.length; i++) {
+            var place = places[i];
+            results.push(self.MapGooglePlaceToEstablishment(place));
+        }
+        return results;
+    };
+
+    self.SearchNearby = function (aspects, latitude, longitude, radius, bounds, searchText, searchCallback, failureCallback) {
+        var request = self.GetSearchRequest(aspects, latitude, radius, longitude, bounds);
         self.service.nearbySearch(request, function(results, status) {
             if (status == google.maps.places.PlacesServiceStatus.OK) {
-                searchCallback(results, status);
+                var establishments = self.MapGoogleResults(results);
+                searchCallback(establishments, status);
             } else {
                 failureCallback();
             }
@@ -41,7 +93,7 @@
         establishment.address_post_code = ko.observable();
     };
 
-    self.RequestGoogleDetails = function (establishment, successCallback, failureCallback) {
+    self.RequestEstablishmentDetails = function (establishment, successCallback, failureCallback) {
         var request = {
             reference: establishment.google_reference()
         };
@@ -56,6 +108,7 @@
                 for (i = 0; i < place.types.length; i++) {
                     if (place.types[i] != "establishment") {
                         var feature = new EstablishmentFeature();
+
                         feature.Name(place.types[i]);
                         establishment.features.push(feature);
                     }
@@ -87,9 +140,13 @@
                     }
                 }
                 establishment.open_hours(self.ParseOpenHours(place.opening_hours));
-                successCallback(establishment);
+                if (successCallback != undefined) {
+                    successCallback(establishment);
+                }
             } else {
-                failureCallback(establishment);
+                if (failureCallback != undefined) {
+                    failureCallback(establishment);
+                }
             }
         });
     };

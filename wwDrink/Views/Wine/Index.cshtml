@@ -13,6 +13,10 @@
 
 <h2>Wine</h2>
 
+<p>
+    Search our extensive wine database and read our members reviews.
+</p>
+
 <div>
     <form>
         Search: <input id="search_query" data-bind="value: Query"/><input type="submit" id="search_button" data-bind="click: SearchDrink"/>
@@ -40,7 +44,7 @@
         </div>
         <div class="beverage-details" data-bind="visible: ShowDetails">
             <div class="image-cell">
-                <img src="/Images/missing_establishment_image.png" data-bind="attr: { src: MainImageUrl }"  width='130px' height='175px'/>
+                <img src="/Images/Default_wine.png" data-bind="attr: { src: DisplayImageUrl }"  width='130px' height='175px'/>
                 <div class="beverage-maker">
                     <div class="beverage-row">
                         <div class="beverage-cell">

@@ -7,6 +7,7 @@
     self.StartPage = ko.observable(0);
     self.Pages = ko.observable(0);
     self.ResultCount = ko.observable(0);
+    self.DefaultImage = {};
 
     self.FirstButtonVisible = ko.computed(function () {
         return self.Pages() > 1;
@@ -28,6 +29,7 @@
 
     self.AddDrink = function(drink) {
         var d = new Drink();
+        d.DefaultImage(self.DefaultImage);
         d.Name(drink.Name);
         d.PK(drink.DrinkPk);
         if (drink.Crafter) {
@@ -87,7 +89,16 @@
         self.StartPage(self.Pages());
         self.DoSearch(self.StartPage(), self.PageSize());
     };
-    
+
+    self.ShowRandomDrink = function () {
+        if (self.drinkSearches.length > 0) {
+            var random = Math.floor(Math.random() * self.drinkSearches.length);
+
+            self.Query(self.drinkSearches[random]);
+            self.DoSearch(1, 20);
+        }
+    };
+
     self.AddReviewClick = function () {
         var beverage = this;
         var wwDrinkReview = "/api/Review";

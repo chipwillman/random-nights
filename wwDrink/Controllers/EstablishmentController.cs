@@ -13,7 +13,7 @@ using wwDrink.data;
 
 namespace wwDrink.Controllers
 {
-    using System.Data.Spatial;
+    using System.Data.Entity.Spatial;
 
     using wwDrink.Models;
 

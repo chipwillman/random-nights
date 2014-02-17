@@ -5,6 +5,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes"  />
 @*        <meta name="viewport" content="width=device-width" />*@
         <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1, user-scalable=no"/>
+        <meta name="description" content=""/>
         <title>@ViewBag.Title</title>
         <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
         @Styles.Render("~/Content/css")
@@ -32,10 +33,7 @@
         </script>
         
         <header>
-            <div class="content-wrapper">
-                <div class="google-as-top" >
-                    <div class="mock-ad-horizontal">Ad Top</div>
-                </div>
+            <div class="content-wrapper scroll-y">
                 <div class="top-menu-wrapper">
                     <div class="float-left">
                         <nav>
@@ -55,13 +53,23 @@
                         </section>
                     </div>
                 </div>
+                <div class="BidVertiser-top" >
+                    <div class="mock-ad-horizontal">
+                         <!-- Begin BidVertiser code -->
+                        @*<SCRIPT LANGUAGE="JavaScript1.1" SRC="http://bdv.bidvertiser.com/BidVertiser.dbm?pid=576640&bid=1442373" type="text/javascript"></SCRIPT>
+                        <noscript><a href="http://www.bidvertiser.com">advertising</a></noscript>
+                        *@<!-- End BidVertiser code --> 
+                    </div>
+                </div>
             </div>
         </header>
         <div id="body">
-            @RenderSection("featured", required: false)
-            <section class="content-wrapper main-content clear-fix">
-                @RenderBody()
-            </section>
+            <div class="scroll-y">
+                @RenderSection("featured", required: false)
+                <section class="content-wrapper main-content clear-fix">
+                    @RenderBody()
+                </section>
+            </div>
         </div>
         <footer>
             <div class="content-wrapper">
@@ -70,7 +78,6 @@
                 </div>
             </div>
         </footer>
-
         @Scripts.Render("~/bundles/jquery")
         @RenderSection("scripts", required: false)
     </body>

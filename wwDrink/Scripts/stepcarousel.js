@@ -8,24 +8,24 @@
 
 Stepcarousel = function () {
     var self = this;
-    
+
     self.ajaxloadingmsg = '<div style="margin: 1em; font-weight: bold"><img src="ajaxloadr.gif" style="vertical-align: middle" /> Fetching Content. Please wait...</div>'; //customize HTML to show while fetching Ajax content
     self.defaultbuttonsfade = 0.4; //Fade degree for disabled nav buttons (0=completely transparent, 1=completely opaque)
     self.configholder = {};
 
-    self.getCSSValue = function(val) { //Returns either 0 (if val contains 'auto') or val as an integer
+    self.getCSSValue = function (val) { //Returns either 0 (if val contains 'auto') or val as an integer
         return (val == "auto") ? 0 : parseInt(val);
     };
 
-    self.getremotepanels = function($, config) { //function to fetch external page containing the panel DIVs
+    self.getremotepanels = function ($, config) { //function to fetch external page containing the panel DIVs
         config.$belt.html(this.ajaxloadingmsg);
         $.ajax({
             url: config.contenttype[1], //path to external content
             async: true,
-            error: function(ajaxrequest) {
+            error: function (ajaxrequest) {
                 config.$belt.html('Error fetching content.<br />Server Response: ' + ajaxrequest.responseText);
             },
-            success: function(content) {
+            success: function (content) {
                 config.$belt.html(content);
                 config.$panels = config.$gallery.find('.' + config.panelclass);
                 self.alignpanels($, config);
@@ -33,36 +33,36 @@ Stepcarousel = function () {
         });
     };
 
-    self.getoffset = function(what, offsettype) {
+    self.getoffset = function (what, offsettype) {
         return (what.offsetParent) ? what[offsettype] + this.getoffset(what.offsetParent, offsettype) : what[offsettype];
     };
 
-    self.getCookie = function(name) {
+    self.getCookie = function (name) {
         var re = new RegExp(name + "=[^;]+", "i"); //construct RE to search for target name/value pair
         if (document.cookie.match(re)) //if cookie found
             return document.cookie.match(re)[0].split("=")[1]; //return its value
         return null;
     };
-    
-    self.setCookie = function(name, value) {
+
+    self.setCookie = function (name, value) {
         document.cookie = name + "=" + value;
     };
 
-    self.fadebuttons = function(config, currentpanel) {
+    self.fadebuttons = function (config, currentpanel) {
         config.$leftnavbutton.fadeTo('fast', currentpanel == 0 ? this.defaultbuttonsfade : 1);
         config.$rightnavbutton.fadeTo('fast', currentpanel == config.lastvisiblepanel ? this.defaultbuttonsfade : 1);
         if (currentpanel == config.lastvisiblepanel) {
             self.stopautostep(config);
         }
     };
-    
-    self.addnavbuttons = function($, config, currentpanel) {
+
+    self.addnavbuttons = function ($, config, currentpanel) {
         config.$leftnavbutton = $('<img src="' + config.defaultbuttons.leftnav[0] + '">').css({ zIndex: 50, position: 'absolute', left: config.offsets.left + config.defaultbuttons.leftnav[1] + 'px', top: config.offsets.top + config.defaultbuttons.leftnav[2] + 'px', cursor: 'hand', cursor: 'pointer' }).attr({ title: 'Back ' + config.defaultbuttons.moveby + ' panels' }).appendTo('body');
         config.$rightnavbutton = $('<img src="' + config.defaultbuttons.rightnav[0] + '">').css({ zIndex: 50, position: 'absolute', left: config.offsets.left + config.$gallery.get(0).offsetWidth + config.defaultbuttons.rightnav[1] + 'px', top: config.offsets.top + config.defaultbuttons.rightnav[2] + 'px', cursor: 'hand', cursor: 'pointer' }).attr({ title: 'Forward ' + config.defaultbuttons.moveby + ' panels' }).appendTo('body');
-        config.$leftnavbutton.bind('click', function() { //assign nav button event handlers
+        config.$leftnavbutton.bind('click', function () { //assign nav button event handlers
             self.stepBy(config.galleryid, -config.defaultbuttons.moveby);
         });
-        config.$rightnavbutton.bind('click', function() { //assign nav button event handlers
+        config.$rightnavbutton.bind('click', function () { //assign nav button event handlers
             self.stepBy(config.galleryid, config.defaultbuttons.moveby);
         });
         if (config.panelbehavior.wraparound == false) { //if carousel viewer should stop at first or last panel (instead of wrap back or forth)
@@ -71,11 +71,41 @@ Stepcarousel = function () {
         return config.$leftnavbutton.add(config.$rightnavbutton);
     };
 
-    self.alignpanels = function($, config) {
+    self.dragging = false;
+    self.canceled = false;
+    self.dragRadius = 20;
+    self.xy = { x: 0, y: 0 };
+    self.dx = 0.0;
+    self.dy = 0.0;
+    self.dragThresholdMet = false;
+    self.lockLeft = false;
+    self.lockRight = false;
+
+    self.isTouchDevice = function () {
+        var el = document.createElement('div');
+        el.setAttribute('ongesturestart', 'return;');
+        return typeof el.ongesturestart === "function";
+    };
+
+    self.inspect = function (obj) {
+        if (typeof obj === "undefined") {
+            return "undefined";
+        }
+        var _props = [];
+
+        for (var i in obj) {
+            _props.push(i + " : " + obj[i]);
+        }
+        return " {" + _props.join(",<br>") + "} ";
+    };
+
+
+
+    self.alignpanels = function ($, config) {
         var paneloffset = 0;
         config.paneloffsets = [paneloffset]; //array to store upper left offset of each panel (1st element=0)
         config.panelwidths = []; //array to store widths of each panel
-        config.$panels.each(function(index) { //loop through panels
+        config.$panels.each(function (index) { //loop through panels
             var $currentpanel = $(this);
             $currentpanel.css({ float: 'none', position: 'absolute', left: paneloffset + 'px' }); //position panel
             $currentpanel.bind('click', function (e) { return config.onpanelclick(e.target); }); //bind onpanelclick() to onclick event
@@ -84,6 +114,7 @@ Stepcarousel = function () {
             config.panelwidths.push(paneloffset - config.paneloffsets[config.paneloffsets.length - 2]); //remember panel width
         });
         config.paneloffsets.pop(); //delete last offset (redundant)
+        self.dragLimit = 800;
         var addpanelwidths = 0;
         var lastpanelindex = config.$panels.length - 1;
         config.lastvisiblepanel = lastpanelindex;
@@ -100,7 +131,7 @@ Stepcarousel = function () {
         config.$belt.css({ left: -endpoint + 'px' });
         if (config.defaultbuttons.enable == true) { //if enable default back/forth nav buttons
             var $navbuttons = this.addnavbuttons($, config, config.currentpanel);
-            $(window).bind("load resize", function() { //refresh position of nav buttons when page loads/resizes, in case offsets weren't available document.oncontentload
+            $(window).bind("load resize", function () { //refresh position of nav buttons when page loads/resizes, in case offsets weren't available document.oncontentload
                 config.offsets = { left: self.getoffset(config.$gallery.get(0), "offsetLeft"), top: self.getoffset(config.$gallery.get(0), "offsetTop") };
                 config.$leftnavbutton.css({ left: config.offsets.left + config.defaultbuttons.leftnav[1] + 'px', top: config.offsets.top + config.defaultbuttons.leftnav[2] + 'px' });
                 config.$rightnavbutton.css({ left: config.offsets.left + config.$gallery.get(0).offsetWidth + config.defaultbuttons.rightnav[1] + 'px', top: config.offsets.top + config.defaultbuttons.rightnav[2] + 'px' });
@@ -108,19 +139,72 @@ Stepcarousel = function () {
         }
         if (config.autostep && config.autostep.enable) { //enable auto stepping of Carousel?		
             var $carouselparts = config.$gallery.add(typeof $navbuttons != "undefined" ? $navbuttons : null);
-            $carouselparts.bind('click', function() {
+            $carouselparts.bind('click', function (e) {
                 config.autostep.status = "stopped";
                 self.stopautostep(config);
+                if (self.dragThresholdMet) e.preventDefault();
             });
-            $carouselparts.hover(function() { //onMouseover
+
+            $carouselparts.on('touchstart', function (e) {
+                self.dragging = true;
+                self.canceled = false;
+                self.xy.x = e.originalEvent.touches[0].clientX;
+                self.xy.y = e.originalEvent.touches[0].clientY;
+                self.dx = 0;
+                self.dy = 0;
+                self.dragThresholdMet = false;
+                self.lockLeft = self._index == 1;
+                self.lockRight = self._index == self._length;
+            });
+
+            $carouselparts.on('mousedown', function (e) {
+                self.dragging = true;
+                self.canceled = false;
+                self.xy.x = e.clientX;
+                self.xy.y = e.clientY;
+                self.dx = 0;
+                self.dy = 0;
+                self.dragThresholdMet = false;
+                self.lockLeft = self._index == 1;
+                self.lockRight = self._index == self._length;
+            });
+
+            $carouselparts.on('touchmove', function (e) {
+                self.dx = self.xy.x - event.changedTouches[event.changedTouches.length - 1].clientX;
+            });
+
+            $carouselparts.on('mouseup touchend', function (e) {
+                if (!self.dragging) {
+                    return;
+                }
+
+                self.dragging = false;
+
+                if (e.clientX != undefined) {
+                    self.dx = self.xy.x - e.clientX;
+                }
+
+                if (!self.canceled && Math.abs(self.dx) > self.dragRadius) {
+                    if (self.dx > 0) {
+                        self.stepBy(config.galleryid, config.autostep.moveby, true);
+                    } else {
+                        self.stepBy(config.galleryid, -config.autostep.moveby, true);
+                    }
+                } else {
+                    self._offsetDrag = 0;
+                }
+            });
+
+            $carouselparts.hover(function () { //onMouseover
                 self.stopautostep(config);
                 config.autostep.hoverstate = "over";
-            }, function() { //onMouseout
+            }, function () { //onMouseout
                 if (config.steptimer && config.autostep.hoverstate == "over" && config.autostep.status != "stopped") {
                     config.steptimer = setInterval(function () { self.autorotate(config.galleryid); }, config.autostep.pause);
                     config.autostep.hoverstate = "out";
                 }
             });
+
             config.steptimer = (typeof config.steptimer == "undefined") ? setInterval(function () { self.autorotate(config.galleryid); }, config.autostep.pause) : config.steptimer; //automatically rotate Carousel Viewer
         } //end enable auto stepping check
         this.createpaginate($, config);
@@ -129,7 +213,7 @@ Stepcarousel = function () {
         config.onslideaction(this);
     };
 
-    self.stepTo = function(galleryid, pindex) { /*User entered pindex starts at 1 for intuitiveness. Internally pindex still starts at 0 */
+    self.stepTo = function (galleryid, pindex) { /*User entered pindex starts at 1 for intuitiveness. Internally pindex still starts at 0 */
         var config = self.configholder[galleryid];
         if (typeof config == "undefined") {
             alert("There's an error with your set up of Carousel Viewer \"" + galleryid + "\"!");
@@ -146,7 +230,7 @@ Stepcarousel = function () {
         this.statusreport(galleryid);
     };
 
-    self.stepBy = function(galleryid, steps, isauto) {
+    self.stepBy = function (galleryid, steps, isauto) {
         var config = self.configholder[galleryid];
         if (typeof config == "undefined") {
             //alert("There's an error with your set up of Carousel Viewer \""+galleryid+ "\"!")
@@ -172,7 +256,7 @@ Stepcarousel = function () {
         }
         var endpoint = config.paneloffsets[pindex] + (pindex == 0 ? 0 : config.beltoffset); //left distance for Belt DIV to travel to
         if (config.panelbehavior.wraparound == true && config.panelbehavior.wrapbehavior == "pushpull" && (pindex == 0 && direction == 'forward' || config.currentpanel == 0 && direction == 'back')) { //decide whether to apply "push pull" effect
-            config.$belt.animate({ left: -config.paneloffsets[config.currentpanel] - (direction == 'forward' ? 100 : -30) + 'px' }, 'normal', function() {
+            config.$belt.animate({ left: -config.paneloffsets[config.currentpanel] - (direction == 'forward' ? 100 : -30) + 'px' }, 'normal', function () {
                 config.$belt.animate({ left: -endpoint + 'px' }, config.panelbehavior.speed, function () { config.onslideaction(this); });
             });
         } else
@@ -181,17 +265,17 @@ Stepcarousel = function () {
         this.statusreport(galleryid);
     };
 
-    self.autorotate = function(galleryid) {
+    self.autorotate = function (galleryid) {
         var config = self.configholder[galleryid];
         config.$belt.stop(true, true);
         this.stepBy(galleryid, config.autostep.moveby, true);
     };
 
-    self.stopautostep = function(config) {
+    self.stopautostep = function (config) {
         clearTimeout(config.steptimer);
     };
-    
-    self.statusreport = function(galleryid) {
+
+    self.statusreport = function (galleryid) {
         var config = self.configholder[galleryid];
         if (config.statusvars.length == 3) { //if 3 status vars defined
             var startpoint = config.currentpanel; //index of first visible panel
@@ -212,7 +296,7 @@ Stepcarousel = function () {
         }
         self.selectpaginate(jQuery, galleryid);
     },
-    self.createpaginate = function($, config) {
+    self.createpaginate = function ($, config) {
         if (config.$paginatediv.length == 1) {
             var $templateimg = config.$paginatediv.find('img["data-over"]:eq(0)'); //reference first matching image on page
             var controlpoints = [];
@@ -229,13 +313,13 @@ Stepcarousel = function () {
             }
             var $controls = $('<span></span>').replaceAll($templateimg).append(imgarray.join('')).find('img'); //replace template link with links and return them
             $controls.css({ cursor: 'pointer' });
-            config.$paginatediv.bind('click', function(e) {
+            config.$paginatediv.bind('click', function (e) {
                 var $target = $(e.target);
                 if ($target.is('img') && $target.attr('data-over')) {
                     self.stepTo(config.galleryid, parseInt($target.attr('data-moveto')) + 1);
                 }
             });
-            config.$paginatediv.bind('mouseover mouseout', function(e) {
+            config.$paginatediv.bind('mouseover mouseout', function (e) {
                 var $target = $(e.target);
                 if ($target.is('img') && $target.attr('data-over')) {
                     if (parseInt($target.attr('data-index')) != config.pageinfo.curselected) //if this isn't the selected link
@@ -245,7 +329,7 @@ Stepcarousel = function () {
             config.pageinfo = { controlpoints: controlpoints, $controls: $controls, srcs: srcs, prevselected: null, curselected: null };
         }
     },
-    self.selectpaginate = function($, galleryid) {
+    self.selectpaginate = function ($, galleryid) {
         var config = self.configholder[galleryid];
         if (config.$paginatediv.length == 1) {
             for (var i = 0; i < config.pageinfo.controlpoints.length; i++) {
@@ -258,14 +342,14 @@ Stepcarousel = function () {
             config.pageinfo.prevselected = config.pageinfo.curselected; //set current selected link to previous
         }
     },
-    self.loadcontent = function(galleryid, url) {
+    self.loadcontent = function (galleryid, url) {
         var config = self.configholder[galleryid];
         config.contenttype = ['ajax', url];
         self.stopautostep(config);
         self.resetsettings($, config);
         self.init(jQuery, config);
     },
-    self.init = function($, config) {
+    self.init = function ($, config) {
         config.gallerywidth = config.$gallery.width();
         config.offsets = { left: self.getoffset(config.$gallery.get(0), "offsetLeft"), top: self.getoffset(config.$gallery.get(0), "offsetTop") };
         config.$belt = config.$gallery.find('.' + config.beltclass); //Find Belt DIV that contains all the panels
@@ -274,14 +358,14 @@ Stepcarousel = function () {
         config.$paginatediv = $('#' + config.galleryid + '-paginate'); //get pagination DIV (if defined)
         if (config.autostep)
             config.autostep.pause = config.panelbehavior.speed * 8;
-        config.onpanelclick = (typeof config.onpanelclick == "undefined") ? function(target) {
+        config.onpanelclick = (typeof config.onpanelclick == "undefined") ? function (target) {
         } : config.onpanelclick; //attach custom "onpanelclick" event handler
-        config.onslideaction = (typeof config.onslide == "undefined") ? function() {
-        } : function(beltobj) {
+        config.onslideaction = (typeof config.onslide == "undefined") ? function () {
+        } : function (beltobj) {
             $(beltobj).stop();
             config.onslide();
         }; //attach custom "onslide" event handler
-        config.oninit = (typeof config.oninit == "undefined") ? function() {
+        config.oninit = (typeof config.oninit == "undefined") ? function () {
         } : config.oninit; //attach custom "oninit" event handler
         config.beltoffset = self.getCSSValue(config.$belt.css('marginLeft')); //Find length of Belt DIV's left margin
         config.statusvars = config.statusvars || []; //get variable names that will hold "start", "end", and "total" slides info
@@ -293,7 +377,7 @@ Stepcarousel = function () {
         else
             self.alignpanels($, config); //align panels and initialize gallery
     },
-    self.resetsettings = function($, config) {
+    self.resetsettings = function ($, config) {
         config.$gallery.unbind();
         config.$belt.stop();
         config.$panels.remove();
@@ -312,14 +396,13 @@ Stepcarousel = function () {
             self.setCookie(window[config.galleryid + "persist"], 0); //set initial panel to 0, overridden w/ current panel if window.unload is invoked
         }
     },
-    self.setup = function(config) {
+    self.setup = function (config) {
         //Disable Step Gallery scrollbars ASAP dynamically (enabled for sake of users with JS disabled)
-        document.write('<style type="text/css">\n#' + config.galleryid + '{overflow: hidden;}\n</style>');
+        // document.write('<style type="text/css">\n#' + config.galleryid + '{overflow: hidden;}\n</style>');
         config.$gallery = $('#' + config.galleryid);
         self.init($, config);
-        
     };
-    
+
     self.unload = function (config) { //clean up on page unload
         self.resetsettings($, config);
         if (config.panelbehavior.persist)
